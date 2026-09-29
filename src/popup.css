@@ -94,6 +94,10 @@ input[type="range"] {
   font-size: 12px;
 }
 
+.cats label.optional {
+  color: var(--accent);
+}
+
 textarea {
   width: 100%;
   resize: vertical;

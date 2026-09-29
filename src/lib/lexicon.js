@@ -12,12 +12,12 @@
 (function (root, factory) {
   'use strict';
   if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('./lexicon.curated.js'), require('./lexicon.vendor.js'));
+    module.exports = factory(require('./lexicon.curated.js'), require('./lexicon.vendor.js'), require('./lexicon.topics.js'));
   } else {
     var JOF = root.JOF = root.JOF || {};
-    JOF.lexicon = factory(JOF.lexiconCurated, JOF.lexiconVendor);
+    JOF.lexicon = factory(JOF.lexiconCurated, JOF.lexiconVendor, JOF.lexiconTopics);
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (curated, vendor) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (curated, vendor, topics) {
   'use strict';
 
   var CATEGORY_LABELS = {
@@ -29,7 +29,10 @@
     cynicism: '冷笑・皮肉',
     urgency: '危機煽り',
     profanity: '差別・侮蔑語',
-    amplifier: '感情誇張'
+    amplifier: '感情誇張',
+    politics: '政治',
+    conspiracy: '陰謀論',
+    ai_dispute: 'AI論争'
   };
 
   var CATEGORY_ORDER = [
@@ -41,7 +44,10 @@
     'absolute',
     'urgency',
     'cynicism',
-    'amplifier'
+    'amplifier',
+    'politics',
+    'conspiracy',
+    'ai_dispute'
   ];
 
   // 直後にこれらが続く場合は、別の無害な語の一部とみなして無視する
@@ -109,6 +115,14 @@
     var ve = makeEntry(vendorList[i].concat(['profanity']));
     ve.source = 'vendor:inappropriate-words-ja';
     if (ve && !map.has(ve.n)) map.set(ve.n, ve);
+  }
+  var topicList = topics || [];
+  for (var ti = 0; ti < topicList.length; ti++) {
+    var te = makeEntry(topicList[ti]);
+    if (te && !map.has(te.n)) {
+      te.source = 'topics';
+      map.set(te.n, te);
+    }
   }
   var curatedList = curated || [];
   for (var j = 0; j < curatedList.length; j++) {

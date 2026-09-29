@@ -49,22 +49,36 @@
   var settings = config.normalizeSettings({});
 
   // ------------------------------------------------------------ categories
+  function effectiveCategories() {
+    if (Array.isArray(settings.categories)) return settings.categories;
+    return lexicon.CATEGORY_ORDER.filter(function (id) {
+      return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
+    });
+  }
+
   function buildCategories(current) {
     var box = el('categories');
     box.textContent = '';
     var all = lexicon.CATEGORY_ORDER.filter(function (id) {
       return id !== 'amplifier';
     });
-    var enabled = current.categories ? new Set(current.categories) : new Set(all);
+    var defaultCore = all.filter(function (id) {
+      return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
+    });
+    var enabled = Array.isArray(current.categories) ? new Set(current.categories) : new Set(defaultCore);
     all.forEach(function (id) {
+      var optional = config.OPTIONAL_CATEGORIES.indexOf(id) >= 0;
       var label = document.createElement('label');
+      if (optional) label.className = 'optional';
       var cb = document.createElement('input');
       cb.type = 'checkbox';
       cb.value = id;
       cb.checked = enabled.has(id);
       cb.addEventListener('change', readAndSave);
       label.appendChild(cb);
-      label.appendChild(document.createTextNode(lexicon.CATEGORY_LABELS[id] || id));
+      label.appendChild(
+        document.createTextNode((lexicon.CATEGORY_LABELS[id] || id) + (optional ? '（任意）' : ''))
+      );
       box.appendChild(label);
     });
   }
@@ -73,7 +87,6 @@
     var ids = [];
     var boxes = el('categories').querySelectorAll('input[type="checkbox"]');
     for (var i = 0; i < boxes.length; i++) if (boxes[i].checked) ids.push(boxes[i].value);
-    if (ids.length === boxes.length) return null; // 全有効 = null
     return ids;
   }
 
@@ -125,7 +138,7 @@
       out.textContent = '—';
       return;
     }
-    var r = scoring.analyze(text, { categories: settings.categories });
+    var r = scoring.analyze(text, { categories: effectiveCategories() });
     var verdict = r.score >= settings.threshold ? '→ ミュート対象' : '→ 表示';
     var cats = (r.categories || []).map(function (c) {
       return lexicon.CATEGORY_LABELS[c] || c;

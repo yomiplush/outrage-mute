@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "義憤ミュート",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Xの投稿を日本語の義憤スコアで判定し、CSSでぼかし/非表示にするローカル完結の拡張機能。外部送信なし。",
   "permissions": ["storage"],
   "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
@@ -30,6 +30,7 @@
         "src/lib/config.js",
         "src/lib/lexicon.curated.js",
         "src/lib/lexicon.vendor.js",
+        "src/lib/lexicon.topics.js",
         "src/lib/lexicon.js",
         "src/lib/scoring.js",
         "src/content.js"

@@ -12,13 +12,17 @@
   var PERSIST_KEY = 'jofSettings';
   var STATS_KEY = 'jofStats';
 
+  // 既定では無効で、ユーザーが明示的に有効化するトピック系カテゴリ
+  // （政治・陰謀論・AI論争。好みが分かれるため opt-in）
+  var OPTIONAL_CATEGORIES = ['politics', 'conspiracy', 'ai_dispute'];
+
   var DEFAULTS = {
     enabled: true,
     threshold: 0.5, // この値以上でミュート
     mode: 'blur', // 'blur' | 'hide'
     showOverlay: true,
     minLength: 0, // これ未満の短い投稿は判定しない
-    categories: null // null = 全カテゴリ有効。配列なら有効なカテゴリ id のみ
+    categories: null // null = 既定のカテゴリ構成（OPTIONAL_CATEGORIES を除く全部）
   };
 
   var SCORE_VERSION = '1.0.0';
@@ -46,6 +50,7 @@
     PERSIST_KEY: PERSIST_KEY,
     STATS_KEY: STATS_KEY,
     DEFAULTS: DEFAULTS,
+    OPTIONAL_CATEGORIES: OPTIONAL_CATEGORIES,
     SCORE_VERSION: SCORE_VERSION,
     normalizeSettings: normalizeSettings
   };

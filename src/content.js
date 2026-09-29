@@ -22,6 +22,17 @@
   var TWEET_SEL = 'article[data-testid="tweet"]';
   var CELL_SEL = '[data-testid="cellInnerDiv"]';
 
+  /**
+   * 有効カテゴリを解決する。
+   * 設定が未指定(null)なら「トピック系(政治/陰謀論/AI論争)を除く全部」を使う。
+   */
+  function effectiveCategories() {
+    if (Array.isArray(settings.categories)) return settings.categories;
+    return JOF.lexicon.CATEGORY_ORDER.filter(function (id) {
+      return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
+    });
+  }
+
   var settings = Object.assign({}, config.DEFAULTS);
   var observer = null;
   var bar = null;
@@ -167,7 +178,7 @@
       return;
     }
 
-    var result = scoring.analyze(combined, { categories: settings.categories });
+    var result = scoring.analyze(combined, { categories: effectiveCategories() });
     cell.dataset.jofResult = JSON.stringify({
       score: result.score,
       categories: result.categories,
