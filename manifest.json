@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "義憤ミュート",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Xの投稿を日本語の義憤スコアで判定し、CSSでぼかし/非表示にするローカル完結の拡張機能。外部送信なし。",
   "permissions": ["storage"],
   "host_permissions": ["https://x.com/*", "https://twitter.com/*"],

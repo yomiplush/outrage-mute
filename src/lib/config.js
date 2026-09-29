@@ -14,7 +14,7 @@
 
   // 既定では無効で、ユーザーが明示的に有効化するトピック系カテゴリ
   // （政治・陰謀論・AI論争。好みが分かれるため opt-in）
-  var OPTIONAL_CATEGORIES = ['politics', 'conspiracy', 'ai_dispute'];
+  var OPTIONAL_CATEGORIES = ['politics', 'conspiracy', 'ai_dispute', 'world_affairs'];
 
   var DEFAULTS = {
     enabled: true,

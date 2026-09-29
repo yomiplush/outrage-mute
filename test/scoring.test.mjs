@@ -86,11 +86,13 @@ test('設定の正規化（範囲クランプ）', () => {
   assert.equal(s.minLength, 0);
 });
 
-test('トピック系（政治・陰謀論・AI論争）は有効化すると単独でしきい値を超える', () => {
+test('トピック系（政治・陰謀論・AI論争・世界情勢）は有効化すると単独でしきい値を超える', () => {
   const cases = [
     ['首相が増税を決めた', 'politics'],
     ['ケミカルトレイルは本当だった', 'conspiracy'],
-    ['AI規制が必要だ', 'ai_dispute']
+    ['AI規制が必要だ', 'ai_dispute'],
+    ['ウクライナ侵攻が激化している', 'world_affairs'],
+    ['大津波の被害が広がっている', 'world_affairs']
   ];
   for (const [text, cat] of cases) {
     const r = analyze(text, { categories: [cat] });
@@ -104,26 +106,22 @@ test('トピック系は既定のカテゴリ構成で除外される', () => {
   assert.equal(analyze('首相が増税を決めた', { categories: core }).score, 0);
   assert.equal(analyze('ケミカルトレイルは本当だった', { categories: core }).score, 0);
   assert.equal(analyze('AI規制が必要だ', { categories: core }).score, 0);
+  assert.equal(analyze('ウクライナ侵攻が激化している', { categories: core }).score, 0);
   // 有効化すれば効く
   assert.ok(analyze('首相が増税を決めた', { categories: core.concat('politics') }).score >= 0.5);
+  assert.ok(
+    analyze('ウクライナ侵攻が激化している', { categories: core.concat('world_affairs') }).score >= 0.5
+  );
 });
 
 test('トピック系カテゴリが辞書に登録されている', () => {
-  for (const id of ['politics', 'conspiracy', 'ai_dispute']) {
+  for (const id of ['politics', 'conspiracy', 'ai_dispute', 'world_affairs']) {
     assert.ok(lexicon.CATEGORY_LABELS[id], `label: ${id}`);
     assert.ok(lexicon.CATEGORY_ORDER.includes(id), `order: ${id}`);
     assert.ok(config.OPTIONAL_CATEGORIES.includes(id), `optional: ${id}`);
+    assert.ok(
+      lexicon.TERMS.some((t) => t.cat === id),
+      `term: ${id}`
+    );
   }
-  assert.ok(
-    lexicon.TERMS.some((t) => t.cat === 'politics'),
-    'politics term'
-  );
-  assert.ok(
-    lexicon.TERMS.some((t) => t.cat === 'conspiracy'),
-    'conspiracy term'
-  );
-  assert.ok(
-    lexicon.TERMS.some((t) => t.cat === 'ai_dispute'),
-    'ai_dispute term'
-  );
 });

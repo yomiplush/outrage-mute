@@ -32,7 +32,8 @@
     amplifier: '感情誇張',
     politics: '政治',
     conspiracy: '陰謀論',
-    ai_dispute: 'AI論争'
+    ai_dispute: 'AI論争',
+    world_affairs: '世界情勢・戦争'
   };
 
   var CATEGORY_ORDER = [
@@ -47,7 +48,8 @@
     'amplifier',
     'politics',
     'conspiracy',
-    'ai_dispute'
+    'ai_dispute',
+    'world_affairs'
   ];
 
   // 直後にこれらが続く場合は、別の無害な語の一部とみなして無視する
