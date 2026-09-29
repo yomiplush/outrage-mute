@@ -1,0 +1,155 @@
+:root {
+  color-scheme: light dark;
+  --accent: #e4572e;
+  --fg: #1b1b1f;
+  --bg: #ffffff;
+  --muted: #6b6b74;
+  --line: #e3e3e8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 340px;
+  margin: 0;
+  padding: 14px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  font-size: 13px;
+  color: var(--fg);
+  background: var(--bg);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.head h1 {
+  font-size: 15px;
+  margin: 0;
+}
+
+.note {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.block {
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.hint {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.radio,
+.check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+}
+
+.num {
+  width: 72px;
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+}
+
+.cats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+}
+
+.cats label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.result {
+  margin-top: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(228, 87, 46, 0.1);
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.result .score {
+  font-weight: 700;
+}
+
+.stats .row {
+  margin-bottom: 2px;
+}
+
+.foot {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 10px;
+}
+
+.foot button {
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.foot button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #f2f2f5;
+    --bg: #17171b;
+    --line: #2c2c33;
+    --muted: #9a9aa5;
+  }
+}

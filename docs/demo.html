@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>義憤ミュート — 判定プレイグラウンド</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --accent: #e4572e;
+        --bg: #131317;
+        --card: #1c1c22;
+        --line: #2c2c33;
+        --muted: #a0a0ab;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 28px;
+        background: var(--bg);
+        color: #eee;
+        font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+        line-height: 1.6;
+      }
+      h1 { font-size: 20px; margin: 0 0 4px; }
+      .sub { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
+      .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 18px; }
+      .row { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+      label { font-size: 13px; color: var(--muted); }
+      input[type="range"] { accent-color: var(--accent); width: 220px; }
+      textarea {
+        width: 100%; min-height: 64px; resize: vertical;
+        background: #101014; color: #eee; border: 1px solid var(--line);
+        border-radius: 8px; padding: 10px; font: inherit; font-size: 14px;
+      }
+      .out { margin-top: 10px; font-size: 14px; }
+      .big { font-size: 22px; font-weight: 800; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      th { color: var(--muted); font-weight: 600; }
+      .score { font-weight: 800; font-variant-numeric: tabular-nums; }
+      .mask { color: #ff8a68; font-weight: 700; }
+      .ok { color: #6bd08a; }
+      .bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--accent); vertical-align: middle; }
+      .barwrap { display: inline-block; width: 90px; height: 6px; border-radius: 3px; background: #2f2f38; vertical-align: middle; margin-right: 8px; }
+      code { background: #101014; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+      .tag { display: inline-block; font-size: 11px; padding: 1px 7px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); margin: 0 3px 3px 0; }
+    </style>
+  </head>
+  <body>
+    <h1>義憤ミュート — 判定プレイグラウンド</h1>
+    <p class="sub">ブラウザ内だけで動作します（外部送信なし）。しきい値を動かすと、下の例の「隠す／表示」が変わります。</p>
+
+    <div class="panel">
+      <div class="row">
+        <label>しきい値 <output id="tv">0.50</output></label>
+        <input type="range" id="th" min="0.3" max="0.9" step="0.05" value="0.5" />
+      </div>
+      <textarea id="ta">こいつは本当に無能だ。絶対に許さない。みんなで抗議しろ！！</textarea>
+      <div class="out" id="out"></div>
+    </div>
+
+    <div class="panel">
+      <table>
+        <thead>
+          <tr><th>投稿</th><th style="width:150px">スコア</th><th style="width:170px">判定</th><th style="width:220px">ヒット</th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <script src="../src/lib/normalize.js"></script>
+    <script src="../src/lib/config.js"></script>
+    <script src="../src/lib/lexicon.curated.js"></script>
+    <script src="../src/lib/lexicon.vendor.js"></script>
+    <script src="../src/lib/lexicon.js"></script>
+    <script src="../src/lib/scoring.js"></script>
+    <script>
+      const CAT = JOF.lexicon.CATEGORY_LABELS;
+      const SAMPLES = [
+        '今日はいい天気だね。散歩してくる。',
+        '新しいカフェに行ってきた。ケーキが美味しかった。',
+        'こいつは本当に無能だ。絶対に許さない。',
+        '政府は絶対に間違っている。けしからん。みんなで抗議しろ！！',
+        'あの政治家、人間のクズだな。晒し上げろ。',
+        'ありえない！ひどすぎる！',
+        '「死ね」と言われた。つらい。',
+        'バカじゃないの？',
+        'カスタム設定が反映されない、助けてほしい',
+        '糖質制限ダイエットを始めました',
+        'アスペクト比がおかしい',
+        '絶対に許さない。責任を取れ。',
+        'このキチガイが。消え失せろ。'
+      ];
+      const th = document.getElementById('th');
+      const tv = document.getElementById('tv');
+      const ta = document.getElementById('ta');
+
+      function render() {
+        const threshold = parseFloat(th.value);
+        tv.textContent = threshold.toFixed(2);
+
+        const r = JOF.scoring.analyze(ta.value, {});
+        document.getElementById('out').innerHTML =
+          '<div class="big">' + r.score.toFixed(2) + ' <span style="font-size:13px;font-weight:400;color:var(--muted)">raw ' + r.raw + '</span></div>' +
+          '<div>' + (r.score >= threshold ? '<span class="mask">→ ミュート対象</span>' : '<span class="ok">→ 表示</span>') + '</div>';
+
+        document.getElementById('rows').innerHTML = SAMPLES.map(function (s) {
+          const a = JOF.scoring.analyze(s, {});
+          const masked = a.score >= threshold;
+          const w = Math.min(90, Math.round(a.score * 90));
+          const terms = (a.terms || []).slice(0, 5).map(function (t) {
+            return '<span class="tag">' + t.term + ' ' + t.weight + '</span>';
+          }).join('') || '<span style="color:var(--muted)">—</span>';
+          return '<tr>' +
+            '<td>' + s.replace(/</g, '&lt;') + '</td>' +
+            '<td><span class="barwrap"><span class="bar" style="width:' + w + 'px"></span></span><span class="score">' + a.score.toFixed(2) + '</span></td>' +
+            '<td>' + (masked ? '<span class="mask">ミュート</span>' : '<span class="ok">表示</span>') + '</td>' +
+            '<td>' + terms + '</td>' +
+            '</tr>';
+        }).join('');
+      }
+
+      th.addEventListener('input', render);
+      ta.addEventListener('input', render);
+      render();
+    </script>
+  </body>
+</html>

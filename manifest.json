@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "義憤ミュート",
+  "version": "0.1.0",
+  "description": "Xの投稿を日本語の義憤スコアで判定し、CSSでぼかし/非表示にするローカル完結の拡張機能。外部送信なし。",
+  "permissions": ["storage"],
+  "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "義憤ミュート",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/*", "https://twitter.com/*"],
+      "js": [
+        "src/lib/normalize.js",
+        "src/lib/config.js",
+        "src/lib/lexicon.curated.js",
+        "src/lib/lexicon.vendor.js",
+        "src/lib/lexicon.js",
+        "src/lib/scoring.js",
+        "src/content.js"
+      ],
+      "css": ["src/content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
