@@ -53,6 +53,8 @@
   "cat_ai_topic": { "message": "AI技術・界隈" },
   "cat_nsfw": { "message": "NSFW・性的表現" },
   "reasonLong": { "message": "長文を非表示" },
+  "reasonReply": { "message": "リプライを非表示" },
+  "focusHideReplies": { "message": "集中モードでリプライも隠す" },
   "focusMaxLength": { "message": "集中モードで隠す長さ（文字）" },
   "focusMaxLengthHint": { "message": "集中モード中、これより長い投稿は隠します（0で無効）。" },
   "focusMode": { "message": "アート集中モード" },

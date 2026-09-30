@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "default_locale": "en",
   "description": "__MSG_extDesc__",
   "permissions": ["storage"],
@@ -58,6 +58,7 @@
         "src/lib/lang/aitopic.js",
         "src/lib/lang/nsfw.js",
         "src/lib/selfpost.js",
+        "src/lib/reply.js",
         "src/lib/i18n.js",
         "src/lib/scoring.js",
         "src/content.js"

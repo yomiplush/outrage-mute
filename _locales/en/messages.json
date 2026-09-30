@@ -53,6 +53,8 @@
   "cat_ai_topic": { "message": "AI tech / community" },
   "cat_nsfw": { "message": "NSFW / explicit" },
   "reasonLong": { "message": "Long post hidden" },
+  "reasonReply": { "message": "Reply hidden" },
+  "focusHideReplies": { "message": "Also hide replies in focus mode" },
   "focusMaxLength": { "message": "Max length in focus mode" },
   "focusMaxLengthHint": { "message": "In focus mode, posts longer than this are hidden (0 disables)." },
   "focusMode": { "message": "Art focus mode" },

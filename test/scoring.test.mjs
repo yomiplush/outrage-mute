@@ -414,6 +414,24 @@ test('NSFW: 独立トグル（badwords から性的語を分離）', () => {
   assert.ok(ja.categories.includes('nsfw'));
 });
 
+test('集中モード: リプライ非表示の判定と設定', () => {
+  const reply = require('../src/lib/reply.js');
+  // 多言語の「返信先」を判定
+  assert.ok(reply.isReplyText('Replying to @someone'));
+  assert.ok(reply.isReplyText('返信先: @someone さん'));
+  assert.ok(reply.isReplyText('Antwort an @wer'));
+  assert.ok(reply.isReplyText('@user 님에게 답글'));
+  assert.ok(reply.isReplyText('Ответ @user'));
+  assert.ok(!reply.isReplyText('今日はいい天気だね'));
+  assert.ok(!reply.isReplyText('Hello world, nice day'));
+  // 設定
+  assert.equal(config.DEFAULTS.focusHideReplies, true);
+  assert.equal(config.effectiveReplyHide('off', true), false); // プリセットOFFなら無効
+  assert.equal(config.effectiveReplyHide('normal', true), true);
+  assert.equal(config.effectiveReplyHide('normal', false), false);
+  assert.equal(config.normalizeSettings({ focusHideReplies: false }).focusHideReplies, false);
+});
+
 test('集中モードの長文ルール', () => {
   assert.equal(config.DEFAULTS.focusMaxLength, 160);
   assert.equal(config.effectiveMaxLength('off', 160), 0); // プリセットOFFなら無効

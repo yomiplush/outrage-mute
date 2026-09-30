@@ -227,6 +227,7 @@
     });
     body.appendChild(selectRow('preset', t('focusMode'), presetOpts, settings.preset));
     body.appendChild(numberRow('focusMaxLength', t('focusMaxLength'), settings.focusMaxLength, 0, 1000));
+    body.appendChild(check('focusHideReplies', t('focusHideReplies'), settings.focusHideReplies));
     body.appendChild(hint(t('focusMaxLengthHint')));
     body.appendChild(hint(t('focusModeHint')));
     body.appendChild(rangeRow('threshold', t('threshold'), settings.threshold));

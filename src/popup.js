@@ -137,6 +137,7 @@
     el('minLength').value = String(s.minLength);
     buildPresets(s.preset);
     el('focusMaxLength').value = String(s.focusMaxLength);
+    el('focusHideReplies').checked = s.focusHideReplies;
     el('hideNotifications').checked = s.hideNotifications;
     el('hideNotificationTab').checked = s.hideNotificationTab;
     el('hideDm').checked = s.hideDm;
@@ -159,6 +160,7 @@
       categories: readCategories(),
       preset: el('preset') ? el('preset').value : 'off',
       focusMaxLength: parseInt(el('focusMaxLength').value, 10),
+      focusHideReplies: el('focusHideReplies').checked,
       hideNotifications: el('hideNotifications').checked,
       hideNotificationTab: el('hideNotificationTab').checked,
       hideDm: el('hideDm').checked,
@@ -236,7 +238,7 @@
   }
 
   // ------------------------------------------------------------ wire up
-  ['enabled', 'threshold', 'showOverlay', 'minLength', 'focusMaxLength', 'hideNotifications', 'hideNotificationTab', 'hideDm', 'excludeSelf'].forEach(function (id) {
+  ['enabled', 'threshold', 'showOverlay', 'minLength', 'focusMaxLength', 'focusHideReplies', 'hideNotifications', 'hideNotificationTab', 'hideDm', 'excludeSelf'].forEach(function (id) {
     el(id).addEventListener('input', readAndSave);
     el(id).addEventListener('change', readAndSave);
   });

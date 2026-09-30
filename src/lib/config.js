@@ -38,6 +38,7 @@
     // 集中プリセット: 'off' | 'soft'（やさしめ） | 'normal'（ふつう） | 'hard'（きびしめ）
     preset: 'off',
     focusMaxLength: 160, // 集中モード時、これより長い投稿は隠す（0で無効）
+    focusHideReplies: true, // 集中モード時、リプライ投稿も隠す
     hideNotifications: false, // X上の通知バッジを隠す
     hideNotificationTab: false, // 通知タブ自体を隠す
     hideDm: false, // X上のDMバッジを隠す
@@ -59,6 +60,7 @@
       // 旧 focusMode(true) は 'normal' として引き継ぐ
       preset: PRESET_KEYS.indexOf(value.preset) >= 0 ? value.preset : value.focusMode === true ? 'normal' : DEFAULTS.preset,
       focusMaxLength: clampNumber(value.focusMaxLength, 0, 1000, DEFAULTS.focusMaxLength),
+      focusHideReplies: value.focusHideReplies !== false,
       hideNotifications: value.hideNotifications === true,
       hideNotificationTab: value.hideNotificationTab === true,
       hideDm: value.hideDm === true,
@@ -107,6 +109,12 @@
     return isFinite(n) && n > 0 ? n : 0;
   }
 
+  /** 集中モード時にリプライを隠すか（プリセットOFFなら false） */
+  function effectiveReplyHide(preset, value) {
+    if (!preset || preset === 'off') return false;
+    return value !== false;
+  }
+
   return {
     PERSIST_KEY: PERSIST_KEY,
     STATS_KEY: STATS_KEY,
@@ -117,6 +125,7 @@
     normalizeSettings: normalizeSettings,
     presetCategories: presetCategories,
     presetThreshold: presetThreshold,
-    effectiveMaxLength: effectiveMaxLength
+    effectiveMaxLength: effectiveMaxLength,
+    effectiveReplyHide: effectiveReplyHide
   };
 });

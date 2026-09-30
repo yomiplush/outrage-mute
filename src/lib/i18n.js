@@ -78,8 +78,10 @@
     presetHard: 'きびしめ（全部隠す）',
     hideNotificationTab: '通知タブごと隠す',
     reasonLong: '長文を非表示',
+    reasonReply: 'リプライを非表示',
     focusMaxLength: '集中モードで隠す長さ（文字）',
-    focusMaxLengthHint: '集中モード中、これより長い投稿は隠します（0で無効）。'
+    focusMaxLengthHint: '集中モード中、これより長い投稿は隠します（0で無効）。',
+    focusHideReplies: '集中モードでリプライも隠す'
   };
 
   var DEFAULT_LOCALE = 'en';

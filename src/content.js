@@ -20,6 +20,7 @@
   var cats = JOF.categories;
   var i18n = JOF.i18n;
   var selfpost = JOF.selfpost;
+  var reply = JOF.reply;
 
   var TWEET_SEL = 'article[data-testid="tweet"]';
   var CELL_SEL = '[data-testid="cellInnerDiv"]';
@@ -228,6 +229,32 @@
     return !!(un && selfpost.isOwn(own, un.textContent));
   }
 
+  // ---- リプライ判定（集中モードでリプライを隠すのに使う）----
+  // 「返信先」行は多言語なので、ヘッダ部分（本文を除く）のテキストで判定する
+  function replyHeadText(article) {
+    var un = article.querySelector('[data-testid="User-Name"]');
+    if (!un) return '';
+    var tt = article.querySelector('[data-testid="tweetText"]');
+    var el = un;
+    while (el.parentElement && el.parentElement !== article && (!tt || !el.parentElement.contains(tt))) {
+      el = el.parentElement;
+    }
+    var container = el.parentElement && el.parentElement !== article ? el.parentElement : el;
+    var full = container.textContent || '';
+    if (tt) {
+      var t = tt.textContent || '';
+      if (t) {
+        var idx = full.indexOf(t);
+        if (idx > 0) full = full.slice(0, idx);
+      }
+    }
+    return full.slice(0, 300);
+  }
+
+  function isReplyArticle(article) {
+    return !!(reply && reply.isReplyText(replyHeadText(article)));
+  }
+
   function mask(cell, result) {
     cell.classList.add('jof-masked');
     cell.dataset.jofState = 'masked';
@@ -250,7 +277,9 @@
     badge.textContent =
       result && result.reason === 'long'
         ? i18n.t('reasonLong', [result.length])
-        : i18n.t('maskedBadge', [Math.round((result.score || 0) * 100)]);
+        : result && result.reason === 'reply'
+          ? i18n.t('reasonReply')
+          : i18n.t('maskedBadge', [Math.round((result.score || 0) * 100)]);
 
     var catEl = document.createElement('div');
     catEl.className = 'jof-cats';
@@ -259,7 +288,7 @@
       .map(function (c) {
         return catLabel(c);
       });
-    catEl.textContent = result && result.reason === 'long' ? '' : names.length ? names.join(' / ') : '';
+    catEl.textContent = result && result.reason ? '' : names.length ? names.join(' / ') : '';
 
     var btn = document.createElement('button');
     btn.type = 'button';
@@ -338,6 +367,15 @@
       cell.dataset.jofResult = JSON.stringify(longResult);
       cell.dataset.jofScore = '1';
       mask(cell, longResult);
+      return;
+    }
+
+    // 集中モードではリプライ投稿も避ける
+    if (config.effectiveReplyHide(settings.preset, settings.focusHideReplies) && isReplyArticle(article)) {
+      var replyResult = { score: 1, raw: 0, categories: [], byCat: {}, terms: [], reason: 'reply' };
+      cell.dataset.jofResult = JSON.stringify(replyResult);
+      cell.dataset.jofScore = '1';
+      mask(cell, replyResult);
       return;
     }
 
