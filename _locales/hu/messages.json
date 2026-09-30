@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Be"
+  },
+  "threshold": {
+    "message": "Küszöb"
+  },
+  "note": {
+    "message": "Minden az eszközödön történik (semmi nem kerül elküldésre). A küszöb feletti bejegyzések elmosódnak vagy elrejtődnek."
+  },
+  "modeBlur": {
+    "message": "Elmosás (kattints a megjelenítéshez)"
+  },
+  "modeHide": {
+    "message": "Teljes elrejtés"
+  },
+  "showOverlay": {
+    "message": "Ok megjelenítése"
+  },
+  "language": {
+    "message": "Nyelv"
+  },
+  "languageAuto": {
+    "message": "Automatikus"
+  },
+  "optionalSuffix": {
+    "message": " (opcionális)"
+  },
+  "tryScore": {
+    "message": "Pontszám teszt"
+  },
+  "reset": {
+    "message": "Visszaállítás"
+  },
+  "show": {
+    "message": "Megjelenítés"
+  },
+  "hide": {
+    "message": "Elrejtés"
+  },
+  "maskedBadge": {
+    "message": "Némítva $1%"
+  }
+}

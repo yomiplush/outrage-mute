@@ -140,11 +140,11 @@ test('言語パックが多数登録されている', () => {
 
 test('言語を自動判定できる', () => {
   assert.equal(lang.detect('今日はいい天気だね'), 'ja');
-  assert.equal(lang.detect('Hello, have a nice day'), 'en');
+  assert.equal(lang.detect('Hello, have a nice day'), 'latin');
   assert.equal(lang.detect('今天天气不错'), 'zh');
   assert.equal(lang.detect('오늘 날씨 좋네요'), 'ko');
-  assert.equal(lang.detect('Сегодня хорошая погода'), 'ru');
-  assert.equal(lang.detect('Сьогодні гарна погода'), 'uk');
+  assert.equal(lang.detect('Сегодня хорошая погода'), 'cyrillic_ru');
+  assert.equal(lang.detect('Сьогодні гарна погода'), 'cyrillic_uk');
 });
 
 test('英語: 義憤は高スコア・中立は低スコア', () => {
@@ -213,4 +213,57 @@ test('中国語: 簡体字と繁体字を区別して判定する', () => {
   assert.equal(analyze('戰爭', { lang: 'zh' }).score, 0);
   assert.ok(analyze('戰爭', { lang: 'zh_hant' }).score > 0.5);
   assert.equal(analyze('战争', { lang: 'zh_hant' }).score, 0);
+});
+
+test('完全対応: 主要言語（独仏西伊葡など）を統合パックで判定する', () => {
+  const cases = [
+    ['de', 'Du bist so ein Idiot, ich hasse dich!'],
+    ['fr', 'Tu es un idiot, je te déteste!'],
+    ['es', 'Eres un idiota, te odio!'],
+    ['it', 'Sei un idiota, ti odio!'],
+    ['pt', 'Você é um idiota, eu te odeio!'],
+    ['nl', 'Je bent een idioot, ik haat je!'],
+    ['tr', 'Sen bir aptalsın, senden nefret ediyorum!'],
+    ['fil', 'Ang tanga mo, galit ako sa iyo!']
+  ];
+  for (const [code, text] of cases) {
+    const auto = analyze(text, {});
+    assert.equal(auto.lang, 'latin', `${code} auto`);
+    assert.ok(auto.score > 0.55, `${code} auto=${auto.score}`);
+    const fixed = analyze(text, { lang: code });
+    assert.equal(fixed.lang, code, `${code} fixed`);
+    assert.ok(fixed.score > 0.55, `${code} fixed=${fixed.score}`);
+  }
+  // 中立文は無反応
+  assert.equal(analyze('Heute ist ein schöner Tag', {}).score, 0);
+  assert.ok(analyze('Bonjour, comment allez-vous ?', {}).score < 0.15);
+});
+
+test('文字体系ベースで言語を判定する', () => {
+  assert.equal(lang.detect('Guten Tag, wie geht es dir'), 'latin');
+  assert.equal(lang.detect('Bonjour tout le monde'), 'latin');
+  assert.equal(lang.detect('Я тебя ненавижу'), 'cyrillic_ru');
+  assert.equal(lang.detect('Сьогодні гарно'), 'cyrillic_uk');
+  assert.equal(lang.detect('مرحبا بالعالم'), 'ar');
+  assert.equal(lang.detect('שלום עולם'), 'he');
+  assert.equal(lang.detect('Γεια σου κόσμε'), 'el');
+  assert.equal(lang.detect('नमस्ते दुनिया'), 'hi');
+  assert.equal(lang.detect('নমস্কার'), 'bn');
+  assert.equal(lang.detect('வணக்கம்'), 'ta');
+  assert.equal(lang.detect('నమస్కారం'), 'te');
+  assert.equal(lang.detect('สวัสดีชาวโลก'), 'th');
+});
+
+test('アラビア文字は arabic 統合パックで判定する', () => {
+  const r = analyze('انت غبي، أكرهك!', {});
+  assert.equal(r.lang, 'arabic');
+  assert.ok(r.score > 0.5, `score=${r.score}`);
+});
+
+test('言語パック数と主要言語の存在', () => {
+  assert.ok(lang.list().length >= 28, `packs=${lang.list().length}`);
+  for (const id of ['de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'cs', 'hu', 'fi', 'sv', 'da', 'no', 'tr', 'ar', 'fa', 'hi', 'th', 'fil']) {
+    assert.ok(lang.get(id), `pack: ${id}`);
+    assert.ok(!lang.get(id).generic, `curated: ${id}`);
+  }
 });

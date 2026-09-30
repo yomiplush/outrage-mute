@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Ativo"
+  },
+  "threshold": {
+    "message": "Limite"
+  },
+  "note": {
+    "message": "Tudo é avaliado no seu dispositivo (nada é enviado). Posts acima do limite são desfocados ou ocultados."
+  },
+  "modeBlur": {
+    "message": "Desfocar (clique para mostrar)"
+  },
+  "modeHide": {
+    "message": "Ocultar totalmente"
+  },
+  "showOverlay": {
+    "message": "Mostrar o motivo"
+  },
+  "language": {
+    "message": "Idioma"
+  },
+  "languageAuto": {
+    "message": "Automático"
+  },
+  "optionalSuffix": {
+    "message": " (opcional)"
+  },
+  "tryScore": {
+    "message": "Testar pontuação"
+  },
+  "reset": {
+    "message": "Redefinir"
+  },
+  "show": {
+    "message": "Mostrar"
+  },
+  "hide": {
+    "message": "Ocultar"
+  },
+  "maskedBadge": {
+    "message": "Silenciado $1%"
+  }
+}

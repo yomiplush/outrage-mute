@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "På"
+  },
+  "threshold": {
+    "message": "Tröskel"
+  },
+  "note": {
+    "message": "Allt bedöms på din enhet (inget skickas). Inlägg över tröskeln suddas ut eller döljs."
+  },
+  "modeBlur": {
+    "message": "Suddig (klicka för att visa)"
+  },
+  "modeHide": {
+    "message": "Dölj helt"
+  },
+  "showOverlay": {
+    "message": "Visa orsak"
+  },
+  "language": {
+    "message": "Språk"
+  },
+  "languageAuto": {
+    "message": "Automatiskt"
+  },
+  "optionalSuffix": {
+    "message": " (valfritt)"
+  },
+  "tryScore": {
+    "message": "Testa poäng"
+  },
+  "reset": {
+    "message": "Återställ"
+  },
+  "show": {
+    "message": "Visa"
+  },
+  "hide": {
+    "message": "Dölj"
+  },
+  "maskedBadge": {
+    "message": "Tystad $1%"
+  }
+}

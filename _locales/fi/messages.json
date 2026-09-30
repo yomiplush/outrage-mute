@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Päällä"
+  },
+  "threshold": {
+    "message": "Kynnys"
+  },
+  "note": {
+    "message": "Kaikki arvioidaan laitteellasi (mitään ei lähetetä). Kynnyksen ylittävät julkaisut sumennetaan tai piilotetaan."
+  },
+  "modeBlur": {
+    "message": "Sumenna (näytä napsauttamalla)"
+  },
+  "modeHide": {
+    "message": "Piilota kokonaan"
+  },
+  "showOverlay": {
+    "message": "Näytä syy"
+  },
+  "language": {
+    "message": "Kieli"
+  },
+  "languageAuto": {
+    "message": "Automaattinen"
+  },
+  "optionalSuffix": {
+    "message": " (valinnainen)"
+  },
+  "tryScore": {
+    "message": "Testaa pisteytys"
+  },
+  "reset": {
+    "message": "Palauta"
+  },
+  "show": {
+    "message": "Näytä"
+  },
+  "hide": {
+    "message": "Piilota"
+  },
+  "maskedBadge": {
+    "message": "Vaimennettu $1%"
+  }
+}

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.5.0",
-  "default_locale": "ja",
+  "version": "0.6.0",
+  "default_locale": "en",
   "description": "__MSG_extDesc__",
   "permissions": ["storage"],
   "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
@@ -36,6 +36,7 @@
         "src/lib/lexicon.js",
         "src/lib/lang/build.js",
         "src/lib/lang/data/ldnoobw.js",
+        "src/lib/lang/curated.js",
         "src/lib/lang/ja.js",
         "src/lib/lang/en.js",
         "src/lib/lang/zh.js",

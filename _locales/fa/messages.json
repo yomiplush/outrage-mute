@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "بیصدا کردن خشم"
+  },
+  "enabled": {
+    "message": "روشن"
+  },
+  "threshold": {
+    "message": "آستانه"
+  },
+  "note": {
+    "message": "همهچیز روی دستگاه شما ارزیابی میشود (چیزی ارسال نمیشود). پستهای بالای آستانه تار یا پنهان میشوند."
+  },
+  "modeBlur": {
+    "message": "تار کردن (برای نمایش کلیک کنید)"
+  },
+  "modeHide": {
+    "message": "پنهان کردن کامل"
+  },
+  "showOverlay": {
+    "message": "نمایش دلیل"
+  },
+  "language": {
+    "message": "زبان"
+  },
+  "languageAuto": {
+    "message": "خودکار"
+  },
+  "optionalSuffix": {
+    "message": " (اختیاری)"
+  },
+  "tryScore": {
+    "message": "آزمایش امتیاز"
+  },
+  "reset": {
+    "message": "بازنشانی"
+  },
+  "show": {
+    "message": "نمایش"
+  },
+  "hide": {
+    "message": "پنهان"
+  },
+  "maskedBadge": {
+    "message": "بیصدا $1%"
+  }
+}

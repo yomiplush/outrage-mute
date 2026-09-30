@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Aan"
+  },
+  "threshold": {
+    "message": "Drempel"
+  },
+  "note": {
+    "message": "Alles wordt op je apparaat beoordeeld (niets wordt verzonden). Berichten boven de drempel worden vervaagd of verborgen."
+  },
+  "modeBlur": {
+    "message": "Vervagen (klik om te tonen)"
+  },
+  "modeHide": {
+    "message": "Volledig verbergen"
+  },
+  "showOverlay": {
+    "message": "Reden tonen"
+  },
+  "language": {
+    "message": "Taal"
+  },
+  "languageAuto": {
+    "message": "Automatisch"
+  },
+  "optionalSuffix": {
+    "message": " (optioneel)"
+  },
+  "tryScore": {
+    "message": "Score testen"
+  },
+  "reset": {
+    "message": "Resetten"
+  },
+  "show": {
+    "message": "Tonen"
+  },
+  "hide": {
+    "message": "Verbergen"
+  },
+  "maskedBadge": {
+    "message": "Gedempt $1%"
+  }
+}

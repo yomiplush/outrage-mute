@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Bukas"
+  },
+  "threshold": {
+    "message": "Threshold"
+  },
+  "note": {
+    "message": "Lahat ay sinusuri sa iyong device (walang ipinapadala). Ang mga post na lagpas sa threshold ay binablur o itinatago."
+  },
+  "modeBlur": {
+    "message": "I-blur (i-click upang ipakita)"
+  },
+  "modeHide": {
+    "message": "Itago nang tuluyan"
+  },
+  "showOverlay": {
+    "message": "Ipakita ang dahilan"
+  },
+  "language": {
+    "message": "Wika"
+  },
+  "languageAuto": {
+    "message": "Awtomatiko"
+  },
+  "optionalSuffix": {
+    "message": " (opsyonal)"
+  },
+  "tryScore": {
+    "message": "Subukan ang iskor"
+  },
+  "reset": {
+    "message": "I-reset"
+  },
+  "show": {
+    "message": "Ipakita"
+  },
+  "hide": {
+    "message": "Itago"
+  },
+  "maskedBadge": {
+    "message": "Nakamute $1%"
+  }
+}

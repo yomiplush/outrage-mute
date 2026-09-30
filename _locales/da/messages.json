@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Til"
+  },
+  "threshold": {
+    "message": "Tærskel"
+  },
+  "note": {
+    "message": "Alt vurderes på din enhed (intet sendes). Opslag over tærsklen sløres eller skjules."
+  },
+  "modeBlur": {
+    "message": "Slør (klik for at vise)"
+  },
+  "modeHide": {
+    "message": "Skjul helt"
+  },
+  "showOverlay": {
+    "message": "Vis årsag"
+  },
+  "language": {
+    "message": "Sprog"
+  },
+  "languageAuto": {
+    "message": "Automatisk"
+  },
+  "optionalSuffix": {
+    "message": " (valgfrit)"
+  },
+  "tryScore": {
+    "message": "Test score"
+  },
+  "reset": {
+    "message": "Nulstil"
+  },
+  "show": {
+    "message": "Vis"
+  },
+  "hide": {
+    "message": "Skjul"
+  },
+  "maskedBadge": {
+    "message": "Dæmpet $1%"
+  }
+}

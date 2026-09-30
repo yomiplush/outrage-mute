@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Activo"
+  },
+  "threshold": {
+    "message": "Umbral"
+  },
+  "note": {
+    "message": "Todo se evalúa en tu dispositivo (no se envía nada). Las publicaciones por encima del umbral se difuminan u ocultan."
+  },
+  "modeBlur": {
+    "message": "Desenfoque (clic para mostrar)"
+  },
+  "modeHide": {
+    "message": "Ocultar del todo"
+  },
+  "showOverlay": {
+    "message": "Mostrar el motivo"
+  },
+  "language": {
+    "message": "Idioma"
+  },
+  "languageAuto": {
+    "message": "Automático"
+  },
+  "optionalSuffix": {
+    "message": " (opcional)"
+  },
+  "tryScore": {
+    "message": "Probar puntuación"
+  },
+  "reset": {
+    "message": "Restablecer"
+  },
+  "show": {
+    "message": "Mostrar"
+  },
+  "hide": {
+    "message": "Ocultar"
+  },
+  "maskedBadge": {
+    "message": "Silenciado $1%"
+  }
+}

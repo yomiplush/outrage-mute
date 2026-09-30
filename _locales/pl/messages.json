@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Wł."
+  },
+  "threshold": {
+    "message": "Próg"
+  },
+  "note": {
+    "message": "Wszystko jest oceniane na Twoim urządzeniu (nic nie jest wysyłane). Posty powyżej progu są rozmywane lub ukrywane."
+  },
+  "modeBlur": {
+    "message": "Rozmycie (kliknij, aby pokazać)"
+  },
+  "modeHide": {
+    "message": "Ukryj całkowicie"
+  },
+  "showOverlay": {
+    "message": "Pokaż powód"
+  },
+  "language": {
+    "message": "Język"
+  },
+  "languageAuto": {
+    "message": "Automatycznie"
+  },
+  "optionalSuffix": {
+    "message": " (opcj.)"
+  },
+  "tryScore": {
+    "message": "Testuj ocenę"
+  },
+  "reset": {
+    "message": "Resetuj"
+  },
+  "show": {
+    "message": "Pokaż"
+  },
+  "hide": {
+    "message": "Ukryj"
+  },
+  "maskedBadge": {
+    "message": "Wyciszono $1%"
+  }
+}

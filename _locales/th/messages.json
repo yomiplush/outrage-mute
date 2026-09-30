@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "ปิดเสียงความเดือด"
+  },
+  "enabled": {
+    "message": "เปิด"
+  },
+  "threshold": {
+    "message": "เกณฑ์"
+  },
+  "note": {
+    "message": "ประเมินบนอุปกรณ์ของคุณเท่านั้น (ไม่ส่งข้อมูลออก) โพสต์ที่เกินเกณฑ์จะถูกเบลอหรือซ่อน"
+  },
+  "modeBlur": {
+    "message": "เบลอ (คลิกเพื่อแสดง)"
+  },
+  "modeHide": {
+    "message": "ซ่อนทั้งหมด"
+  },
+  "showOverlay": {
+    "message": "แสดงเหตุผล"
+  },
+  "language": {
+    "message": "ภาษา"
+  },
+  "languageAuto": {
+    "message": "อัตโนมัติ"
+  },
+  "optionalSuffix": {
+    "message": " (ไม่บังคับ)"
+  },
+  "tryScore": {
+    "message": "ทดลองคะแนน"
+  },
+  "reset": {
+    "message": "รีเซ็ต"
+  },
+  "show": {
+    "message": "แสดง"
+  },
+  "hide": {
+    "message": "ซ่อน"
+  },
+  "maskedBadge": {
+    "message": "ปิดเสียง $1%"
+  }
+}

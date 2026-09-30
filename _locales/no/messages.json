@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "På"
+  },
+  "threshold": {
+    "message": "Terskel"
+  },
+  "note": {
+    "message": "Alt vurderes på enheten din (ingenting sendes). Innlegg over terskelen sløres eller skjules."
+  },
+  "modeBlur": {
+    "message": "Slør (klikk for å vise)"
+  },
+  "modeHide": {
+    "message": "Skjul helt"
+  },
+  "showOverlay": {
+    "message": "Vis årsak"
+  },
+  "language": {
+    "message": "Språk"
+  },
+  "languageAuto": {
+    "message": "Automatisk"
+  },
+  "optionalSuffix": {
+    "message": " (valgfritt)"
+  },
+  "tryScore": {
+    "message": "Test poengsum"
+  },
+  "reset": {
+    "message": "Tilbakestill"
+  },
+  "show": {
+    "message": "Vis"
+  },
+  "hide": {
+    "message": "Skjul"
+  },
+  "maskedBadge": {
+    "message": "Dempet $1%"
+  }
+}

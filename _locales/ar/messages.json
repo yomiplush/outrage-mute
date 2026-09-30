@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "كتم الغضب"
+  },
+  "enabled": {
+    "message": "مفعّل"
+  },
+  "threshold": {
+    "message": "الحد"
+  },
+  "note": {
+    "message": "يتم التقييم على جهازك فقط (لا يُرسل شيء). تُطمس المنشورات التي تتجاوز الحد أو تُخفى."
+  },
+  "modeBlur": {
+    "message": "طمس (انقر للعرض)"
+  },
+  "modeHide": {
+    "message": "إخفاء كامل"
+  },
+  "showOverlay": {
+    "message": "إظهار السبب"
+  },
+  "language": {
+    "message": "اللغة"
+  },
+  "languageAuto": {
+    "message": "تلقائي"
+  },
+  "optionalSuffix": {
+    "message": " (اختياري)"
+  },
+  "tryScore": {
+    "message": "تجربة التقييم"
+  },
+  "reset": {
+    "message": "إعادة تعيين"
+  },
+  "show": {
+    "message": "عرض"
+  },
+  "hide": {
+    "message": "إخفاء"
+  },
+  "maskedBadge": {
+    "message": "مكتوم $1%"
+  }
+}

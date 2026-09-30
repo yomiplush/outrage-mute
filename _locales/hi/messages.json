@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "आउटरेज म्यूट"
+  },
+  "enabled": {
+    "message": "चालू"
+  },
+  "threshold": {
+    "message": "सीमा"
+  },
+  "note": {
+    "message": "सब कुछ आपके डिवाइस पर जाँचा जाता है (कुछ भी भेजा नहीं जाता)। सीमा से ऊपर की पोस्ट धुंधली या छिपा दी जाती हैं।"
+  },
+  "modeBlur": {
+    "message": "धुंधला करें (दिखाने के लिए क्लिक)"
+  },
+  "modeHide": {
+    "message": "पूरी तरह छिपाएँ"
+  },
+  "showOverlay": {
+    "message": "कारण दिखाएँ"
+  },
+  "language": {
+    "message": "भाषा"
+  },
+  "languageAuto": {
+    "message": "स्वतः"
+  },
+  "optionalSuffix": {
+    "message": " (वैकल्पिक)"
+  },
+  "tryScore": {
+    "message": "स्कोर आज़माएँ"
+  },
+  "reset": {
+    "message": "रीसेट"
+  },
+  "show": {
+    "message": "दिखाएँ"
+  },
+  "hide": {
+    "message": "छिपाएँ"
+  },
+  "maskedBadge": {
+    "message": "म्यूट $1%"
+  }
+}

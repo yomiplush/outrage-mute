@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Actif"
+  },
+  "threshold": {
+    "message": "Seuil"
+  },
+  "note": {
+    "message": "Tout est évalué sur votre appareil (rien n’est envoyé). Les posts au-dessus du seuil sont floutés ou masqués."
+  },
+  "modeBlur": {
+    "message": "Flou (cliquer pour afficher)"
+  },
+  "modeHide": {
+    "message": "Masquer complètement"
+  },
+  "showOverlay": {
+    "message": "Afficher la raison"
+  },
+  "language": {
+    "message": "Langue"
+  },
+  "languageAuto": {
+    "message": "Automatique"
+  },
+  "optionalSuffix": {
+    "message": " (option)"
+  },
+  "tryScore": {
+    "message": "Tester le score"
+  },
+  "reset": {
+    "message": "Réinitialiser"
+  },
+  "show": {
+    "message": "Afficher"
+  },
+  "hide": {
+    "message": "Masquer"
+  },
+  "maskedBadge": {
+    "message": "Masqué $1%"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "An"
+  },
+  "threshold": {
+    "message": "Schwellenwert"
+  },
+  "note": {
+    "message": "Alles wird auf deinem Gerät bewertet (nichts wird gesendet). Beiträge ab dem Schwellenwert werden unscharf oder ausgeblendet."
+  },
+  "modeBlur": {
+    "message": "Unscharf (klicken zum Anzeigen)"
+  },
+  "modeHide": {
+    "message": "Vollständig ausblenden"
+  },
+  "showOverlay": {
+    "message": "Grund anzeigen"
+  },
+  "language": {
+    "message": "Sprache"
+  },
+  "languageAuto": {
+    "message": "Automatisch"
+  },
+  "optionalSuffix": {
+    "message": " (optional)"
+  },
+  "tryScore": {
+    "message": "Bewertung testen"
+  },
+  "reset": {
+    "message": "Zurücksetzen"
+  },
+  "show": {
+    "message": "Anzeigen"
+  },
+  "hide": {
+    "message": "Ausblenden"
+  },
+  "maskedBadge": {
+    "message": "Stumm $1%"
+  }
+}

@@ -1,8 +1,12 @@
 /**
- * 言語レジストリ。
- * - 専用パック（ja/en/zh/ko/ru/uk）を登録
- * - LDNOOBW にあるその他の言語は、罵倒語(badwords)だけの汎用パックを自動登録
- * - 投稿ごとに言語を自動判定（detect）してパックを選ぶ
+ * 言語レジストリ（文字体系ベースの自動判定つき）。
+ *
+ * - 専用パック（ja/en/zh/zh_hant/ko/ru/uk）は各ファイルの規則を使う
+ * - curated.js にある言語 ＋ LDNOOBW にある言語からパックを生成
+ *   - curated があれば「完全対応」（義憤＋話題語）
+ *   - LDNOOBW だけなら「badwords のみ」
+ * - ラテン文字・キリル文字・アラビア文字は、話者言語を厳密に判別できないため
+ *   同系統の言語を統合したパック（latin / cyrillic / arabic）で判定する
  */
 (function (root, factory) {
   'use strict';
@@ -16,7 +20,8 @@
       require('./ru.js'),
       require('./uk.js'),
       require('./build.js'),
-      require('./data/ldnoobw.js')
+      require('./data/ldnoobw.js'),
+      require('./curated.js')
     );
   } else {
     var JOF = root.JOF = root.JOF || {};
@@ -29,58 +34,214 @@
       JOF.langRu,
       JOF.langUk,
       JOF.langBuild,
-      JOF.ldnoobw
+      JOF.ldnoobw,
+      JOF.curatedLex
     );
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (ja, en, zh, zhHant, ko, ru, uk, build, ldnoobw) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (
+  ja, en, zh, zhHant, ko, ru, uk, build, ldnoobw, curated
+) {
   'use strict';
 
-  var PACKS = {};
-  [ja, en, zh, zhHant, ko, ru, uk].forEach(function (p) {
-    if (p && p.id) PACKS[p.id] = p;
-  });
-
   var LANG_NAMES = {
-    ar: 'العربية', cs: 'Čeština', da: 'Dansk', de: 'Deutsch', en: 'English',
-    es: 'Español', fa: 'فارسی', fi: 'Suomi', fil: 'Filipino', fr: 'Français',
-    hi: 'हिन्दी', hu: 'Magyar', it: 'Italiano', ja: '日本語', ko: '한국어',
-    nl: 'Nederlands', no: 'Norsk', pl: 'Polski', pt: 'Português', ru: 'Русский',
-    sv: 'Svenska', th: 'ไทย', tr: 'Türkçe', zh: '中文'
+    ar: 'العربية', bn: 'বাংলা', ca: 'Català', cs: 'Čeština', da: 'Dansk', de: 'Deutsch',
+    el: 'Ελληνικά', en: 'English', es: 'Español', et: 'Eesti', fa: 'فارسی', fi: 'Suomi',
+    fil: 'Filipino', fr: 'Français', he: 'עברית', hi: 'हिन्दी', hr: 'Hrvatski', hu: 'Magyar',
+    id: 'Bahasa Indonesia', it: 'Italiano', ja: '日本語', ka: 'ქართული', km: 'ខ្មែរ',
+    ko: '한국어', lo: 'ລາວ', lt: 'Lietuvių', lv: 'Latviešu', mk: 'Македонски', mn: 'Монгол',
+    ms: 'Bahasa Melayu', ne: 'नेपाली', nl: 'Nederlands', no: 'Norsk', pl: 'Polski',
+    pt: 'Português', ro: 'Română', ru: 'Русский', si: 'සිංහල', sk: 'Slovenčina',
+    sl: 'Slovenščina', sr: 'Српски', sv: 'Svenska', sw: 'Kiswahili', ta: 'தமிழ்',
+    te: 'తెలుగు', th: 'ไทย', tr: 'Türkçe', uk: 'Українська', ur: 'اردو', vi: 'Tiếng Việt',
+    zh: '中文（简体）', zh_hant: '中文（繁體）',
+    latin: 'Latin (all)', cyrillic: 'Cyrillic (all)', arabic: 'Arabic script (all)'
   };
 
-  var SUBSTRING_LANGS = { zh: 1, zh_hant: 1, ja: 1, ko: 1, th: 1 };
-  var GENERIC_NEGATION = ['not', 'no', 'never', 'не', 'nicht', 'no', 'não', 'non', 'não'];
+  // 分かち書きしない言語 → 部分一致
+  var SUBSTRING_LANGS = { zh: 1, zh_hant: 1, ja: 1, ko: 1, th: 1, km: 1, lo: 1 };
+  // 文字体系（大文字小文字・否定の既定に使う）
+  var SCRIPT = {
+    latin: ['en', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'pl', 'cs', 'sk', 'hu', 'fi', 'sv', 'da',
+      'no', 'tr', 'fil', 'id', 'ms', 'vi', 'ro', 'hr', 'sl', 'lt', 'lv', 'et', 'ca', 'sw', 'tl'],
+    cyrillic: ['ru', 'uk', 'bg', 'sr', 'mk', 'be', 'mn'],
+    arabic: ['ar', 'fa', 'ur']
+  };
 
-  // LDNOOBW にしか無い言語は、badwords だけの汎用パックにする
+  // 言語ごとの否定マーカー（照合位置の既定）
+  var NEG = {
+    de: ['nicht', 'kein', 'keine', 'keinen', 'niemals', 'nie', 'ohne'],
+    fr: ['ne', 'pas', 'jamais', 'sans', 'aucun', 'aucune'],
+    es: ['no', 'nunca', 'jamás', 'sin', 'ningún'],
+    it: ['non', 'mai', 'senza', 'nessun'],
+    pt: ['não', 'nunca', 'sem', 'nenhum'],
+    nl: ['niet', 'geen', 'nooit', 'zonder'],
+    pl: ['nie', 'nigdy', 'bez', 'żaden'],
+    cs: ['ne', 'nikdy', 'bez'],
+    sk: ['nie', 'nikdy', 'bez'],
+    hu: ['nem', 'soha', 'nélkül'],
+    fi: ['ei', 'koskaan', 'ilman'],
+    sv: ['inte', 'aldrig', 'utan'],
+    da: ['ikke', 'aldrig', 'uden'],
+    no: ['ikke', 'aldri', 'uten'],
+    tr: ['değil', 'asla', 'hiç', 'asla'],
+    fil: ['hindi', 'wala', 'huwag'],
+    id: ['tidak', 'bukan', 'jangan', 'tak'],
+    ms: ['tidak', 'bukan', 'jangan', 'tak'],
+    vi: ['không', 'chẳng', 'đừng'],
+    ro: ['nu', 'niciodată', 'fără'],
+    ru: ['не', 'ни', 'нет', 'без', 'нельзя', 'никогда'],
+    uk: ['не', 'ні', 'немає', 'без', 'не можна', 'ніколи'],
+    bg: ['не', 'ни', 'без', 'никога'],
+    sr: ['не', 'ни', 'без', 'никад'],
+    ar: ['لا', 'ليس', 'أبدا', 'بدون'],
+    fa: ['نیست', 'هرگز', 'بدون', 'نه'],
+    ur: ['نہیں', 'کبھی نہیں', 'بغیر'],
+    hi: ['नहीं', 'कभी नहीं', 'बिना'],
+    th: ['ไม่', 'ไม่เคย', 'อย่า'],
+    en: ['not', 'no', 'never', 'none', 'nobody', 'nothing', 'neither', 'nor', 'without', 'hardly', 'barely']
+  };
+
+  var NEG_SUFFIX = { en: "n't", de: null };
+
+  var QUOTES = { open: '\u300c\u300e\u201c"\u00ab\u201e\u2039', close: '\u300d\u300f\u201d"\u00bb\u201a\u203a' };
+
+  var DEFAULT_LANG = 'ja';
+
+  function negationFor(code, match) {
+    if (match === 'substring') {
+      if (code === 'zh' || code === 'zh_hant') {
+        return { position: 'before', unit: 'char', markers: ['不', '沒', '没', '沒有', '没有', '別', '别', '無', '无', '未', '非', '莫', '甭', '不是'] };
+      }
+      if (code === 'ko') return { position: 'before', unit: 'char', markers: ['못', '아니', '아닌', '없', '말라', '하지마', '하지 마'] };
+      if (code === 'th') return { position: 'before', unit: 'char', markers: ['ไม่', 'ไม่เคย', 'อย่า'] };
+      return { position: 'none' };
+    }
+    return { position: 'before', unit: 'token', markers: NEG[code] || ['not', 'no'], suffix: NEG_SUFFIX[code] || null };
+  }
+
+  function scriptOf(code) {
+    if (SCRIPT.latin.indexOf(code) >= 0) return 'latin';
+    if (SCRIPT.cyrillic.indexOf(code) >= 0) return 'cyrillic';
+    if (SCRIPT.arabic.indexOf(code) >= 0) return 'arabic';
+    return 'other';
+  }
+
+  // ---- 生データ（curated を優先し、LDNOOBW を badwords として足す）----
+  var RAW = {};
   Object.keys(ldnoobw || {}).forEach(function (code) {
-    if (PACKS[code]) return;
-    var words = ldnoobw[code] || [];
-    if (!words.length) return;
-    var match = SUBSTRING_LANGS[code] ? 'substring' : 'word';
-    var terms = words.map(function (w) {
+    RAW[code] = (ldnoobw[code] || []).map(function (w) {
       return [w, 2.4, 'badwords'];
     });
+  });
+  Object.keys(curated || {}).forEach(function (code) {
+    // curated を後に置いて優先させる（badwords より義憤・話題語を優先）
+    RAW[code] = (RAW[code] || []).concat(curated[code] || []);
+  });
+
+  var PACKS = {};
+  var DEDICATED = { ja: ja, en: en, zh: zh, zh_hant: zhHant, ko: ko, ru: ru, uk: uk };
+
+  // 専用パックを先に登録（zh_hant は LDNOOBW に無いので必須）
+  Object.keys(DEDICATED).forEach(function (code) {
+    if (DEDICATED[code]) PACKS[code] = DEDICATED[code];
+  });
+
+  function makePack(code) {
+    if (DEDICATED[code]) return DEDICATED[code];
+    var terms = RAW[code];
+    if (!terms || !terms.length) return null;
+    var match = SUBSTRING_LANGS[code] ? 'substring' : 'word';
     var lex = build.build(terms, { match: match });
-    PACKS[code] = {
+    var script = scriptOf(code);
+    return {
       id: code,
       name: LANG_NAMES[code] || code,
       match: match,
-      generic: true,
+      generic: !(curated && curated[code]),
       TERMS: lex.TERMS,
       BY_FIRST: lex.BY_FIRST,
       BY_WORD: lex.BY_WORD,
       EXCLUDE_AFTER: {},
       patterns: [],
-      negation: match === 'word' ? { position: 'before', unit: 'token', markers: GENERIC_NEGATION } : { position: 'none' },
+      negation: negationFor(code, match),
       report: [],
-      quoteChars: { open: '「『“"', close: '」』”"' },
-      emphasis: { caps: match === 'word' }
+      quoteChars: QUOTES,
+      emphasis: { caps: script === 'latin' || script === 'cyrillic' }
     };
+  }
+
+  Object.keys(RAW).forEach(function (code) {
+    var p = makePack(code);
+    if (p) PACKS[code] = p;
   });
 
-  var DEFAULT_LANG = 'ja';
+  // ---- 統合パック（同系統の言語をまとめて判定）----
+  function reindex(terms, match) {
+    var TERMS = terms.filter(function (e) {
+      return match === 'word' ? e.tokens && e.tokens.length : e.n;
+    });
+    TERMS = TERMS.slice().sort(function (a, b) {
+      if (match === 'word') return b.tokens.length - a.tokens.length || b.n.length - a.n.length;
+      return b.n.length - a.n.length || (a.n < b.n ? -1 : 1);
+    });
+    var BY_FIRST = new Map();
+    var BY_WORD = new Map();
+    var seen = new Set();
+    TERMS = TERMS.filter(function (e) {
+      var key = e.n;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    TERMS.forEach(function (e) {
+      if (match === 'word') {
+        var k = e.tokens[0];
+        if (!BY_WORD.has(k)) BY_WORD.set(k, []);
+        BY_WORD.get(k).push(e);
+      } else {
+        var c = e.n.charAt(0);
+        if (!BY_FIRST.has(c)) BY_FIRST.set(c, []);
+        BY_FIRST.get(c).push(e);
+      }
+    });
+    return { TERMS: TERMS, BY_FIRST: BY_FIRST, BY_WORD: BY_WORD };
+  }
 
-  // 簡体字/繁体字を区別するための判別文字（各字体に特徴的な字）
+  function buildMerged(id, codes) {
+    var terms = [];
+    codes.forEach(function (c) {
+      var p = PACKS[c];
+      if (p) terms = terms.concat(p.TERMS);
+    });
+    if (!terms.length) return null;
+    var match = 'word';
+    var idx = reindex(terms, match);
+    return {
+      id: id,
+      name: LANG_NAMES[id] || id,
+      match: match,
+      merged: true,
+      TERMS: idx.TERMS,
+      BY_FIRST: idx.BY_FIRST,
+      BY_WORD: idx.BY_WORD,
+      EXCLUDE_AFTER: {},
+      patterns: [],
+      negation: { position: 'before', unit: 'token', markers: ['not', 'no', 'не', 'nicht', 'no', 'não', 'non', 'لا', 'не'] },
+      report: [],
+      quoteChars: QUOTES,
+      emphasis: { caps: id !== 'arabic' }
+    };
+  }
+
+  ['latin', 'cyrillic', 'arabic'].forEach(function (script) {
+    var codes = SCRIPT[script].filter(function (c) {
+      return PACKS[c];
+    });
+    var p = buildMerged(script, codes);
+    if (p) PACKS[script] = p;
+  });
+
+  // ---- 判定 ----
   var HANS_CHARS =
     '这个说国战开关门时间话语实体发对后听写读买卖义议乐药医书画学绝废脑残瘫货贱杂种无耻脸厌恶该气愤仇恨闭嘴滚杀网举报须毫疑显从汉贼军圣键盘侠红狼应报紧转扩盘经济来及选举总统执党官员税阴谋济尔减幕后黑讯闻伪点胁导弹袭击枪啸变严难灭';
   var HANT_CHARS =
@@ -100,7 +261,8 @@
   function detect(text) {
     var s = String(text == null ? '' : text);
     var n = Math.min(s.length, 2000);
-    var hira = 0, kata = 0, han = 0, hangul = 0, cyr = 0, latin = 0, ukc = 0, thai = 0, arab = 0, devan = 0;
+    var hira = 0, kata = 0, han = 0, hangul = 0, cyr = 0, latin = 0, ukc = 0;
+    var thai = 0, arab = 0, devan = 0, hebrew = 0, greek = 0, beng = 0, tamil = 0, telugu = 0, khmer = 0, lao = 0;
     for (var i = 0; i < n; i++) {
       var c = s.charCodeAt(i);
       if (c >= 0x3040 && c <= 0x309f) hira++;
@@ -110,26 +272,63 @@
       else if (c >= 0x0400 && c <= 0x04ff) {
         cyr++;
         if ('іїєґІЇЄҐ'.indexOf(s.charAt(i)) >= 0) ukc++;
-      } else if ((c >= 0x41 && c <= 0x5a) || (c >= 0x61 && c <= 0x7a)) latin++;
+      } else if ((c >= 0x41 && c <= 0x5a) || (c >= 0x61 && c <= 0x7a) || (c >= 0xc0 && c <= 0x17f)) latin++;
       else if (c >= 0x0e00 && c <= 0x0e7f) thai++;
       else if (c >= 0x0600 && c <= 0x06ff) arab++;
       else if (c >= 0x0900 && c <= 0x097f) devan++;
+      else if (c >= 0x0590 && c <= 0x05ff) hebrew++;
+      else if (c >= 0x0370 && c <= 0x03ff) greek++;
+      else if (c >= 0x0980 && c <= 0x09ff) beng++;
+      else if (c >= 0x0b80 && c <= 0x0bff) tamil++;
+      else if (c >= 0x0c00 && c <= 0x0c7f) telugu++;
+      else if (c >= 0x1780 && c <= 0x17ff) khmer++;
+      else if (c >= 0x0e80 && c <= 0x0eff) lao++;
     }
     if (hangul > 0) return 'ko';
     if (hira + kata > 0) return 'ja';
     if (han > 0) return hanVariant(s);
     if (thai > 0) return 'th';
-    if (arab > 0) return 'ar';
+    if (khmer > 0) return 'km';
+    if (lao > 0) return 'lo';
+    if (hebrew > 0) return 'he';
+    if (greek > 0) return 'el';
     if (devan > 0) return 'hi';
-    if (cyr > 0 && cyr >= latin) return ukc > 0 ? 'uk' : 'ru';
-    if (latin > 0) return 'en';
+    if (beng > 0) return 'bn';
+    if (tamil > 0) return 'ta';
+    if (telugu > 0) return 'te';
+    if (arab > 0) return 'ar';
+    if (cyr > 0 && cyr >= latin) return ukc > 0 ? 'cyrillic_uk' : 'cyrillic_ru';
+    if (latin > 0) return 'latin';
     return null;
   }
 
+  var TAG_CHAIN = {
+    ja: ['ja'],
+    zh: ['zh'],
+    zh_hant: ['zh_hant'],
+    ko: ['ko'],
+    th: ['th'],
+    km: ['km'],
+    lo: ['lo'],
+    he: ['he'],
+    el: ['el'],
+    hi: ['hi'],
+    bn: ['bn'],
+    ta: ['ta'],
+    te: ['te'],
+    ar: ['arabic', 'ar'],
+    cyrillic_uk: ['uk', 'cyrillic'],
+    cyrillic_ru: ['ru', 'cyrillic'],
+    latin: ['latin', 'en']
+  };
+
   function resolve(requested, text) {
     if (requested && requested !== 'auto' && PACKS[requested]) return PACKS[requested];
-    var d = detect(text);
-    if (d && PACKS[d]) return PACKS[d];
+    var tag = detect(text);
+    var chain = TAG_CHAIN[tag] || [];
+    for (var i = 0; i < chain.length; i++) {
+      if (PACKS[chain[i]]) return PACKS[chain[i]];
+    }
     return PACKS[DEFAULT_LANG] || PACKS.en;
   }
 
@@ -140,7 +339,7 @@
   function list() {
     return Object.keys(PACKS)
       .map(function (id) {
-        return { id: id, name: PACKS[id].name, generic: !!PACKS[id].generic };
+        return { id: id, name: PACKS[id].name, generic: !!PACKS[id].generic, merged: !!PACKS[id].merged };
       })
       .sort(function (a, b) {
         return a.id < b.id ? -1 : 1;
@@ -150,6 +349,7 @@
   return {
     PACKS: PACKS,
     DEFAULT_LANG: DEFAULT_LANG,
+    SCRIPT: SCRIPT,
     detect: detect,
     resolve: resolve,
     get: get,

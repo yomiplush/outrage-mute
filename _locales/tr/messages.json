@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Açık"
+  },
+  "threshold": {
+    "message": "Eşik"
+  },
+  "note": {
+    "message": "Her şey cihazında değerlendirilir (hiçbir şey gönderilmez). Eşiğin üzerindeki gönderiler bulanıklaştırılır veya gizlenir."
+  },
+  "modeBlur": {
+    "message": "Bulanıklaştır (göstermek için tıkla)"
+  },
+  "modeHide": {
+    "message": "Tamamen gizle"
+  },
+  "showOverlay": {
+    "message": "Nedeni göster"
+  },
+  "language": {
+    "message": "Dil"
+  },
+  "languageAuto": {
+    "message": "Otomatik"
+  },
+  "optionalSuffix": {
+    "message": " (isteğe bağlı)"
+  },
+  "tryScore": {
+    "message": "Puanı dene"
+  },
+  "reset": {
+    "message": "Sıfırla"
+  },
+  "show": {
+    "message": "Göster"
+  },
+  "hide": {
+    "message": "Gizle"
+  },
+  "maskedBadge": {
+    "message": "Sessiz $1%"
+  }
+}
