@@ -2,7 +2,7 @@
 // @name         義憤ミュート (Outrage Mute)
 // @name:en      Outrage Mute
 // @namespace    https://github.com/yomiplush/outrage-mute
-// @version      0.22.0
+// @version      0.22.1
 // @description  X の投稿を義憤スコアで判定し、CSS でぼかし/非表示にします（ローカル完結・外部送信なし・多言語対応）
 // @description:en  Score X posts for outrage and blur/hide them with CSS. Fully local (no external requests), multilingual.
 // @author       yomiplush
@@ -5781,9 +5781,9 @@ window.JOF.mobile = false;
     }, 1600);
   }
 
-  // ---- ショートカット: Ctrl+End で有効/無効を切替（PC）----
+  // ---- ショートカット: Shift+End で有効/無効を切替（PC）----
   function onShortcut(e) {
-    if (!e.ctrlKey || e.altKey || e.metaKey || e.key !== 'End') return;
+    if (!e.shiftKey || e.ctrlKey || e.altKey || e.metaKey || e.key !== 'End') return;
     var t = e.target;
     if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
     e.preventDefault();
@@ -6088,7 +6088,7 @@ window.JOF.mobile = false;
     body.textContent = '';
     var hd = h('h2');
     hd.appendChild(document.createTextNode(t('title') + '　'));
-    hd.appendChild(h('span', 'kbd', 'Ctrl+End'));
+    hd.appendChild(h('span', 'kbd', 'Shift+End'));
     var onOff = h('span', settings.enabled ? 'on' : 'off', '　' + (settings.enabled ? t('enabledOn') : t('enabledOff')));
     hd.appendChild(onOff);
     body.appendChild(hd);
@@ -6198,7 +6198,7 @@ window.JOF.mobile = false;
         injectCSS();
         buildShell();
         render();
-        // ショートカット(Ctrl+End)や他画面での変更を反映（トグル処理は content.js 側）
+        // ショートカット(Shift+End)や他画面での変更を反映（トグル処理は content.js 側）
         try {
           chrome.storage.onChanged.addListener(function (changes, area) {
             if (area === 'local' && changes[config.PERSIST_KEY]) {

@@ -256,7 +256,7 @@
     body.textContent = '';
     var hd = h('h2');
     hd.appendChild(document.createTextNode(t('title') + '　'));
-    hd.appendChild(h('span', 'kbd', 'Ctrl+End'));
+    hd.appendChild(h('span', 'kbd', 'Shift+End'));
     var onOff = h('span', settings.enabled ? 'on' : 'off', '　' + (settings.enabled ? t('enabledOn') : t('enabledOff')));
     hd.appendChild(onOff);
     body.appendChild(hd);
@@ -366,7 +366,7 @@
         injectCSS();
         buildShell();
         render();
-        // ショートカット(Ctrl+End)や他画面での変更を反映（トグル処理は content.js 側）
+        // ショートカット(Shift+End)や他画面での変更を反映（トグル処理は content.js 側）
         try {
           chrome.storage.onChanged.addListener(function (changes, area) {
             if (area === 'local' && changes[config.PERSIST_KEY]) {
