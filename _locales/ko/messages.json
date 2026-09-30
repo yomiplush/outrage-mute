@@ -1,0 +1,50 @@
+{
+  "extName": { "message": "분노 뮤트" },
+  "extDesc": {
+    "message": "X 게시물을 분노 점수로 판정해 CSS로 흐리게/숨김. 완전 로컬(외부 전송 없음), 다국어 지원."
+  },
+  "title": { "message": "분노 뮤트" },
+  "enabled": { "message": "사용" },
+  "note": {
+    "message": "모든 판정은 기기 안에서만 이루어집니다(외부 전송 없음). 임계값 이상이면 흐리게/숨김 처리합니다. 마음이 편안하시길 바랍니다."
+  },
+  "threshold": { "message": "임계값" },
+  "thresholdHint": { "message": "낮을수록 더 많이 숨깁니다(오탐도 늘어납니다)." },
+  "mode": { "message": "숨김 방식" },
+  "modeBlur": { "message": "흐리게 (클릭하면 표시)" },
+  "modeHide": { "message": "완전히 숨김" },
+  "showOverlay": { "message": "이유 배지 표시" },
+  "minLength": { "message": "최소 글자 수" },
+  "language": { "message": "언어" },
+  "languageAuto": { "message": "자동 판정" },
+  "categories": { "message": "탐지 카테고리" },
+  "categoriesHint": {
+    "message": "위 7개는 말투의 공격성입니다. 아래(정치·음모론·AI 논쟁·세계 정세·비속어)는 주제 자체를 숨기며 기본은 꺼짐입니다."
+  },
+  "optionalSuffix": { "message": " (선택)" },
+  "tryScore": { "message": "점수 테스트" },
+  "samplePlaceholder": { "message": "게시물을 입력하세요 (예: 절대 용서할 수 없다.)" },
+  "statToday": { "message": "오늘 숨김" },
+  "statTotal": { "message": "누적" },
+  "reset": { "message": "설정 초기화" },
+  "maskedBadge": { "message": "뮤트 $1%" },
+  "show": { "message": "표시" },
+  "hide": { "message": "숨기기" },
+  "pause": { "message": "정지" },
+  "resume": { "message": "재개" },
+  "barLabel": { "message": "뮤트: $1" },
+  "cat_attack": { "message": "공격·모욕" },
+  "cat_hostility": { "message": "증오·적대" },
+  "cat_incitement": { "message": "선동·호소" },
+  "cat_absolute": { "message": "단정·절대화" },
+  "cat_othering": { "message": "대립·낙인" },
+  "cat_cynicism": { "message": "냉소·비꼼" },
+  "cat_urgency": { "message": "위기 선동" },
+  "cat_profanity": { "message": "차별·멸칭" },
+  "cat_badwords": { "message": "비속어·욕설" },
+  "cat_amplifier": { "message": "감정 과장" },
+  "cat_politics": { "message": "정치" },
+  "cat_conspiracy": { "message": "음모론" },
+  "cat_ai_dispute": { "message": "AI 논쟁" },
+  "cat_world_affairs": { "message": "세계 정세·전쟁" }
+}

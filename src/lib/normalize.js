@@ -51,7 +51,13 @@
     var wRun = 0;
     var wruns = s.match(/[wWｗＷ]+/g) || [];
     for (var j = 0; j < wruns.length; j++) wRun = Math.max(wRun, wruns[j].length);
-    return { exclaim: exclaim, question: question, exclaimRun: exclaimRun, wRun: wRun };
+    // 全大文字の語（英語圏の強調。3文字以上）
+    var caps = 0;
+    var words = s.match(/[A-Za-zА-Яа-яЁёЇїЄєІіҐґ]{3,}/g) || [];
+    for (var k = 0; k < words.length; k++) {
+      if (words[k] === words[k].toUpperCase() && /[A-Z]/.test(words[k])) caps++;
+    }
+    return { exclaim: exclaim, question: question, exclaimRun: exclaimRun, wRun: wRun, caps: caps };
   }
 
   return { normalize: normalize, formatFeatures: formatFeatures };

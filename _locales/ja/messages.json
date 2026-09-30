@@ -1,0 +1,50 @@
+{
+  "extName": { "message": "義憤ミュート" },
+  "extDesc": {
+    "message": "Xの投稿を義憤スコアで判定し、CSSでぼかし/非表示にするローカル完結の拡張機能（外部送信なし・多言語対応）"
+  },
+  "title": { "message": "義憤ミュート" },
+  "enabled": { "message": "有効" },
+  "note": {
+    "message": "Xの投稿を端末内だけで判定します（外部送信なし）。しきい値以上でぼかし／非表示にします。あなたが穏やかな気持ちでいられますように。"
+  },
+  "threshold": { "message": "しきい値" },
+  "thresholdHint": { "message": "低いほど多く隠します（誤判定も増えます）。" },
+  "mode": { "message": "隠し方" },
+  "modeBlur": { "message": "ぼかす（クリックで表示）" },
+  "modeHide": { "message": "完全に隠す" },
+  "showOverlay": { "message": "理由バッジを表示する" },
+  "minLength": { "message": "最短文字数" },
+  "language": { "message": "言語" },
+  "languageAuto": { "message": "自動判定" },
+  "categories": { "message": "検出カテゴリ" },
+  "categoriesHint": {
+    "message": "上の7つは「言い方の攻撃性」。下の「政治・陰謀論・AI論争・世界情勢・下品語（任意）」は話題そのものを隠します（既定OFF）。"
+  },
+  "optionalSuffix": { "message": "（任意）" },
+  "tryScore": { "message": "スコアを試す" },
+  "samplePlaceholder": { "message": "投稿文をここに入力（例: 絶対に許せない。けしからん。）" },
+  "statToday": { "message": "きょう隠した数" },
+  "statTotal": { "message": "累計" },
+  "reset": { "message": "設定をリセット" },
+  "maskedBadge": { "message": "義憤ミュート $1%" },
+  "show": { "message": "表示" },
+  "hide": { "message": "隠す" },
+  "pause": { "message": "停止" },
+  "resume": { "message": "再開" },
+  "barLabel": { "message": "義憤ミュート: $1" },
+  "cat_attack": { "message": "攻撃・侮蔑" },
+  "cat_hostility": { "message": "憎悪・敵意" },
+  "cat_incitement": { "message": "煽り・呼びかけ" },
+  "cat_absolute": { "message": "断定・絶対化" },
+  "cat_othering": { "message": "二項対立・レッテル" },
+  "cat_cynicism": { "message": "冷笑・皮肉" },
+  "cat_urgency": { "message": "危機煽り" },
+  "cat_profanity": { "message": "差別・蔑称語" },
+  "cat_badwords": { "message": "下品・罵倒語" },
+  "cat_amplifier": { "message": "感情誇張" },
+  "cat_politics": { "message": "政治" },
+  "cat_conspiracy": { "message": "陰謀論" },
+  "cat_ai_dispute": { "message": "AI論争" },
+  "cat_world_affairs": { "message": "世界情勢・戦争" }
+}

@@ -3,73 +3,86 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>義憤ミュート</title>
+    <title>Outrage Mute</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
     <header class="head">
-      <h1>義憤ミュート</h1>
+      <h1 data-i18n="title">義憤ミュート</h1>
       <label class="switch">
         <input type="checkbox" id="enabled" />
-        <span>有効</span>
+        <span data-i18n="enabled">有効</span>
       </label>
     </header>
 
-    <p class="note">
-      Xの投稿を端末内だけで判定します（外部送信なし）。しきい値以上でぼかし／非表示にします。
-      あなたが穏やかな気持ちでいられますように。
-    </p>
+    <p class="note" data-i18n="note"></p>
 
     <section class="block">
       <label class="row">
-        <span>しきい値</span>
+        <span data-i18n="threshold">しきい値</span>
         <output id="thresholdValue">0.50</output>
       </label>
       <input type="range" id="threshold" min="0.3" max="0.9" step="0.05" value="0.5" />
-      <p class="hint">低いほど多く隠します（誤判定も増えます）。</p>
+      <p class="hint" data-i18n="thresholdHint"></p>
     </section>
 
     <section class="block">
-      <div class="row">
-        <span>隠し方</span>
-      </div>
-      <label class="radio"><input type="radio" name="mode" value="blur" /> ぼかす（クリックで表示）</label>
-      <label class="radio"><input type="radio" name="mode" value="hide" /> 完全に隠す</label>
-      <label class="check"><input type="checkbox" id="showOverlay" /> 理由バッジを表示する</label>
+      <div class="row"><span data-i18n="mode">隠し方</span></div>
+      <label class="radio"><input type="radio" name="mode" value="blur" /> <span data-i18n="modeBlur"></span></label>
+      <label class="radio"><input type="radio" name="mode" value="hide" /> <span data-i18n="modeHide"></span></label>
+      <label class="check"><input type="checkbox" id="showOverlay" /> <span data-i18n="showOverlay"></span></label>
       <label class="row">
-        <span>最短文字数</span>
+        <span data-i18n="minLength">最短文字数</span>
         <input type="number" id="minLength" min="0" max="500" step="1" value="0" class="num" />
       </label>
     </section>
 
     <section class="block">
-      <div class="row"><span>検出カテゴリ</span></div>
-      <div id="categories" class="cats"></div>
-      <p class="hint">上の7つは「言い方の攻撃性」。下の「政治・陰謀論・AI論争・世界情勢（任意）」は話題そのものを隠します（既定OFF）。</p>
+      <label class="row">
+        <span data-i18n="language">言語</span>
+        <select id="language" class="select"></select>
+      </label>
     </section>
 
     <section class="block">
-      <div class="row"><span>スコアを試す</span></div>
-      <textarea id="sample" rows="3" placeholder="投稿文をここに入力（例: 絶対に許せない。けしからん。）"></textarea>
+      <div class="row"><span data-i18n="categories">検出カテゴリ</span></div>
+      <div id="categories" class="cats"></div>
+      <p class="hint" data-i18n="categoriesHint"></p>
+    </section>
+
+    <section class="block">
+      <div class="row"><span data-i18n="tryScore">スコアを試す</span></div>
+      <textarea id="sample" rows="3" data-i18n-placeholder="samplePlaceholder"></textarea>
       <div id="result" class="result">—</div>
     </section>
 
     <section class="block stats">
-      <div class="row"><span>きょう隠した数</span><strong id="statToday">0</strong></div>
-      <div class="row"><span>累計</span><strong id="statMasked">0</strong></div>
+      <div class="row"><span data-i18n="statToday"></span><strong id="statToday">0</strong></div>
+      <div class="row"><span data-i18n="statTotal"></span><strong id="statMasked">0</strong></div>
     </section>
 
     <footer class="foot">
-      <button id="reset" type="button">設定をリセット</button>
+      <button id="reset" type="button" data-i18n="reset">設定をリセット</button>
     </footer>
 
     <script src="lib/normalize.js"></script>
+    <script src="lib/categories.js"></script>
     <script src="lib/config.js"></script>
     <script src="lib/lexicon.curated.js"></script>
     <script src="lib/lexicon.vendor.js"></script>
     <script src="lib/lexicon.topics.js"></script>
     <script src="lib/lexicon.js"></script>
+    <script src="lib/lang/build.js"></script>
+    <script src="lib/lang/data/ldnoobw.js"></script>
+    <script src="lib/lang/ja.js"></script>
+    <script src="lib/lang/en.js"></script>
+    <script src="lib/lang/zh.js"></script>
+    <script src="lib/lang/ko.js"></script>
+    <script src="lib/lang/ru.js"></script>
+    <script src="lib/lang/uk.js"></script>
+    <script src="lib/lang/index.js"></script>
     <script src="lib/scoring.js"></script>
+    <script src="lib/i18n.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

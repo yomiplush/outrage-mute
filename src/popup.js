@@ -1,5 +1,5 @@
 /**
- * popup: 設定の読み書きと、スコアのライブ確認。
+ * popup: 設定の読み書きと、スコアのライブ確認（多言語対応）。
  */
 (function () {
   'use strict';
@@ -40,7 +40,10 @@
   var JOF = globalThis.JOF;
   var config = JOF.config;
   var scoring = JOF.scoring;
-  var lexicon = JOF.lexicon;
+  var cats = JOF.categories;
+  var lang = JOF.lang;
+  var i18n = JOF.i18n;
+  var t = i18n.t;
 
   var el = function (id) {
     return document.getElementById(id);
@@ -48,18 +51,22 @@
 
   var settings = config.normalizeSettings({});
 
-  // ------------------------------------------------------------ categories
   function effectiveCategories() {
     if (Array.isArray(settings.categories)) return settings.categories;
-    return lexicon.CATEGORY_ORDER.filter(function (id) {
+    return cats.CATEGORY_ORDER.filter(function (id) {
       return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
     });
   }
 
+  function catLabel(id) {
+    return t('cat_' + id) || cats.CATEGORY_LABELS[id] || id;
+  }
+
+  // ------------------------------------------------------------ categories
   function buildCategories(current) {
     var box = el('categories');
     box.textContent = '';
-    var all = lexicon.CATEGORY_ORDER.filter(function (id) {
+    var all = cats.CATEGORY_ORDER.filter(function (id) {
       return id !== 'amplifier';
     });
     var defaultCore = all.filter(function (id) {
@@ -76,9 +83,7 @@
       cb.checked = enabled.has(id);
       cb.addEventListener('change', readAndSave);
       label.appendChild(cb);
-      label.appendChild(
-        document.createTextNode((lexicon.CATEGORY_LABELS[id] || id) + (optional ? '（任意）' : ''))
-      );
+      label.appendChild(document.createTextNode(catLabel(id) + (optional ? t('optionalSuffix') : '')));
       box.appendChild(label);
     });
   }
@@ -90,6 +95,24 @@
     return ids;
   }
 
+  // ------------------------------------------------------------ language
+  function buildLanguages(current) {
+    var sel = el('language');
+    sel.textContent = '';
+    var auto = document.createElement('option');
+    auto.value = 'auto';
+    auto.textContent = t('languageAuto');
+    sel.appendChild(auto);
+    lang.list().forEach(function (p) {
+      var o = document.createElement('option');
+      o.value = p.id;
+      o.textContent = p.name;
+      sel.appendChild(o);
+    });
+    sel.value = current.language || 'auto';
+    sel.addEventListener('change', readAndSave);
+  }
+
   // ------------------------------------------------------------ UI <-> storage
   function reflect(s) {
     el('enabled').checked = s.enabled;
@@ -99,6 +122,8 @@
     el('minLength').value = String(s.minLength);
     var modes = document.querySelectorAll('input[name="mode"]');
     for (var i = 0; i < modes.length; i++) modes[i].checked = modes[i].value === s.mode;
+    var sel = el('language');
+    if (sel) sel.value = s.language || 'auto';
   }
 
   function readAndSave() {
@@ -108,6 +133,7 @@
       mode: (document.querySelector('input[name="mode"]:checked') || {}).value || 'blur',
       showOverlay: el('showOverlay').checked,
       minLength: parseInt(el('minLength').value, 10),
+      language: el('language') ? el('language').value : 'auto',
       categories: readCategories()
     });
     el('thresholdValue').textContent = settings.threshold.toFixed(2);
@@ -121,6 +147,7 @@
     chrome.storage.local.get([config.PERSIST_KEY, config.STATS_KEY], function (res) {
       settings = config.normalizeSettings(res[config.PERSIST_KEY] || {});
       reflect(settings);
+      buildLanguages(settings);
       buildCategories(settings);
       var stats = res[config.STATS_KEY] || {};
       var today = stats.date === new Date().toISOString().slice(0, 10) ? stats.today || 0 : 0;
@@ -138,28 +165,29 @@
       out.textContent = '—';
       return;
     }
-    var r = scoring.analyze(text, { categories: effectiveCategories() });
-    var verdict = r.score >= settings.threshold ? '→ ミュート対象' : '→ 表示';
-    var cats = (r.categories || []).map(function (c) {
-      return lexicon.CATEGORY_LABELS[c] || c;
-    });
+    var r = scoring.analyze(text, { lang: settings.language, categories: effectiveCategories() });
+    var muted = r.score >= settings.threshold;
+    var detected = r.lang;
+
     out.textContent = '';
     var head = document.createElement('div');
-    head.innerHTML = '';
     var scoreSpan = document.createElement('span');
     scoreSpan.className = 'score';
     scoreSpan.textContent = r.score.toFixed(2);
     head.appendChild(scoreSpan);
-    head.appendChild(document.createTextNode('  ' + verdict));
+    head.appendChild(document.createTextNode('  ' + (muted ? t('hide') : t('show')) + '  [' + detected + ']'));
     out.appendChild(head);
+
+    var names = (r.categories || []).map(catLabel);
     var catLine = document.createElement('div');
-    catLine.textContent = cats.length ? 'カテゴリ: ' + cats.join('・') : 'カテゴリ: —';
+    catLine.textContent = names.length ? names.join(' / ') : '—';
     out.appendChild(catLine);
-    var terms = (r.terms || []).slice(0, 8).map(function (t) {
-      return t.term + '(' + t.weight + ')';
+
+    var terms = (r.terms || []).slice(0, 8).map(function (x) {
+      return x.term + '(' + x.weight + ')';
     });
     var termLine = document.createElement('div');
-    termLine.textContent = 'ヒット: ' + (terms.length ? terms.join(', ') : '—');
+    termLine.textContent = terms.length ? terms.join(', ') : '—';
     out.appendChild(termLine);
   }
 
@@ -178,10 +206,12 @@
     patch[config.PERSIST_KEY] = settings;
     chrome.storage.local.set(patch, function () {
       reflect(settings);
+      buildLanguages(settings);
       buildCategories(settings);
       updateResult();
     });
   });
 
+  i18n.apply();
   load();
 })();

@@ -14,7 +14,13 @@
 
   // 既定では無効で、ユーザーが明示的に有効化するトピック系カテゴリ
   // （政治・陰謀論・AI論争。好みが分かれるため opt-in）
-  var OPTIONAL_CATEGORIES = ['politics', 'conspiracy', 'ai_dispute', 'world_affairs'];
+  var OPTIONAL_CATEGORIES = [
+    'politics',
+    'conspiracy',
+    'ai_dispute',
+    'world_affairs',
+    'badwords'
+  ];
 
   var DEFAULTS = {
     enabled: true,
@@ -22,6 +28,7 @@
     mode: 'blur', // 'blur' | 'hide'
     showOverlay: true,
     minLength: 0, // これ未満の短い投稿は判定しない
+    language: 'auto', // 'auto' | 'ja' | 'en' | 'zh' | 'ko' | 'ru' | 'uk' | ...
     categories: null // null = 既定のカテゴリ構成（OPTIONAL_CATEGORIES を除く全部）
   };
 
@@ -35,6 +42,7 @@
       mode: value.mode === 'hide' ? 'hide' : 'blur',
       showOverlay: value.showOverlay !== false,
       minLength: clampNumber(value.minLength, 0, 500, DEFAULTS.minLength),
+      language: typeof value.language === 'string' && value.language ? value.language : DEFAULTS.language,
       categories: Array.isArray(value.categories) ? value.categories.slice() : null
     };
     return out;

@@ -10,6 +10,8 @@ const require = createRequire(import.meta.url);
 const { analyze } = require('../src/lib/scoring.js');
 const lexicon = require('../src/lib/lexicon.js');
 const config = require('../src/lib/config.js');
+const lang = require('../src/lib/lang/index.js');
+const categories = require('../src/lib/categories.js');
 
 test('中立な文はスコアが低い', () => {
   assert.ok(analyze('今日はいい天気だね。散歩してくる。').score < 0.2);
@@ -123,5 +125,71 @@ test('トピック系カテゴリが辞書に登録されている', () => {
       lexicon.TERMS.some((t) => t.cat === id),
       `term: ${id}`
     );
+  }
+});
+
+// ---------------------------------------------------------------- 多言語
+
+test('言語パックが多数登録されている', () => {
+  const list = lang.list();
+  assert.ok(list.length >= 20, `packs=${list.length}`);
+  for (const id of ['ja', 'en', 'zh', 'ko', 'ru', 'uk']) {
+    assert.ok(lang.get(id), `pack: ${id}`);
+  }
+});
+
+test('言語を自動判定できる', () => {
+  assert.equal(lang.detect('今日はいい天気だね'), 'ja');
+  assert.equal(lang.detect('Hello, have a nice day'), 'en');
+  assert.equal(lang.detect('今天天气不错'), 'zh');
+  assert.equal(lang.detect('오늘 날씨 좋네요'), 'ko');
+  assert.equal(lang.detect('Сегодня хорошая погода'), 'ru');
+  assert.equal(lang.detect('Сьогодні гарна погода'), 'uk');
+});
+
+test('英語: 義憤は高スコア・中立は低スコア', () => {
+  assert.ok(analyze('Have a nice day!', { lang: 'en' }).score < 0.3);
+  assert.ok(analyze('You are such an idiot. I hate you.', { lang: 'en' }).score > 0.7);
+  assert.ok(analyze('Shut up and go to hell!', { lang: 'en' }).score > 0.7);
+});
+
+test('英語: 単語境界で誤検知しない（ass in class/grass/bass）', () => {
+  assert.equal(analyze('The class has grass and bass', { lang: 'en' }).score, 0);
+});
+
+test('英語: 前置の否定で減衰する', () => {
+  const neg = analyze('This is not stupid at all.', { lang: 'en' }).score;
+  const affirm = analyze('This is stupid.', { lang: 'en' }).score;
+  assert.ok(neg < affirm, `neg=${neg} affirm=${affirm}`);
+});
+
+test('多言語: それぞれの言語で義憤を検出する', () => {
+  const cases = [
+    ['zh', '你这个傻逼，滚出去！'],
+    ['ko', '이 병신 같은 새끼, 꺼져!'],
+    ['ru', 'Ты идиот, я ненавижу тебя!'],
+    ['uk', 'Ти ідіот, я ненавиджу тебе!']
+  ];
+  for (const [l, text] of cases) {
+    const r = analyze(text, { lang: l });
+    assert.ok(r.score > 0.7, `${l}: ${text} -> ${r.score}`);
+    assert.equal(r.lang, l);
+  }
+  assert.equal(analyze('今天天气不错', { lang: 'zh' }).score, 0);
+  assert.equal(analyze('오늘 날씨 좋네요', { lang: 'ko' }).score, 0);
+});
+
+test('badwords: 下品語カテゴリは既定で除外され、有効化で効く', () => {
+  const core = categories.CATEGORY_ORDER.filter((id) => !config.OPTIONAL_CATEGORIES.includes(id));
+  assert.ok(config.OPTIONAL_CATEGORIES.includes('badwords'));
+  const on = analyze('what the fuck', { lang: 'en', categories: core.concat('badwords') }).score;
+  const off = analyze('what the fuck', { lang: 'en', categories: core }).score;
+  assert.ok(on > 0.5, `on=${on}`);
+  assert.equal(off, 0);
+});
+
+test('bangla: 言語パックは同じカテゴリ id を使う', () => {
+  for (const id of categories.CATEGORY_ORDER) {
+    assert.ok(categories.CATEGORY_LABELS[id], `label: ${id}`);
   }
 });

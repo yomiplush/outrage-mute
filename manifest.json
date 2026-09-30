@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "義憤ミュート",
-  "version": "0.3.0",
-  "description": "Xの投稿を日本語の義憤スコアで判定し、CSSでぼかし/非表示にするローカル完結の拡張機能。外部送信なし。",
+  "name": "__MSG_extName__",
+  "version": "0.4.0",
+  "default_locale": "ja",
+  "description": "__MSG_extDesc__",
   "permissions": ["storage"],
   "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
   "background": {
@@ -10,7 +11,7 @@
   },
   "action": {
     "default_popup": "src/popup.html",
-    "default_title": "義憤ミュート",
+    "default_title": "__MSG_extName__",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -27,11 +28,22 @@
       "matches": ["https://x.com/*", "https://twitter.com/*"],
       "js": [
         "src/lib/normalize.js",
+        "src/lib/categories.js",
         "src/lib/config.js",
         "src/lib/lexicon.curated.js",
         "src/lib/lexicon.vendor.js",
         "src/lib/lexicon.topics.js",
         "src/lib/lexicon.js",
+        "src/lib/lang/build.js",
+        "src/lib/lang/data/ldnoobw.js",
+        "src/lib/lang/ja.js",
+        "src/lib/lang/en.js",
+        "src/lib/lang/zh.js",
+        "src/lib/lang/ko.js",
+        "src/lib/lang/ru.js",
+        "src/lib/lang/uk.js",
+        "src/lib/lang/index.js",
+        "src/lib/i18n.js",
         "src/lib/scoring.js",
         "src/content.js"
       ],

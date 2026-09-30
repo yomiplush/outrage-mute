@@ -21,7 +21,7 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 const version = pkg.version;
 
 // ZIP に含めるもの（開発用ファイルは除外）
-const INCLUDE_DIRS = ['src', 'icons', 'vendor'];
+const INCLUDE_DIRS = ['src', 'icons', 'vendor', '_locales'];
 const INCLUDE_FILES = ['manifest.json', 'LICENSE', 'README.md', 'THIRD_PARTY_NOTICES.md'];
 
 // ---------------------------------------------------------------- CRC32

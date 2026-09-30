@@ -1,0 +1,50 @@
+{
+  "extName": { "message": "Outrage Mute" },
+  "extDesc": {
+    "message": "Оценивает посты X на негодование и размывает/скрывает их через CSS. Полностью локально (без отправки данных), многоязычно."
+  },
+  "title": { "message": "Outrage Mute" },
+  "enabled": { "message": "Вкл" },
+  "note": {
+    "message": "Всё оценивается на вашем устройстве (ничего не отправляется). Посты выше порога размываются или скрываются. Пусть вам будет спокойнее."
+  },
+  "threshold": { "message": "Порог" },
+  "thresholdHint": { "message": "Ниже — скрывает больше (и больше ошибок)." },
+  "mode": { "message": "Способ скрытия" },
+  "modeBlur": { "message": "Размытие (клик — показать)" },
+  "modeHide": { "message": "Скрыть полностью" },
+  "showOverlay": { "message": "Показывать причину" },
+  "minLength": { "message": "Мин. длина" },
+  "language": { "message": "Язык" },
+  "languageAuto": { "message": "Автоопределение" },
+  "categories": { "message": "Категории" },
+  "categoriesHint": {
+    "message": "Верхние семь — это агрессивность речи. Нижние (политика, теории заговора, споры об ИИ, мировые события, мат) скрывают саму тему и по умолчанию выключены."
+  },
+  "optionalSuffix": { "message": " (опц.)" },
+  "tryScore": { "message": "Проверить оценку" },
+  "samplePlaceholder": { "message": "Введите пост (напр.: Я никогда их не прощу.)" },
+  "statToday": { "message": "Скрыто сегодня" },
+  "statTotal": { "message": "Всего" },
+  "reset": { "message": "Сбросить настройки" },
+  "maskedBadge": { "message": "Скрыто $1%" },
+  "show": { "message": "Показать" },
+  "hide": { "message": "Скрыть" },
+  "pause": { "message": "Пауза" },
+  "resume": { "message": "Продолжить" },
+  "barLabel": { "message": "Скрыто: $1" },
+  "cat_attack": { "message": "Оскорбления" },
+  "cat_hostility": { "message": "Ненависть" },
+  "cat_incitement": { "message": "Призывы" },
+  "cat_absolute": { "message": "Категоричность" },
+  "cat_othering": { "message": "Ярлыки" },
+  "cat_cynicism": { "message": "Цинизм" },
+  "cat_urgency": { "message": "Паникёрство" },
+  "cat_profanity": { "message": "Сленг-оскорбления" },
+  "cat_badwords": { "message": "Мат" },
+  "cat_amplifier": { "message": "Крик" },
+  "cat_politics": { "message": "Политика" },
+  "cat_conspiracy": { "message": "Теории заговора" },
+  "cat_ai_dispute": { "message": "Споры об ИИ" },
+  "cat_world_affairs": { "message": "Мировые события / война" }
+}

@@ -18,7 +18,9 @@ X（x.com / twitter.com）の投稿を **日本語の「義憤」スコア**で�
 - しきい値以上なら、投稿セルをぼかす（理由バッジ＋「表示」ボタン付き）か完全に隠す
 - 右下の操作バーから「全表示／隠す」「一時停止」を切替
 - ポップアップでしきい値・隠し方・検出カテゴリを設定し、**その場でスコアを試せる**
-- **政治・陰謀論・AI論争・世界情勢（戦争/テロ/災害）**をまとめて隠すオプショントグル（既定OFF）
+- **政治・陰謀論・AI論争・世界情勢（戦争/テロ/災害）・下品語**をまとめて隠すオプショントグル（既定OFF）
+- **多言語対応**: 日本語 / 英語 / 中国語 / 韓国語 / ロシア語 / ウクライナ語、ほか LDNOOBW が持つ24言語。**投稿ごとに言語を自動判定**
+- UI も多言語化（`_locales`。Chrome の表示言語に追従）
 - きょう隠した数のバッジ表示（統計）
 
 ## インストール（未パッケージ）
@@ -64,12 +66,13 @@ X（x.com / twitter.com）の投稿を **日本語の「義憤」スコア**で�
 | `conspiracy` | 陰謀論（任意） | ケミカルトレイル / グレートリセット |
 | `ai_dispute` | AI論争（任意） | AI規制 / AI失業 / 生成AI |
 | `world_affairs` | 世界情勢・戦争（任意） | 侵攻 / 空爆 / テロ / 津波 / クーデター |
+| `badwords` | 下品・罵倒語（任意） | LDNOOBW の罵倒語（24言語・性的語を含む） |
 
-> **（任意）** の4カテゴリは**既定でOFF**です。ポップアップのトグルで有効化すると働きます。
-> 上の7つが「言い方の攻撃性」を見るのに対し、下の4つは**話題そのもの**を検出するため、
+> **（任意）** の5カテゴリは**既定でOFF**です。ポップアップのトグルで有効化すると働きます。
+> 上の7つが「言い方の攻撃性」を見るのに対し、下の5つは**話題・語そのもの**を検出するため、
 > 1語ヒットでしきい値を超える重み（`1 - exp(-2.2/2.4) ≒ 0.60`）にしてあります。
 > 好みが分かれる話題・見たくない題材なので、押し付けにならないよう opt-in にしています。
-> `world_affairs` は戦争・テロ・事件・災害など、いわゆる **Trigger（心がざわつく題材）** をまとめたものです。
+> `badwords` は LDNOOBW（CC-BY-4.0）の罵倒語で、性的表現を含むため特に既定OFFです。
 
 ### 部分一致の誤検知対策
 
@@ -79,15 +82,37 @@ X（x.com / twitter.com）の投稿を **日本語の「義憤」スコア**で�
 
 ---
 
+## 多言語対応
+
+| 言語 | 照合方式 | 否定 | 辞書 |
+|---|---|---|---|
+| 日本語 `ja` | 部分一致 | 語尾（〜ない） | 自作 ＋ MosasoM(MIT) ＋ 話題語 |
+| 英語 `en` | 単語境界 | 前置（not / don't） | 自作 ＋ LDNOOBW(CC-BY-4.0) |
+| 中国語(簡体) `zh` | 部分一致 | 前置（不 / 没） | 自作 ＋ LDNOOBW |
+| 韓国語 `ko` | 部分一致 | 前置（못 / 아니） | 自作 ＋ LDNOOBW |
+| ロシア語 `ru` | 単語境界 | 前置（не / ни） | 自作 ＋ LDNOOBW |
+| ウクライナ語 `uk` | 単語境界 | 前置（не / ні） | 自作 |
+| その他約20言語 | 言語による | － | LDNOOBW（`badwords` のみ） |
+
+- 投稿ごとに**言語を自動判定**（かな/漢字→ja、ハングル→ko、キリル→ru/uk、ラテン→en …）。ポップアップで固定もできます。
+- 英語など分かち書きする言語は**単語境界**で照合するので、`class` の中の `ass` を拾いません。
+- 新しい言語を足すのは、`src/lib/lang/<code>.js` を1つ書いて `index.js` に登録するだけです（LDNOOBW にある言語はデータだけで自動登録されます）。
+
+---
+
 ## 辞書データとライセンス（第三者）
 
-本拡張の差別・侮蔑語リストは、MIT ライセンスの OSS 辞書を土台にしています。
+本拡張の語彙は、ライセンスのはっきりした OSS データを土台にしています。
 
 - **MosasoM/inappropriate-words-ja** — MIT License, Copyright (c) 2020 K Hashimoto
   - 取り込み: `Offensive.txt`（攻撃的・差別的な表現リスト, 暫定版）
   - 原本は `vendor/inappropriate-words-ja/` に同梱（`Offensive.txt` と `LICENSE`）
   - 拡張が使う形（重み付き）は `src/lib/lexicon.vendor.js`
   - 本拡張が追加した語（EXTRA）は MosasoM 由来ではなく作者判断によるもの
+- **LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words** — **CC-BY-4.0**
+  - 多言語の罵倒語リスト（24言語）。`badwords` カテゴリ（既定OFF）に使用
+  - 原本は `vendor/ldnoobw/` に同梱、拡張用は `src/lib/lang/data/ldnoobw.js`（生成）
+  - 生成: `node scripts/build-lang-data.mjs`
 - 参考にした考え方（コードは流用していない）:
   - **thisandagain/sentiment**（MIT）: トークン→値→comparative、per-language な scoringStrategy
   - **ikegami-yukino/oseti**（MIT）: 日本語の辞書ベース感情分析。抽出した**極性**は「肯定/否定」で本拡張の狙う「義憤」と異なるため、辞書は土台に使っていません。
@@ -102,7 +127,8 @@ X（x.com / twitter.com）の投稿を **日本語の「義憤」スコア**で�
 
 ```
 outrage-mute/
-├── manifest.json                 # MV3
+├── manifest.json                 # MV3（default_locale: ja）
+├── _locales/{ja,en,zh_CN,ko,ru,uk}/messages.json  # UI 多言語
 ├── icons/                        # 16/32/48/128（生成）
 ├── src/
 │   ├── background.js             # 既定設定・バッジ・統計
@@ -111,13 +137,21 @@ outrage-mute/
 │   ├── popup.html/.css/.js       # 設定とスコアのライブ確認
 │   └── lib/
 │       ├── normalize.js          # 正規化・書式特徴
+│       ├── categories.js         # カテゴリ定義（単一の定義元）
 │       ├── config.js             # 既定値・設定の正規化
-│       ├── lexicon.curated.js    # 手作り義憤辞書
-│       ├── lexicon.vendor.js     # OSS 由来（MosasoM, MIT）
-│       ├── lexicon.js            # 結合・索引・パターン・除外規則
-│       └── scoring.js            # スコアリング本体
-├── vendor/inappropriate-words-ja/  # 原本とライセンス
+│       ├── lexicon.*.js          # 日本語辞書（curated/vendor/topics）
+│       ├── lang/
+│       │   ├── build.js          # 索引ビルダー（substring / word）
+│       │   ├── ja.js en.js zh.js ko.js ru.js uk.js  # 言語パック
+│       │   ├── index.js          # レジストリ＋言語自動判定
+│       │   └── data/ldnoobw.js   # 多言語罵倒語（生成）
+│       ├── i18n.js               # UI 文言ヘルパー
+│       └── scoring.js            # スコアリング本体（多言語エンジン）
+├── vendor/                       # 原本とライセンス（MosasoM / LDNOOBW）
 ├── scripts/build-icons.mjs       # アイコン生成（依存なし）
+├── scripts/build-lang-data.mjs   # LDNOOBW 取り込み・生成
+├── scripts/package.mjs           # 配布ZIP＋SHA256SUMS
+├── docs/demo.html                # 判定プレイグラウンド
 └── test/scoring.test.mjs         # node --test
 ```
 

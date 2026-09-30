@@ -1,0 +1,50 @@
+{
+  "extName": { "message": "义愤屏蔽" },
+  "extDesc": {
+    "message": "为 X 的帖子计算义愤评分，用 CSS 模糊或隐藏。完全本地运行（不发送数据），支持多语言。"
+  },
+  "title": { "message": "义愤屏蔽" },
+  "enabled": { "message": "启用" },
+  "note": {
+    "message": "一切在你的设备上判定（不发送任何数据）。达到阈值的帖子会被模糊或隐藏。愿你保持平静。"
+  },
+  "threshold": { "message": "阈值" },
+  "thresholdHint": { "message": "越低隐藏得越多（误判也会增加）。" },
+  "mode": { "message": "隐藏方式" },
+  "modeBlur": { "message": "模糊（点击显示）" },
+  "modeHide": { "message": "完全隐藏" },
+  "showOverlay": { "message": "显示理由标签" },
+  "minLength": { "message": "最短字数" },
+  "language": { "message": "语言" },
+  "languageAuto": { "message": "自动判定" },
+  "categories": { "message": "检测类别" },
+  "categoriesHint": {
+    "message": "前七项判断“语气是否攻击性”。后面（政治、阴谋论、AI争论、世界局势、粗俗语）为话题类，默认关闭。"
+  },
+  "optionalSuffix": { "message": "（可选）" },
+  "tryScore": { "message": "测试评分" },
+  "samplePlaceholder": { "message": "在此输入帖子内容（如：绝对不可原谅。）" },
+  "statToday": { "message": "今日已隐藏" },
+  "statTotal": { "message": "累计" },
+  "reset": { "message": "重置设置" },
+  "maskedBadge": { "message": "已屏蔽 $1%" },
+  "show": { "message": "显示" },
+  "hide": { "message": "隐藏" },
+  "pause": { "message": "暂停" },
+  "resume": { "message": "继续" },
+  "barLabel": { "message": "已屏蔽: $1" },
+  "cat_attack": { "message": "攻击·侮辱" },
+  "cat_hostility": { "message": "憎恨·敌意" },
+  "cat_incitement": { "message": "煽动·号召" },
+  "cat_absolute": { "message": "断言·绝对化" },
+  "cat_othering": { "message": "对立·标签" },
+  "cat_cynicism": { "message": "冷笑·讽刺" },
+  "cat_urgency": { "message": "危机煽动" },
+  "cat_profanity": { "message": "歧视·蔑称" },
+  "cat_badwords": { "message": "粗俗·骂语" },
+  "cat_amplifier": { "message": "情绪夸张" },
+  "cat_politics": { "message": "政治" },
+  "cat_conspiracy": { "message": "阴谋论" },
+  "cat_ai_dispute": { "message": "AI 争论" },
+  "cat_world_affairs": { "message": "世界局势·战争" }
+}

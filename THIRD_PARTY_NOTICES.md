@@ -14,13 +14,26 @@
   - 同リストの語を、重み・カテゴリを付けて `src/lib/lexicon.vendor.js` に収録
 - MIT License 全文: [`vendor/inappropriate-words-ja/LICENSE`](vendor/inappropriate-words-ja/LICENSE)
 
-## 2. thisandagain/sentiment（設計上の参考のみ）
+## 2. LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words（多言語辞書データを取り込み）
+
+- 出典: https://github.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words
+- ライセンス: **Creative Commons Attribution 4.0 International (CC-BY-4.0)**
+- 利用内容:
+  - 24言語（ar, cs, da, de, en, es, fa, fi, fil, fr, hi, hu, it, ja, ko, nl, no, pl, pt, ru, sv, th, tr, zh）の
+    罵倒語リストを `badwords` カテゴリ（既定OFF）として利用
+  - 原本は `vendor/ldnoobw/` に同梱（各言語ファイルと `LICENSE`）
+  - 拡張に同梱する形は `src/lib/lang/data/ldnoobw.js`（生成ファイル）
+  - 再生成: `node scripts/build-lang-data.mjs`
+- ライセンス全文: [`vendor/ldnoobw/LICENSE`](vendor/ldnoobw/LICENSE)
+- CC-BY-4.0 の条件に従い、出典とライセンスを本ファイルおよび README に明記しています。
+
+## 3. thisandagain/sentiment（設計上の参考のみ）
 
 - 出典: https://github.com/thisandagain/sentiment
 - ライセンス: **MIT License**
 - 利用内容: 「トークン→値の合算」および言語ごとの `scoringStrategy`（否定・強調の補正）という**考え方**を参考にしています。**ソースコードの流用はありません。**
 
-## 3. ikegami-yukino/oseti（参考・不採用の記録）
+## 4. ikegami-yukino/oseti（参考・不採用の記録）
 
 - 出典: https://github.com/ikegami-yukino/oseti
 - ライセンス: **MIT License**（Copyright (c) 2019 IKEGAMI Yukino）
@@ -32,4 +45,6 @@
 
 ## 本プロジェクトが独自に追加した語について
 
-`src/lib/lexicon.vendor.js` の `EXTRA`、および `src/lib/lexicon.curated.js` の語は、本プロジェクトの作者が独自に選定・重み付けしたものであり、上記 OSS のデータではありません。同じく本プロジェクトの MIT License で提供されます。
+`src/lib/lexicon.vendor.js` の `EXTRA`、`src/lib/lexicon.curated.js` の語、および
+`src/lib/lang/{en,zh,ko,ru,uk}.js` の CURATED 語は、本プロジェクトの作者が独自に選定・重み付け・翻訳したものであり、
+上記 OSS のデータではありません。同じく本プロジェクトの MIT License で提供されます。

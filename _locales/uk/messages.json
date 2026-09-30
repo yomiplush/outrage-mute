@@ -1,0 +1,50 @@
+{
+  "extName": { "message": "Outrage Mute" },
+  "extDesc": {
+    "message": "Оцінює дописи X на обурення та розмиває/ховає їх через CSS. Повністю локально (без надсилань), багатомовно."
+  },
+  "title": { "message": "Outrage Mute" },
+  "enabled": { "message": "Увімк." },
+  "note": {
+    "message": "Усе оцінюється на вашому пристрої (нічого не надсилається). Дописи вище порогу розмиваються або ховаються. Нехай вам буде спокійніше."
+  },
+  "threshold": { "message": "Поріг" },
+  "thresholdHint": { "message": "Нижче — ховає більше (і більше помилок)." },
+  "mode": { "message": "Спосіб приховування" },
+  "modeBlur": { "message": "Розмиття (клік — показати)" },
+  "modeHide": { "message": "Сховати повністю" },
+  "showOverlay": { "message": "Показувати причину" },
+  "minLength": { "message": "Мін. довжина" },
+  "language": { "message": "Мова" },
+  "languageAuto": { "message": "Автовизначення" },
+  "categories": { "message": "Категорії" },
+  "categoriesHint": {
+    "message": "Верхні сім — агресивність мовлення. Нижні (політика, теорії змов, суперечки про ШІ, світові події, лайка) ховають саму тему і типово вимкнені."
+  },
+  "optionalSuffix": { "message": " (опц.)" },
+  "tryScore": { "message": "Перевірити оцінку" },
+  "samplePlaceholder": { "message": "Введіть допис (напр.: Я ніколи їх не прощу.)" },
+  "statToday": { "message": "Сховано сьогодні" },
+  "statTotal": { "message": "Усього" },
+  "reset": { "message": "Скинути налаштування" },
+  "maskedBadge": { "message": "Приховано $1%" },
+  "show": { "message": "Показати" },
+  "hide": { "message": "Сховати" },
+  "pause": { "message": "Пауза" },
+  "resume": { "message": "Продовжити" },
+  "barLabel": { "message": "Приховано: $1" },
+  "cat_attack": { "message": "Образи" },
+  "cat_hostility": { "message": "Ненависть" },
+  "cat_incitement": { "message": "Заклики" },
+  "cat_absolute": { "message": "Категоричність" },
+  "cat_othering": { "message": "Ярлики" },
+  "cat_cynicism": { "message": "Цинізм" },
+  "cat_urgency": { "message": "Панікерство" },
+  "cat_profanity": { "message": "Сленг-образи" },
+  "cat_badwords": { "message": "Лайка" },
+  "cat_amplifier": { "message": "Крик" },
+  "cat_politics": { "message": "Політика" },
+  "cat_conspiracy": { "message": "Теорії змов" },
+  "cat_ai_dispute": { "message": "Суперечки про ШІ" },
+  "cat_world_affairs": { "message": "Світові події / війна" }
+}

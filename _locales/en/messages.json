@@ -1,0 +1,50 @@
+{
+  "extName": { "message": "Outrage Mute" },
+  "extDesc": {
+    "message": "Scores X posts for outrage and blurs/hides them with CSS. Fully local (no external requests), multilingual."
+  },
+  "title": { "message": "Outrage Mute" },
+  "enabled": { "message": "On" },
+  "note": {
+    "message": "Everything is scored on your device (nothing is sent out). Posts at or above the threshold are blurred or hidden. May you stay calm."
+  },
+  "threshold": { "message": "Threshold" },
+  "thresholdHint": { "message": "Lower hides more (and raises false positives)." },
+  "mode": { "message": "How to hide" },
+  "modeBlur": { "message": "Blur (click to reveal)" },
+  "modeHide": { "message": "Hide completely" },
+  "showOverlay": { "message": "Show a reason badge" },
+  "minLength": { "message": "Min length" },
+  "language": { "message": "Language" },
+  "languageAuto": { "message": "Auto detect" },
+  "categories": { "message": "Categories" },
+  "categoriesHint": {
+    "message": "The top seven judge tone (attack, hate, incitement...). The optional ones (politics, conspiracy, AI, world affairs, profanity) hide the topic itself and are off by default."
+  },
+  "optionalSuffix": { "message": " (optional)" },
+  "tryScore": { "message": "Try a score" },
+  "samplePlaceholder": { "message": "Type a post here (e.g. I will never forgive them.)" },
+  "statToday": { "message": "Hidden today" },
+  "statTotal": { "message": "Total" },
+  "reset": { "message": "Reset settings" },
+  "maskedBadge": { "message": "Muted $1%" },
+  "show": { "message": "Show" },
+  "hide": { "message": "Hide" },
+  "pause": { "message": "Pause" },
+  "resume": { "message": "Resume" },
+  "barLabel": { "message": "Muted: $1" },
+  "cat_attack": { "message": "Attack / insult" },
+  "cat_hostility": { "message": "Hate / hostility" },
+  "cat_incitement": { "message": "Incitement" },
+  "cat_absolute": { "message": "Absolutism" },
+  "cat_othering": { "message": "Othering" },
+  "cat_cynicism": { "message": "Cynicism" },
+  "cat_urgency": { "message": "Fear-mongering" },
+  "cat_profanity": { "message": "Slurs" },
+  "cat_badwords": { "message": "Profanity" },
+  "cat_amplifier": { "message": "Shouting" },
+  "cat_politics": { "message": "Politics" },
+  "cat_conspiracy": { "message": "Conspiracy" },
+  "cat_ai_dispute": { "message": "AI debate" },
+  "cat_world_affairs": { "message": "World affairs / war" }
+}

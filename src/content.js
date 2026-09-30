@@ -1,10 +1,10 @@
 /**
- * content script: X の投稿を検出し、義憤スコアで CSS ミュートする。
+ * content script: X の投稿を検出し、義憤スコアで CSS ミュートする（多言語対応）。
  *
  * 流れ:
  *   article[data-testid="tweet"] を検出
  *     -> 本文 + 引用本文を取り出す
- *     -> JOF.scoring.analyze() でスコア算出
+ *     -> 言語を自動判定（または設定言語）してスコア算出
  *     -> しきい値以上ならセルにクラスを付け、ぼかし or 非表示
  *
  * すべてローカルで完結（外部通信なし）。
@@ -13,30 +13,35 @@
   'use strict';
 
   var JOF = globalThis.JOF;
-  if (!JOF || !JOF.scoring || !JOF.config || !JOF.lexicon) return;
+  if (!JOF || !JOF.scoring || !JOF.config || !JOF.categories || !JOF.i18n) return;
 
   var scoring = JOF.scoring;
   var config = JOF.config;
-  var CATEGORY_LABELS = JOF.lexicon.CATEGORY_LABELS;
+  var cats = JOF.categories;
+  var i18n = JOF.i18n;
 
   var TWEET_SEL = 'article[data-testid="tweet"]';
   var CELL_SEL = '[data-testid="cellInnerDiv"]';
-
-  /**
-   * 有効カテゴリを解決する。
-   * 設定が未指定(null)なら「トピック系(政治/陰謀論/AI論争)を除く全部」を使う。
-   */
-  function effectiveCategories() {
-    if (Array.isArray(settings.categories)) return settings.categories;
-    return JOF.lexicon.CATEGORY_ORDER.filter(function (id) {
-      return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
-    });
-  }
 
   var settings = Object.assign({}, config.DEFAULTS);
   var observer = null;
   var bar = null;
   var scanTimer = null;
+
+  function catLabel(id) {
+    return i18n.t('cat_' + id) || cats.CATEGORY_LABELS[id] || id;
+  }
+
+  /**
+   * 有効カテゴリを解決する。
+   * 設定が未指定(null)なら「トピック系(任意)を除く全部」を使う。
+   */
+  function effectiveCategories() {
+    if (Array.isArray(settings.categories)) return settings.categories;
+    return cats.CATEGORY_ORDER.filter(function (id) {
+      return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
+    });
+  }
 
   // ---------------------------------------------------------------- settings
   function loadSettings() {
@@ -112,19 +117,21 @@
 
     var badge = document.createElement('div');
     badge.className = 'jof-badge';
-    badge.textContent = '義憤ミュート ' + Math.round(result.score * 100) + '%';
+    badge.textContent = i18n.t('maskedBadge', [Math.round(result.score * 100)]);
 
-    var cats = document.createElement('div');
-    cats.className = 'jof-cats';
-    var names = (result.categories || []).slice(0, 3).map(function (c) {
-      return CATEGORY_LABELS[c] || c;
-    });
-    cats.textContent = names.length ? names.join('・') : '該当';
+    var catEl = document.createElement('div');
+    catEl.className = 'jof-cats';
+    var names = (result.categories || [])
+      .slice(0, 3)
+      .map(function (c) {
+        return catLabel(c);
+      });
+    catEl.textContent = names.length ? names.join(' / ') : '';
 
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'jof-show-btn';
-    btn.textContent = '表示';
+    btn.textContent = i18n.t('show');
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -133,20 +140,19 @@
       updateBar();
     });
 
-    el.append(badge, cats, btn);
+    el.append(badge, catEl, btn);
     return el;
   }
 
   // ---------------------------------------------------------------- evaluate
   function evaluateArticle(article) {
     var cell = cellOf(article);
-    var t = getTweetContent(article);
-    if (!t) return;
+    var tw = getTweetContent(article);
+    if (!tw) return;
 
-    var sig = hash(t.text + '\u0000' + t.quote);
+    var sig = hash(tw.text + '\u0000' + tw.quote);
     var state = cell.dataset.jofState || '';
 
-    // 処理済みで内容が同じならスキップ（オーバーレイだけ補修）
     if (cell.dataset.jofSig === sig && state) {
       if (
         state === 'masked' &&
@@ -163,7 +169,6 @@
       return;
     }
 
-    // 内容が変わった（仮想スクロールのセル再利用など）→ リセットして再評価
     clearMask(cell);
     cell.dataset.jofSig = sig;
 
@@ -172,13 +177,16 @@
       return;
     }
 
-    var combined = t.quote ? t.text + '\n' + t.quote : t.text;
+    var combined = tw.quote ? tw.text + '\n' + tw.quote : tw.text;
     if (!combined || combined.length < (settings.minLength || 0)) {
       cell.dataset.jofState = 'short';
       return;
     }
 
-    var result = scoring.analyze(combined, { categories: effectiveCategories() });
+    var result = scoring.analyze(combined, {
+      lang: settings.language,
+      categories: effectiveCategories()
+    });
     cell.dataset.jofResult = JSON.stringify({
       score: result.score,
       categories: result.categories,
@@ -198,7 +206,6 @@
   function scan() {
     var articles = document.querySelectorAll(TWEET_SEL);
     for (var i = 0; i < articles.length; i++) {
-      // 引用ツイートの入れ子は親側で本文として扱うのでスキップ
       if (articles[i].parentElement && articles[i].parentElement.closest(TWEET_SEL)) continue;
       try {
         evaluateArticle(articles[i]);
@@ -240,7 +247,6 @@
     var reveal = document.createElement('button');
     reveal.type = 'button';
     reveal.className = 'jof-bar-reveal';
-    reveal.textContent = '表示';
     reveal.addEventListener('click', function () {
       toggleRevealAll();
     });
@@ -272,14 +278,13 @@
       return;
     }
     var b = ensureBar();
-    b.querySelector('.jof-bar-label').textContent = '義憤ミュート: ' + count;
-    b.querySelector('.jof-bar-reveal').textContent = revealAll ? '隠す' : '表示';
-    b.querySelector('.jof-bar-pause').textContent = settings.enabled ? '停止' : '再開';
+    b.querySelector('.jof-bar-label').textContent = i18n.t('barLabel', [count]);
+    b.querySelector('.jof-bar-reveal').textContent = revealAll ? i18n.t('hide') : i18n.t('show');
+    b.querySelector('.jof-bar-pause').textContent = settings.enabled ? i18n.t('pause') : i18n.t('resume');
   }
 
   function toggleRevealAll(force) {
-    var on =
-      typeof force === 'boolean' ? force : !document.body.classList.contains('jof-reveal-all');
+    var on = typeof force === 'boolean' ? force : !document.body.classList.contains('jof-reveal-all');
     document.body.classList.toggle('jof-reveal-all', on);
     updateBar();
   }
