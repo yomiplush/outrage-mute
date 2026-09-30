@@ -42,6 +42,7 @@
     hideDm: 'DMバッジを隠す',
     quietHint: 'X上のバッジ／タブを非表示にします（通知そのものは止まりません）。',
     excludeSelf: '自分の投稿はフィルターから除外',
+    excludeReplies: 'リプライはフィルターしない',
     remute: 'ミュート',
     remuteTitle: 'この投稿を再度ミュートする',
     statToday: 'きょう隠した数',

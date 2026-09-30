@@ -81,6 +81,7 @@
   "hideDm": { "message": "DMバッジを隠す" },
   "quietHint": { "message": "X上のバッジ／タブを非表示にします（通知そのものは止まりません）。" },
   "excludeSelf": { "message": "自分の投稿はフィルターから除外" },
+  "excludeReplies": { "message": "リプライはフィルターしない" },
   "remute": { "message": "ミュート" },
   "remuteTitle": { "message": "この投稿を再度ミュートする" }
 }

@@ -144,6 +144,7 @@
     el('hideNotificationTab').checked = s.hideNotificationTab;
     el('hideDm').checked = s.hideDm;
     el('excludeSelf').checked = s.excludeSelf;
+    el('excludeReplies').checked = s.excludeReplies;
     var modes = document.querySelectorAll('input[name="mode"]');
     for (var i = 0; i < modes.length; i++) modes[i].checked = modes[i].value === s.mode;
     var sel = el('language');
@@ -169,7 +170,8 @@
       hideNotifications: el('hideNotifications').checked,
       hideNotificationTab: el('hideNotificationTab').checked,
       hideDm: el('hideDm').checked,
-      excludeSelf: el('excludeSelf').checked
+      excludeSelf: el('excludeSelf').checked,
+      excludeReplies: el('excludeReplies').checked
     });
     el('thresholdValue').textContent = settings.threshold.toFixed(2);
     el('userWordsCount').textContent = t('userDictCount', [(settings.userWords || []).length]);
@@ -244,7 +246,7 @@
   }
 
   // ------------------------------------------------------------ wire up
-  ['enabled', 'threshold', 'showOverlay', 'minLength', 'focusMaxLength', 'focusHideReplies', 'userWordsEnabled', 'hideNotifications', 'hideNotificationTab', 'hideDm', 'excludeSelf'].forEach(function (id) {
+  ['enabled', 'threshold', 'showOverlay', 'minLength', 'focusMaxLength', 'focusHideReplies', 'userWordsEnabled', 'hideNotifications', 'hideNotificationTab', 'hideDm', 'excludeSelf', 'excludeReplies'].forEach(function (id) {
     el(id).addEventListener('input', readAndSave);
     el(id).addEventListener('change', readAndSave);
   });

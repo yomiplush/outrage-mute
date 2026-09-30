@@ -385,6 +385,11 @@ test('自分の投稿の除外: ハンドル解析と設定', () => {
   assert.equal(config.DEFAULTS.excludeSelf, true);
   assert.equal(config.normalizeSettings({}).excludeSelf, true);
   assert.equal(config.normalizeSettings({ excludeSelf: false }).excludeSelf, false);
+  // リプライは既定でフィルターする（excludeReplies は既定 false）
+  assert.equal(config.DEFAULTS.excludeReplies, false);
+  assert.equal(config.normalizeSettings({}).excludeReplies, false);
+  assert.equal(config.normalizeSettings({ excludeReplies: true }).excludeReplies, true);
+  assert.equal(config.normalizeSettings({ excludeReplies: 1 }).excludeReplies, false);
 });
 
 test('UI言語: 判定言語からロケールを引く', () => {

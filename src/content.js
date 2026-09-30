@@ -349,6 +349,12 @@
       return;
     }
 
+    // リプライはフィルターしない（トグル・既定OFF）
+    if (settings.excludeReplies && isReplyArticle(article)) {
+      cell.dataset.jofState = 'reply-skip';
+      return;
+    }
+
     var combined = tw.quote ? tw.text + '\n' + tw.quote : tw.text;
     if (!combined || combined.length < (settings.minLength || 0)) {
       cell.dataset.jofState = 'short';

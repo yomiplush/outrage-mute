@@ -256,6 +256,7 @@
     body.appendChild(radioRow('mode', t('mode'), [['blur', t('modeBlur')], ['hide', t('modeHide')]], settings.mode));
     body.appendChild(check('showOverlay', t('showOverlay'), settings.showOverlay));
     body.appendChild(check('excludeSelf', t('excludeSelf'), settings.excludeSelf));
+    body.appendChild(check('excludeReplies', t('excludeReplies'), settings.excludeReplies));
     var langOpts = [['auto', t('languageAuto')]].concat(
       lang.list().map(function (p) {
         return [p.id, p.name];
