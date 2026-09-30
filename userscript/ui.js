@@ -40,6 +40,15 @@
     '.jof-ui-panel button{padding:4px 12px;border:1px solid #33343c;border-radius:999px;background:transparent;color:inherit;cursor:pointer}' +
     '.jof-ui-panel .opt{color:#e4572e}';
 
+  // Tampermonkey/Android 向け（タップしやすく・画面幅に追従）
+  var MOBILE_CSS =
+    '.jof-ui-fab{width:46px;height:46px;font-size:20px;left:12px;bottom:12px}' +
+    '.jof-ui-panel{width:min(360px,94vw);max-height:74vh;bottom:70px;font-size:15px;-webkit-overflow-scrolling:touch}' +
+    '.jof-ui-panel button{padding:9px 16px;font-size:14px}' +
+    '.jof-ui-panel label{margin:6px 0}' +
+    '.jof-ui-panel input[type=checkbox]{width:18px;height:18px}' +
+    '.jof-ui-panel select,.jof-ui-panel input[type=number]{padding:7px 9px;font-size:15px}';
+
   function h(tag, cls, text) {
     var e = document.createElement(tag);
     if (cls) e.className = cls;
@@ -66,7 +75,7 @@
   function injectCSS() {
     var s = document.createElement('style');
     s.id = 'jof-style';
-    s.textContent = (JOF.css || '') + CSS;
+    s.textContent = (JOF.css || '') + CSS + (JOF.mobile ? MOBILE_CSS : '');
     (document.head || document.documentElement).appendChild(s);
   }
 

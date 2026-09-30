@@ -47,7 +47,7 @@ Chrome拡張とは別に、**Safari で動くユーザースクリプト**（`ou
 
 1. App Store で **Userscripts**（https://apps.apple.com/jp/app/userscripts/id1463298887）をインストール
 2. Safari の「設定 → 機能拡張」で Userscripts を有効化し、保存先フォルダを許可
-3. 本リポジトリの Release から **`outrage-mute.user.js`** をダウンロード（または latest の直リンク `releases/latest/download/outrage-mute.user.js` を開いて追加）
+3. **raw 直リンク**を開くのが確実です: `https://raw.githubusercontent.com/yomiplush/outrage-mute/main/outrage-mute.user.js`（Tampermonkey/Userscripts がインストール画面を出します）
 4. Userscripts に読み込ませ、対象は `https://x.com/*` / `https://twitter.com/*`
 5. x.com を開くと左下に **⚙ボタン**が出ます。クリックして設定（しきい値・プリセット・カテゴリ・言語・通知の静音など）
 
