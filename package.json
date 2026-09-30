@@ -1,13 +1,14 @@
 {
   "name": "outrage-mute",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "private": true,
   "description": "Xの投稿を日本語の義憤スコアで判定し、CSSでミュートするChrome拡張（ローカル完結）",
   "type": "commonjs",
   "scripts": {
     "test": "node --test test/",
     "build:icons": "node scripts/build-icons.mjs",
-    "package": "node scripts/package.mjs",
+    "build:userscript": "node scripts/build-userscript.mjs",
+    "package": "node scripts/package.mjs && node scripts/build-userscript.mjs",
     "check": "npm test && npm run package"
   },
   "license": "MIT"

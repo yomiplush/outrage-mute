@@ -109,6 +109,25 @@
   function fetchTable(locale) {
     if (Object.prototype.hasOwnProperty.call(tables, locale)) return Promise.resolve(tables[locale]);
     if (loading[locale]) return loading[locale];
+    // 同梱ロケール（ユーザースクリプト等、fetch できない環境向け）
+    var inline = null;
+    try {
+      if (typeof globalThis !== 'undefined' && globalThis.JOF && globalThis.JOF.locales) {
+        inline = globalThis.JOF.locales[locale];
+      }
+    } catch (e) {
+      /* noop */
+    }
+    if (inline) {
+      var t0 = {};
+      Object.keys(inline).forEach(function (k) {
+        var v = inline[k];
+        if (typeof v === 'string') t0[k] = v;
+        else if (v && v.message) t0[k] = v.message;
+      });
+      tables[locale] = t0;
+      return Promise.resolve(t0);
+    }
     var url = getURL('_locales/' + locale + '/messages.json');
     if (!url || typeof fetch !== 'function') {
       tables[locale] = {};

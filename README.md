@@ -38,6 +38,22 @@ X（x.com / twitter.com）の投稿を **日本語の「義憤」スコア**で�
 3. 「パッケージ化されていない拡張機能を読み込む」で、この `outrage-mute` フォルダを選択
 4. X を開くと有効になります（アイコンクリックでポップアップ）
 
+## iOS / Safari で使う（ユーザースクリプト版）
+
+Chrome拡張とは別に、**Safari で動くユーザースクリプト**（`outrage-mute.user.js`）を Release に同梱しています。判定エンジンは拡張と同一で、`chrome.*` を localStorage に差し替えるシムと、ページ内の⚙設定パネルを足したものです。
+
+1. App Store で **Userscripts**（https://apps.apple.com/jp/app/userscripts/id1463298887）をインストール
+2. Safari の「設定 → 機能拡張」で Userscripts を有効化し、保存先フォルダを許可
+3. 本リポジトリの Release から **`outrage-mute.user.js`** をダウンロード（または latest の直リンク `releases/latest/download/outrage-mute.user.js` を開いて追加）
+4. Userscripts に読み込ませ、対象は `https://x.com/*` / `https://twitter.com/*`
+5. x.com を開くと左下に **⚙ボタン**が出ます。クリックして設定（しきい値・プリセット・カテゴリ・言語・通知の静音など）
+
+補足:
+- Userscripts にはポップアップが無いため、設定はページ内パネルで行い **localStorage** に保存します（拡張の `chrome.storage` とは別管理）
+- UI言語は同梱ロケール（日本語・英語・中国語簡体/繁体・韓国語・ロシア語・ウクライナ語）から選べます
+- 機能は拡張版と同等（ぼかし/完全非表示・再度ミュート・自分の投稿除外・通知バッジ非表示 等）
+- 生成: `npm run build:userscript`
+
 ## 使い方
 
 - ポップアップの **しきい値**（既定 0.50）を下げるほど多く隠します。
