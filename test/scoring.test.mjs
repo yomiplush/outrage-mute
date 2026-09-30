@@ -12,6 +12,7 @@ const lexicon = require('../src/lib/lexicon.js');
 const config = require('../src/lib/config.js');
 const lang = require('../src/lib/lang/index.js');
 const categories = require('../src/lib/categories.js');
+const i18n = require('../src/lib/i18n.js');
 
 test('中立な文はスコアが低い', () => {
   assert.ok(analyze('今日はいい天気だね。散歩してくる。').score < 0.2);
@@ -384,6 +385,16 @@ test('自分の投稿の除外: ハンドル解析と設定', () => {
   assert.equal(config.DEFAULTS.excludeSelf, true);
   assert.equal(config.normalizeSettings({}).excludeSelf, true);
   assert.equal(config.normalizeSettings({ excludeSelf: false }).excludeSelf, false);
+});
+
+test('UI言語: 判定言語からロケールを引く', () => {
+  // 'auto' は null（ブラウザ任せ）
+  assert.equal(i18n.localeFor('auto'), null);
+  assert.equal(i18n.localeFor('ja'), 'ja');
+  assert.equal(i18n.localeFor('zh'), 'zh_CN');
+  assert.equal(i18n.localeFor('zh_hant'), 'zh_TW');
+  assert.equal(i18n.localeFor('de'), 'de');
+  assert.equal(i18n.localeFor('latin'), null); // 統合パックはUI言語を持たない
 });
 
 test('災害・緊急情報(disaster): 独立トグルで見る/隠すを選べる', () => {

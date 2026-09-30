@@ -132,12 +132,22 @@
   }
 
   chrome.storage.onChanged.addListener(function (changes, area) {
-    if (area === 'local' && changes[config.PERSIST_KEY]) {
-      settings = config.normalizeSettings(changes[config.PERSIST_KEY].newValue || {});
-      document.body.classList.toggle('jof-reveal-all', !settings.enabled);
+    if (area !== 'local' || !changes[config.PERSIST_KEY]) return;
+    var prevLang = settings.language;
+    settings = config.normalizeSettings(changes[config.PERSIST_KEY].newValue || {});
+    document.body.classList.toggle('jof-reveal-all', !settings.enabled);
+    var go = function () {
       resetAll();
+      if (bar) {
+        bar.remove();
+        bar = null;
+      }
       scheduleScan();
-    }
+      updateBar();
+    };
+    // 言語が変わったらUI文言も読み直す（オーバーレイ/バーの表示を更新）
+    if (settings.language !== prevLang) i18n.load(i18n.localeFor(settings.language)).then(go);
+    else go();
   });
 
   // ---------------------------------------------------------------- helpers
@@ -431,15 +441,19 @@
 
   // ---------------------------------------------------------------- init
   function init() {
-    loadSettings().then(function () {
-      document.body.classList.toggle('jof-reveal-all', !settings.enabled);
-      scan();
-      observer = new MutationObserver(function () {
-        scheduleScan();
+    loadSettings()
+      .then(function () {
+        return i18n.load(i18n.localeFor(settings.language));
+      })
+      .then(function () {
+        document.body.classList.toggle('jof-reveal-all', !settings.enabled);
+        scan();
+        observer = new MutationObserver(function () {
+          scheduleScan();
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        updateBar();
       });
-      observer.observe(document.body, { childList: true, subtree: true });
-      updateBar();
-    });
   }
 
   if (document.body) init();

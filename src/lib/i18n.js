@@ -69,14 +69,96 @@
     cat_world_affairs: '世界情勢・戦争'
   };
 
-  function t(key, subs) {
-    var msg = null;
+  var DEFAULT_LOCALE = 'en';
+
+  // 判定言語 → UIロケール（_locales のディレクトリ名）
+  var LOCALE = {
+    ja: 'ja', en: 'en', zh: 'zh_CN', zh_hant: 'zh_TW', ko: 'ko', ru: 'ru', uk: 'uk',
+    de: 'de', fr: 'fr', es: 'es', it: 'it', pt: 'pt', nl: 'nl', pl: 'pl', cs: 'cs', hu: 'hu',
+    fi: 'fi', sv: 'sv', da: 'da', no: 'no', tr: 'tr', ar: 'ar', fa: 'fa', hi: 'hi', th: 'th',
+    fil: 'fil', vi: 'vi', id: 'id', ms: 'ms', bn: 'bn', ur: 'ur', ta: 'ta', te: 'te', he: 'he',
+    el: 'el', ro: 'ro', bg: 'bg', sr: 'sr', hr: 'hr', sk: 'sk', lt: 'lt', lv: 'lv', et: 'et',
+    ca: 'ca', sw: 'sw', mk: 'mk', mn: 'mn', ne: 'ne', si: 'si'
+  };
+
+  var tables = {}; // locale -> {key: message}
+  var loading = {};
+  var uiLang = null; // ユーザーが選んだUIロケール（null=ブラウザに従う）
+
+  /** 判定言語からUIロケールを求める（'auto'・統合パックは null＝ブラウザ任せ） */
+  function localeFor(language) {
+    if (!language || language === 'auto') return null;
+    return LOCALE[language] || null;
+  }
+
+  function setUILanguage(locale) {
+    uiLang = locale || null;
+  }
+
+  function getURL(path) {
     try {
-      if (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getMessage) {
-        msg = chrome.i18n.getMessage(key, subs);
+      if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
+        return chrome.runtime.getURL(path);
       }
     } catch (e) {
       /* noop */
+    }
+    return null;
+  }
+
+  function fetchTable(locale) {
+    if (Object.prototype.hasOwnProperty.call(tables, locale)) return Promise.resolve(tables[locale]);
+    if (loading[locale]) return loading[locale];
+    var url = getURL('_locales/' + locale + '/messages.json');
+    if (!url || typeof fetch !== 'function') {
+      tables[locale] = {};
+      return Promise.resolve(tables[locale]);
+    }
+    loading[locale] = fetch(url)
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (json) {
+        var out = {};
+        if (json) {
+          Object.keys(json).forEach(function (k) {
+            if (json[k] && json[k].message) out[k] = json[k].message;
+          });
+        }
+        tables[locale] = out;
+        return out;
+      })
+      .catch(function () {
+        tables[locale] = {};
+        return {};
+      });
+    return loading[locale];
+  }
+
+  /** 選択言語にUIを追従させる。locale=null ならブラウザのロケールを使う。 */
+  function load(locale) {
+    uiLang = locale || null;
+    if (!uiLang) return Promise.resolve();
+    var jobs = [fetchTable(uiLang)];
+    if (uiLang !== DEFAULT_LOCALE) jobs.push(fetchTable(DEFAULT_LOCALE));
+    return Promise.all(jobs);
+  }
+
+  function t(key, subs) {
+    var msg = null;
+    if (uiLang) {
+      // 選択言語 → 既定(en) の順で引く
+      if (tables[uiLang] && tables[uiLang][key]) msg = tables[uiLang][key];
+      if (!msg && tables[DEFAULT_LOCALE] && tables[DEFAULT_LOCALE][key]) msg = tables[DEFAULT_LOCALE][key];
+    } else {
+      // 'auto' はブラウザのロケール（chrome.i18n）
+      try {
+        if (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getMessage) {
+          msg = chrome.i18n.getMessage(key, subs);
+        }
+      } catch (e) {
+        /* noop */
+      }
     }
     if (!msg) msg = FALLBACK[key];
     if (msg == null) return key;
@@ -102,9 +184,9 @@
       el.setAttribute('title', t(el.getAttribute('data-i18n-title')));
     });
     if (typeof document !== 'undefined' && document.documentElement) {
-      document.documentElement.setAttribute('lang', (chrome && chrome.i18n && chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : 'ja'));
+      document.documentElement.setAttribute('lang', uiLang || (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getUILanguage ? chrome.i18n.getUILanguage() : 'ja'));
     }
   }
 
-  return { t: t, apply: apply, FALLBACK: FALLBACK };
+  return { t: t, apply: apply, load: load, setUILanguage: setUILanguage, localeFor: localeFor, FALLBACK: FALLBACK };
 });

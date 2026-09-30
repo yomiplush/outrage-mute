@@ -147,6 +147,7 @@
   }
 
   function readAndSave() {
+    var prevLang = settings.language;
     settings = config.normalizeSettings({
       enabled: el('enabled').checked,
       threshold: parseFloat(el('threshold').value),
@@ -166,18 +167,34 @@
     patch[config.PERSIST_KEY] = settings;
     chrome.storage.local.set(patch);
     updateResult();
+    if (settings.language !== prevLang) reloadUI();
   }
 
   function load() {
     chrome.storage.local.get([config.PERSIST_KEY, config.STATS_KEY], function (res) {
       settings = config.normalizeSettings(res[config.PERSIST_KEY] || {});
-      reflect(settings);
+      i18n.load(i18n.localeFor(settings.language)).then(function () {
+        i18n.apply();
+        reflect(settings);
+        buildLanguages(settings);
+        buildPresets(settings.preset);
+        buildCategories(settings);
+        var stats = res[config.STATS_KEY] || {};
+        var today = stats.date === new Date().toISOString().slice(0, 10) ? stats.today || 0 : 0;
+        el('statToday').textContent = String(today);
+        el('statMasked').textContent = String(stats.masked || 0);
+        updateResult();
+      });
+    });
+  }
+
+  // UI言語を選択言語に追従させて再描画する
+  function reloadUI() {
+    i18n.load(i18n.localeFor(settings.language)).then(function () {
+      i18n.apply();
       buildLanguages(settings);
+      buildPresets(settings.preset);
       buildCategories(settings);
-      var stats = res[config.STATS_KEY] || {};
-      var today = stats.date === new Date().toISOString().slice(0, 10) ? stats.today || 0 : 0;
-      el('statToday').textContent = String(today);
-      el('statMasked').textContent = String(stats.masked || 0);
       updateResult();
     });
   }
