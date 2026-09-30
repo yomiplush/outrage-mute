@@ -50,5 +50,11 @@
   "cat_world_affairs": { "message": "世界情勢・戦争" },
   "cat_disaster": { "message": "災害・緊急情報" },
   "cat_selfmock": { "message": "自虐・自己卑下" },
-  "cat_ai_topic": { "message": "AI技術・界隈" }
+  "cat_ai_topic": { "message": "AI技術・界隈" },
+  "focusMode": { "message": "アート集中モード" },
+  "focusModeHint": { "message": "攻撃的な投稿と、政治・陰謀論・AI論争・AI技術・世界情勢・災害・下品語をまとめて隠し、穏やかなタイムラインにします。OFFで元の設定に戻ります。" },
+  "quiet": { "message": "通知を静かにする" },
+  "hideNotifications": { "message": "通知バッジを隠す" },
+  "hideDm": { "message": "DMバッジを隠す" },
+  "quietHint": { "message": "X上のバッジを非表示にします（通知そのものは止まりません）。" }
 }

@@ -37,10 +37,62 @@
    * 設定が未指定(null)なら「トピック系(任意)を除く全部」を使う。
    */
   function effectiveCategories() {
+    // アート集中モード: 全カテゴリをまとめて有効化（OFFで元の設定に戻る）
+    if (settings.focusMode) return cats.CATEGORY_ORDER.slice();
     if (Array.isArray(settings.categories)) return settings.categories;
     return cats.CATEGORY_ORDER.filter(function (id) {
       return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
     });
+  }
+
+  // ---------------------------------------------------------------- 静音（通知/DMバッジ）
+  var QUIET_ROOT = '[data-testid="AppTabBar_Notifications_Link"],[data-testid="AppTabBar_DirectMessage_Link"],[data-testid="DMDrawer"]';
+
+  function hideQuiet(el) {
+    if (!el || el.dataset.jofQuiet === '1') return;
+    el.dataset.jofQuiet = '1';
+    el.style.setProperty('display', 'none', 'important');
+  }
+
+  function restoreQuiet() {
+    var hidden = document.querySelectorAll('[data-jof-quiet]');
+    for (var i = 0; i < hidden.length; i++) {
+      hidden[i].style.removeProperty('display');
+      delete hidden[i].dataset.jofQuiet;
+    }
+  }
+
+  function applyQuiet() {
+    if (!settings.hideNotifications && !settings.hideDm) {
+      restoreQuiet();
+      return;
+    }
+    var sel = [];
+    if (settings.hideNotifications) {
+      sel.push('[data-testid="AppTabBar_Notifications_Link"]', '[data-testid="DMDrawer"]');
+    }
+    if (settings.hideDm) {
+      sel.push('[data-testid="AppTabBar_DirectMessage_Link"]', '[data-testid="DMDrawer"]');
+    }
+    var roots = document.querySelectorAll(sel.join(','));
+    for (var i = 0; i < roots.length; i++) {
+      var root = roots[i];
+      // 数字だけのバッジ（未読件数）
+      var all = root.querySelectorAll('div,span');
+      for (var j = 0; j < all.length; j++) {
+        var el = all[j];
+        if (el.children.length === 0) {
+          var t = (el.textContent || '').trim();
+          if (/^[0-9]{1,3}\+?$/.test(t)) hideQuiet(el);
+        }
+      }
+      // 「未読」を示す要素
+      var labeled = root.querySelectorAll('[aria-label]');
+      for (var k = 0; k < labeled.length; k++) {
+        var al = labeled[k].getAttribute('aria-label') || '';
+        if (/unread|new posts|new items|未読/i.test(al)) hideQuiet(labeled[k]);
+      }
+    }
   }
 
   // ---------------------------------------------------------------- settings
@@ -204,6 +256,7 @@
 
   // ---------------------------------------------------------------- scanning
   function scan() {
+    applyQuiet();
     var articles = document.querySelectorAll(TWEET_SEL);
     for (var i = 0; i < articles.length; i++) {
       if (articles[i].parentElement && articles[i].parentElement.closest(TWEET_SEL)) continue;
@@ -229,6 +282,7 @@
       clearMask(cells[i]);
       delete cells[i].dataset.jofState;
     }
+    restoreQuiet();
   }
 
   // ---------------------------------------------------------------- floating bar

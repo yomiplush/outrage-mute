@@ -120,6 +120,9 @@
     el('thresholdValue').textContent = s.threshold.toFixed(2);
     el('showOverlay').checked = s.showOverlay;
     el('minLength').value = String(s.minLength);
+    el('focusMode').checked = s.focusMode;
+    el('hideNotifications').checked = s.hideNotifications;
+    el('hideDm').checked = s.hideDm;
     var modes = document.querySelectorAll('input[name="mode"]');
     for (var i = 0; i < modes.length; i++) modes[i].checked = modes[i].value === s.mode;
     var sel = el('language');
@@ -134,7 +137,10 @@
       showOverlay: el('showOverlay').checked,
       minLength: parseInt(el('minLength').value, 10),
       language: el('language') ? el('language').value : 'auto',
-      categories: readCategories()
+      categories: readCategories(),
+      focusMode: el('focusMode').checked,
+      hideNotifications: el('hideNotifications').checked,
+      hideDm: el('hideDm').checked
     });
     el('thresholdValue').textContent = settings.threshold.toFixed(2);
     var patch = {};
@@ -192,7 +198,7 @@
   }
 
   // ------------------------------------------------------------ wire up
-  ['enabled', 'threshold', 'showOverlay', 'minLength'].forEach(function (id) {
+  ['enabled', 'threshold', 'showOverlay', 'minLength', 'focusMode', 'hideNotifications', 'hideDm'].forEach(function (id) {
     el(id).addEventListener('input', readAndSave);
     el(id).addEventListener('change', readAndSave);
   });

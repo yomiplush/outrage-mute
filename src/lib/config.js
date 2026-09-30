@@ -31,7 +31,10 @@
     showOverlay: true,
     minLength: 0, // これ未満の短い投稿は判定しない
     language: 'auto', // 'auto' | 'ja' | 'en' | 'zh' | 'ko' | 'ru' | 'uk' | ...
-    categories: null // null = 既定のカテゴリ構成（OPTIONAL_CATEGORIES を除く全部）
+    categories: null, // null = 既定のカテゴリ構成（OPTIONAL_CATEGORIES を除く全部）
+    focusMode: false, // アート集中モード（全カテゴリをまとめて有効化）
+    hideNotifications: false, // X上の通知バッジを隠す
+    hideDm: false // X上のDMバッジを隠す
   };
 
   var SCORE_VERSION = '1.0.0';
@@ -45,7 +48,10 @@
       showOverlay: value.showOverlay !== false,
       minLength: clampNumber(value.minLength, 0, 500, DEFAULTS.minLength),
       language: typeof value.language === 'string' && value.language ? value.language : DEFAULTS.language,
-      categories: Array.isArray(value.categories) ? value.categories.slice() : null
+      categories: Array.isArray(value.categories) ? value.categories.slice() : null,
+      focusMode: value.focusMode === true,
+      hideNotifications: value.hideNotifications === true,
+      hideDm: value.hideDm === true
     };
     return out;
   }

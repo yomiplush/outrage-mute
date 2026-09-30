@@ -50,5 +50,11 @@
   "cat_world_affairs": { "message": "World affairs / war" },
   "cat_disaster": { "message": "Disasters / emergency" },
   "cat_selfmock": { "message": "Self-deprecation" },
-  "cat_ai_topic": { "message": "AI tech / community" }
+  "cat_ai_topic": { "message": "AI tech / community" },
+  "focusMode": { "message": "Art focus mode" },
+  "focusModeHint": { "message": "Hides outrage plus politics, conspiracy, AI debate, AI tech, world affairs, disasters and profanity all at once for a calmer timeline. Turning it off restores your settings." },
+  "quiet": { "message": "Quiet notifications" },
+  "hideNotifications": { "message": "Hide notification badge" },
+  "hideDm": { "message": "Hide DM badge" },
+  "quietHint": { "message": "Hides the badges on X (it does not stop notifications themselves)." }
 }

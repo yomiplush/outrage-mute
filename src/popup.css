@@ -98,6 +98,23 @@ input[type="range"] {
   color: var(--accent);
 }
 
+.focus {
+  border-top: none;
+  padding-top: 4px;
+}
+
+.focusRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.focusRow input {
+  accent-color: var(--accent);
+}
+
 textarea {
   width: 100%;
   resize: vertical;

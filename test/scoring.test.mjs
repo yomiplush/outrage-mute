@@ -332,6 +332,22 @@ test('AI技術・界隈(ai_topic): 論争と分けて独立トグル', () => {
   assert.ok(analyze(tech, { categories: CORE }).score < 0.5);
 });
 
+test('アート集中モード/通知設定: 既定値と正規化', () => {
+  assert.equal(config.DEFAULTS.focusMode, false);
+  assert.equal(config.DEFAULTS.hideNotifications, false);
+  assert.equal(config.DEFAULTS.hideDm, false);
+  const s = config.normalizeSettings({ focusMode: true, hideNotifications: 1, hideDm: 'yes' });
+  assert.equal(s.focusMode, true);
+  assert.equal(s.hideNotifications, false); // true のみ許可
+  assert.equal(s.hideDm, false);
+  // 集中モード相当（全カテゴリ）では、既定OFFの話題系もまとめて隠れる
+  const all = categories.CATEGORY_ORDER.slice();
+  assert.ok(analyze('首相が増税を決めた', { categories: all }).score >= 0.5, 'politics');
+  assert.ok(analyze('AI失業が心配だ', { categories: all }).score >= 0.5, 'ai_dispute');
+  assert.ok(analyze('LLMのプロンプト設計', { categories: all }).score >= 0.5, 'ai_topic');
+  assert.ok(analyze('ミサイル攻撃で死傷者', { categories: all }).score >= 0.5, 'world_affairs');
+});
+
 test('災害・緊急情報(disaster): 独立トグルで見る/隠すを選べる', () => {
   const CORE = categories.CATEGORY_ORDER.filter((id) => !config.OPTIONAL_CATEGORIES.includes(id));
   const WA = CORE.concat('world_affairs');
