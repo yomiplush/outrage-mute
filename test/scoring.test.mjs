@@ -392,6 +392,19 @@ test('自分の投稿の除外: ハンドル解析と設定', () => {
   assert.equal(config.normalizeSettings({ excludeReplies: 1 }).excludeReplies, false);
 });
 
+test('有効/無効トグル（ショートカット用）', () => {
+  assert.equal(config.toggleEnabled({ enabled: true }).enabled, false);
+  assert.equal(config.toggleEnabled({ enabled: false }).enabled, true);
+  assert.equal(config.toggleEnabled({}).enabled, false); // 既定trueの反転
+  // 他設定は保持される
+  const s = config.toggleEnabled({ enabled: true, threshold: 0.7, userWords: ['x'] });
+  assert.equal(s.threshold, 0.7);
+  assert.deepEqual(s.userWords, ['x']);
+  // i18n キーが存在する
+  assert.ok(i18n.FALLBACK.enabledOn && i18n.FALLBACK.enabledOff);
+  assert.ok(i18n.FALLBACK.toggledOn && i18n.FALLBACK.toggledOff);
+});
+
 test('UI言語: 判定言語からロケールを引く', () => {
   // 'auto' は null（ブラウザ任せ）
   assert.equal(i18n.localeFor('auto'), null);

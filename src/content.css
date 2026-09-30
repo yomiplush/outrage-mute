@@ -107,6 +107,29 @@ body.jof-reveal-all .jof-gone {
   color: #fff !important;
 }
 
+/* 有効/無効のトースト */
+.jof-toast {
+  position: fixed !important;
+  left: 50% !important;
+  bottom: 70px !important;
+  transform: translateX(-50%) !important;
+  z-index: 2147483647 !important;
+  padding: 8px 16px !important;
+  border-radius: 999px !important;
+  background: rgba(20, 20, 24, 0.94) !important;
+  color: #ffb59b !important;
+  font-size: 13px !important;
+  font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.25s ease !important;
+}
+
+.jof-toast.jof-toast-on {
+  opacity: 1 !important;
+}
+
 /* 右下の操作バー */
 .jof-bar {
   position: fixed !important;

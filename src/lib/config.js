@@ -130,6 +130,16 @@
     return value !== false;
   }
 
+  /** 有効/無効を反転した設定を返す（ショートカット等で使用） */
+  function toggleEnabled(value) {
+    var v = value || {};
+    return normalizeSettings(
+      Object.assign({}, v, {
+        enabled: v.enabled === false
+      })
+    );
+  }
+
   return {
     PERSIST_KEY: PERSIST_KEY,
     STATS_KEY: STATS_KEY,
@@ -141,6 +151,7 @@
     presetCategories: presetCategories,
     presetThreshold: presetThreshold,
     effectiveMaxLength: effectiveMaxLength,
-    effectiveReplyHide: effectiveReplyHide
+    effectiveReplyHide: effectiveReplyHide,
+    toggleEnabled: toggleEnabled
   };
 });

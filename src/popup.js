@@ -131,6 +131,7 @@
   // ------------------------------------------------------------ UI <-> storage
   function reflect(s) {
     el('enabled').checked = s.enabled;
+    el('enabledLabel').textContent = s.enabled ? t('enabledOn') : t('enabledOff');
     el('threshold').value = String(s.threshold);
     el('thresholdValue').textContent = s.threshold.toFixed(2);
     el('showOverlay').checked = s.showOverlay;
@@ -174,6 +175,7 @@
       excludeReplies: el('excludeReplies').checked
     });
     el('thresholdValue').textContent = settings.threshold.toFixed(2);
+    el('enabledLabel').textContent = settings.enabled ? t('enabledOn') : t('enabledOff');
     el('userWordsCount').textContent = t('userDictCount', [(settings.userWords || []).length]);
     var patch = {};
     patch[config.PERSIST_KEY] = settings;

@@ -516,6 +516,36 @@
     updateBar();
   }
 
+  // ---- 有効/無効のトースト表示 ----
+  var toastEl = null;
+  var toastTimer = null;
+  function showToast(text) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'jof-toast';
+      (document.body || document.documentElement).appendChild(toastEl);
+    }
+    toastEl.textContent = text;
+    toastEl.classList.add('jof-toast-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      toastEl.classList.remove('jof-toast-on');
+    }, 1600);
+  }
+
+  // ---- ショートカット: Ctrl+End で有効/無効を切替（PC）----
+  function onShortcut(e) {
+    if (!e.ctrlKey || e.altKey || e.metaKey || e.key !== 'End') return;
+    var t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    e.preventDefault();
+    var next = config.toggleEnabled(settings);
+    var patch = {};
+    patch[config.PERSIST_KEY] = next;
+    chrome.storage.local.set(patch);
+    showToast(next.enabled ? i18n.t('toggledOn') : i18n.t('toggledOff'));
+  }
+
   // ---------------------------------------------------------------- stats
   function report(result) {
     try {
@@ -541,6 +571,7 @@
         });
         observer.observe(document.body, { childList: true, subtree: true });
         updateBar();
+        document.addEventListener('keydown', onShortcut, true);
       });
   }
 

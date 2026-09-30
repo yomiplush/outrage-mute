@@ -94,7 +94,11 @@
     userDictDelete: '削除',
     userDictCount: '$1 語',
     userDictNote: '※ 部分一致のため、短い語は誤って多くを隠すことがあります。',
-    reasonUser: 'ユーザー辞書: $1'
+    reasonUser: 'ユーザー辞書: $1',
+    enabledOn: '✅ 有効',
+    enabledOff: '無効',
+    toggledOn: '義憤ミュート: 有効',
+    toggledOff: '義憤ミュート: 無効'
   };
 
   var DEFAULT_LOCALE = 'en';

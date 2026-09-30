@@ -38,7 +38,11 @@
     '.jof-ui-panel .row{display:flex;justify-content:space-between;align-items:center;gap:8px}' +
     '.jof-ui-panel .res{margin-top:6px;padding:6px 8px;border-radius:6px;background:rgba(228,87,46,.12);font-size:12px}' +
     '.jof-ui-panel button{padding:4px 12px;border:1px solid #33343c;border-radius:999px;background:transparent;color:inherit;cursor:pointer}' +
-    '.jof-ui-panel .opt{color:#e4572e}';
+    '.jof-ui-panel .opt{color:#e4572e}' +
+    '.jof-ui-panel .kbd{display:inline-block;padding:1px 6px;border:1px solid #33343c;border-radius:5px;' +
+    'font-size:10px;color:#9a9aa5;white-space:nowrap}' +
+    '.jof-ui-panel h2 .on{color:#6bd08a}' +
+    '.jof-ui-panel h2 .off{color:#9a9aa5}';
 
   // Tampermonkey/Android 向け（タップしやすく・画面幅に追従）
   var MOBILE_CSS =
@@ -250,7 +254,12 @@
 
   function render() {
     body.textContent = '';
-    body.appendChild(h('h2', null, t('title')));
+    var hd = h('h2');
+    hd.appendChild(document.createTextNode(t('title') + '　'));
+    hd.appendChild(h('span', 'kbd', 'Ctrl+End'));
+    var onOff = h('span', settings.enabled ? 'on' : 'off', '　' + (settings.enabled ? t('enabledOn') : t('enabledOff')));
+    hd.appendChild(onOff);
+    body.appendChild(hd);
     body.appendChild(check('enabled', t('enabled'), settings.enabled));
     body.appendChild(heading(t('focusMode')));
     var presetOpts = config.PRESET_KEYS.map(function (k) {
@@ -357,6 +366,17 @@
         injectCSS();
         buildShell();
         render();
+        // ショートカット(Ctrl+End)や他画面での変更を反映（トグル処理は content.js 側）
+        try {
+          chrome.storage.onChanged.addListener(function (changes, area) {
+            if (area === 'local' && changes[config.PERSIST_KEY]) {
+              settings = config.normalizeSettings(changes[config.PERSIST_KEY].newValue || {});
+              render();
+            }
+          });
+        } catch (e) {
+          /* noop */
+        }
       });
     });
   }
