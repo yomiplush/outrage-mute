@@ -139,6 +139,7 @@
     el('hideNotifications').checked = s.hideNotifications;
     el('hideNotificationTab').checked = s.hideNotificationTab;
     el('hideDm').checked = s.hideDm;
+    el('excludeSelf').checked = s.excludeSelf;
     var modes = document.querySelectorAll('input[name="mode"]');
     for (var i = 0; i < modes.length; i++) modes[i].checked = modes[i].value === s.mode;
     var sel = el('language');
@@ -157,7 +158,8 @@
       preset: el('preset') ? el('preset').value : 'off',
       hideNotifications: el('hideNotifications').checked,
       hideNotificationTab: el('hideNotificationTab').checked,
-      hideDm: el('hideDm').checked
+      hideDm: el('hideDm').checked,
+      excludeSelf: el('excludeSelf').checked
     });
     el('thresholdValue').textContent = settings.threshold.toFixed(2);
     var patch = {};
@@ -215,7 +217,7 @@
   }
 
   // ------------------------------------------------------------ wire up
-  ['enabled', 'threshold', 'showOverlay', 'minLength', 'hideNotifications', 'hideNotificationTab', 'hideDm'].forEach(function (id) {
+  ['enabled', 'threshold', 'showOverlay', 'minLength', 'hideNotifications', 'hideNotificationTab', 'hideDm', 'excludeSelf'].forEach(function (id) {
     el(id).addEventListener('input', readAndSave);
     el(id).addEventListener('change', readAndSave);
   });

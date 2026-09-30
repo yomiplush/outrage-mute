@@ -82,6 +82,31 @@ body.jof-reveal-all .jof-gone {
   display: block !important;
 }
 
+/* 表示した投稿の右上に出る「再度ミュート」ボタン */
+.jof-relative {
+  position: relative !important;
+}
+
+.jof-remute {
+  position: absolute !important;
+  top: 6px !important;
+  right: 8px !important;
+  z-index: 6 !important;
+  padding: 3px 10px !important;
+  border: 1px solid rgba(228, 87, 46, 0.8) !important;
+  border-radius: 999px !important;
+  background: rgba(20, 20, 24, 0.85) !important;
+  color: #ffb59b !important;
+  font-size: 11px !important;
+  font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif !important;
+  cursor: pointer !important;
+}
+
+.jof-remute:hover {
+  background: rgba(228, 87, 46, 0.9) !important;
+  color: #fff !important;
+}
+
 /* 右下の操作バー */
 .jof-bar {
   position: fixed !important;

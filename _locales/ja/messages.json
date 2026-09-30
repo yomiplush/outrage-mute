@@ -61,5 +61,8 @@
   "hideNotifications": { "message": "通知バッジを隠す" },
   "hideNotificationTab": { "message": "通知タブごと隠す" },
   "hideDm": { "message": "DMバッジを隠す" },
-  "quietHint": { "message": "X上のバッジ／タブを非表示にします（通知そのものは止まりません）。" }
+  "quietHint": { "message": "X上のバッジ／タブを非表示にします（通知そのものは止まりません）。" },
+  "excludeSelf": { "message": "自分の投稿はフィルターから除外" },
+  "remute": { "message": "ミュート" },
+  "remuteTitle": { "message": "この投稿を再度ミュートする" }
 }

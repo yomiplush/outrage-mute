@@ -19,6 +19,7 @@
   var config = JOF.config;
   var cats = JOF.categories;
   var i18n = JOF.i18n;
+  var selfpost = JOF.selfpost;
 
   var TWEET_SEL = 'article[data-testid="tweet"]';
   var CELL_SEL = '[data-testid="cellInnerDiv"]';
@@ -166,9 +167,55 @@
 
   // ---------------------------------------------------------------- masking
   function clearMask(cell) {
-    cell.classList.remove('jof-masked', 'jof-blur', 'jof-gone');
+    cell.classList.remove('jof-masked', 'jof-blur', 'jof-gone', 'jof-relative');
     var ov = cell.querySelector(':scope > .jof-overlay');
     if (ov) ov.remove();
+    var rb = cell.querySelector(':scope > .jof-remute');
+    if (rb) rb.remove();
+  }
+
+  /** 表示した投稿の右上に「再度ミュート」ボタンを付ける */
+  function addRemuteButton(cell, result) {
+    if (settings.mode === 'hide') return; // 完全非表示は個別に戻せない
+    if (cell.querySelector(':scope > .jof-remute')) return;
+    cell.classList.add('jof-relative');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'jof-remute';
+    b.textContent = i18n.t('remute');
+    b.title = i18n.t('remuteTitle');
+    b.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      b.remove();
+      cell.classList.remove('jof-relative');
+      mask(cell, result);
+    });
+    cell.appendChild(b);
+  }
+
+  // ---- 自分のハンドル検出（自分の投稿は除外できるように）----
+  var ownHandle = null;
+  function detectOwnHandle() {
+    if (ownHandle) return ownHandle;
+    if (!selfpost) return null;
+    var btn = document.querySelector('[data-testid="SideNav_AccountSwitcher_Button"]');
+    if (btn) ownHandle = selfpost.parseHandle(btn.textContent || '');
+    if (!ownHandle) {
+      var a = document.querySelector('a[data-testid="AppTabBar_Profile_Link"]');
+      var href = a ? a.getAttribute('href') || '' : '';
+      var m = href.match(/^\/([A-Za-z0-9_]{1,15})$/);
+      if (m) ownHandle = m[1].toLowerCase();
+    }
+    return ownHandle;
+  }
+
+  function isOwnArticle(article) {
+    if (!settings.excludeSelf) return false;
+    var own = detectOwnHandle();
+    if (!own) return false;
+    var un = article.querySelector('[data-testid="User-Name"]');
+    return !!(un && selfpost.isOwn(own, un.textContent));
   }
 
   function mask(cell, result) {
@@ -210,6 +257,7 @@
       e.stopPropagation();
       clearMask(cell);
       cell.dataset.jofState = 'shown';
+      addRemuteButton(cell, result);
       updateBar();
     });
 
@@ -247,6 +295,12 @@
 
     if (!settings.enabled) {
       cell.dataset.jofState = 'off';
+      return;
+    }
+
+    // 自分の投稿は除外（トグル）
+    if (isOwnArticle(article)) {
+      cell.dataset.jofState = 'self';
       return;
     }
 

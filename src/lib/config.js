@@ -38,7 +38,8 @@
     preset: 'off',
     hideNotifications: false, // X上の通知バッジを隠す
     hideNotificationTab: false, // 通知タブ自体を隠す
-    hideDm: false // X上のDMバッジを隠す
+    hideDm: false, // X上のDMバッジを隠す
+    excludeSelf: true // 自分の投稿はフィルターから除外する
   };
 
   var SCORE_VERSION = '1.0.0';
@@ -57,7 +58,8 @@
       preset: PRESET_KEYS.indexOf(value.preset) >= 0 ? value.preset : value.focusMode === true ? 'normal' : DEFAULTS.preset,
       hideNotifications: value.hideNotifications === true,
       hideNotificationTab: value.hideNotificationTab === true,
-      hideDm: value.hideDm === true
+      hideDm: value.hideDm === true,
+      excludeSelf: value.excludeSelf !== false
     };
     return out;
   }

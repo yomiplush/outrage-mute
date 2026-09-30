@@ -372,6 +372,20 @@ test('アート集中モード/通知設定: 既定値・プリセット・正�
   assert.ok(analyze('首相が増税を決めた', { categories: core }).score < 0.5, 'soft keeps politics');
 });
 
+test('自分の投稿の除外: ハンドル解析と設定', () => {
+  const sp = require('../src/lib/selfpost.js');
+  assert.equal(sp.parseHandle('@yomiplush ・ 2時間'), 'yomiplush');
+  assert.equal(sp.parseHandle('表示名 @My_Handle 123'), 'my_handle');
+  assert.equal(sp.parseHandle('ハンドルなし'), null);
+  assert.ok(sp.isOwn('yomiplush', '@YomiPlush · 2h'));
+  assert.ok(!sp.isOwn('yomiplush', '@someone_else'));
+  assert.ok(!sp.isOwn(null, '@anyone'));
+  // 既定は除外する（true）
+  assert.equal(config.DEFAULTS.excludeSelf, true);
+  assert.equal(config.normalizeSettings({}).excludeSelf, true);
+  assert.equal(config.normalizeSettings({ excludeSelf: false }).excludeSelf, false);
+});
+
 test('災害・緊急情報(disaster): 独立トグルで見る/隠すを選べる', () => {
   const CORE = categories.CATEGORY_ORDER.filter((id) => !config.OPTIONAL_CATEGORIES.includes(id));
   const WA = CORE.concat('world_affairs');

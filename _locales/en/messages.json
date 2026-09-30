@@ -61,5 +61,8 @@
   "hideNotifications": { "message": "Hide notification badge" },
   "hideNotificationTab": { "message": "Hide the notifications tab" },
   "hideDm": { "message": "Hide DM badge" },
-  "quietHint": { "message": "Hides badges/tabs on X (it does not stop notifications themselves)." }
+  "quietHint": { "message": "Hides badges/tabs on X (it does not stop notifications themselves)." },
+  "excludeSelf": { "message": "Don't filter my own posts" },
+  "remute": { "message": "Mute" },
+  "remuteTitle": { "message": "Mute this post again" }
 }
