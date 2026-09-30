@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "default_locale": "en",
   "description": "__MSG_extDesc__",
   "permissions": ["storage"],
@@ -47,6 +47,8 @@
         "src/lib/lang/index.js",
         "src/lib/lang/style.js",
         "src/lib/lang/disaster.js",
+        "src/lib/lang/selfmock.js",
+        "src/lib/lang/aitopic.js",
         "src/lib/i18n.js",
         "src/lib/scoring.js",
         "src/content.js"

@@ -286,6 +286,52 @@ test('文体・口調(tone): 語彙が無くても義憤を検出し、ポジテ
   assert.ok(categories.CATEGORY_LABELS.tone, 'tone label');
 });
 
+test('自虐(selfmock): 独立トグルで見る/隠すを選べる', () => {
+  const CORE = categories.CATEGORY_ORDER.filter((id) => !config.OPTIONAL_CATEGORIES.includes(id));
+  const NO_SELF = CORE.filter((id) => id !== 'selfmock');
+  // 既定はON（今どおり隠す）
+  assert.ok(!config.OPTIONAL_CATEGORIES.includes('selfmock'));
+  for (const t of ['俺は本当にクズだな。何もできない。', 'どうせ俺なんて生きる価値ないし', 'もう消えたい。死にたい。']) {
+    const r = analyze(t, { categories: CORE });
+    assert.ok(r.score >= 0.5, `${t} -> ${r.score}`);
+    assert.ok(r.categories.includes('selfmock'), `${t} selfmock`);
+    // OFFにすると見える
+    assert.ok(analyze(t, { categories: NO_SELF }).score < 0.5, `off: ${t}`);
+  }
+  // 他者への攻撃は selfmock OFF でも隠れる
+  const other = analyze('お前は本当にクズだな。消えろ。', { categories: NO_SELF });
+  assert.ok(other.score >= 0.5, `other=${other.score}`);
+  assert.ok(!other.categories.includes('selfmock'));
+  // 英語も（一人称＋否定）
+  assert.ok(analyze("i hate myself, i'm worthless", { categories: CORE }).categories.includes('selfmock'));
+  assert.ok(!analyze('i hate you, you are worthless', { categories: CORE }).categories.includes('selfmock'));
+});
+
+test('AI技術・界隈(ai_topic): 論争と分けて独立トグル', () => {
+  const CORE = categories.CATEGORY_ORDER.filter((id) => !config.OPTIONAL_CATEGORIES.includes(id));
+  const DISPUTE = CORE.concat('ai_dispute');
+  const TOPIC = CORE.concat('ai_topic');
+  const tech = 'LLMのプロンプト設計とファインチューニングを試した';
+  const techEn = 'Fine-tuning ChatGPT with PyTorch and prompt engineering';
+  const dispute = 'AI失業が心配だ。AI規制が必要。';
+  const disputeEn = 'ai will replace all our jobs';
+
+  assert.ok(config.OPTIONAL_CATEGORIES.includes('ai_topic'));
+  // 技術話題は ai_topic で隠せる
+  assert.ok(analyze(tech, { categories: TOPIC }).score >= 0.5);
+  assert.ok(analyze(tech, { categories: TOPIC }).categories.includes('ai_topic'));
+  assert.ok(analyze(techEn, { categories: TOPIC }).categories.includes('ai_topic'));
+  // 技術話題は ai_dispute では隠れない
+  assert.ok(analyze(tech, { categories: DISPUTE }).score < 0.5, 'tech via dispute');
+  // 論争は ai_dispute で隠れる／ai_topic では隠れない
+  assert.ok(analyze(dispute, { categories: DISPUTE }).score >= 0.5);
+  assert.ok(analyze(dispute, { categories: DISPUTE }).categories.includes('ai_dispute'));
+  assert.ok(analyze(disputeEn, { categories: DISPUTE }).categories.includes('ai_dispute'));
+  assert.ok(analyze(disputeEn, { categories: TOPIC }).score < 0.5, 'dispute via topic');
+  // 既定では両方とも見える
+  assert.ok(analyze(tech, { categories: CORE }).score < 0.5);
+});
+
 test('災害・緊急情報(disaster): 独立トグルで見る/隠すを選べる', () => {
   const CORE = categories.CATEGORY_ORDER.filter((id) => !config.OPTIONAL_CATEGORIES.includes(id));
   const WA = CORE.concat('world_affairs');

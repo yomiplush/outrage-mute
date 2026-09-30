@@ -21,12 +21,14 @@
     cynicism: '冷笑・皮肉',
     urgency: '危機煽り',
     tone: '文体・口調',
+    selfmock: '自虐・自己卑下',
     profanity: '差別・蔑称語',
     badwords: '下品・罵倒語',
     amplifier: '感情誇張',
     politics: '政治',
     conspiracy: '陰謀論',
     ai_dispute: 'AI論争',
+    ai_topic: 'AI技術・界隈',
     world_affairs: '世界情勢・戦争',
     disaster: '災害・緊急情報'
   };
@@ -41,10 +43,12 @@
     'urgency',
     'cynicism',
     'tone',
+    'selfmock',
     'amplifier',
     'politics',
     'conspiracy',
     'ai_dispute',
+    'ai_topic',
     'world_affairs',
     'disaster',
     'badwords'

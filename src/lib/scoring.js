@@ -23,13 +23,15 @@
       require('./lang/index.js'),
       require('./lang/build.js'),
       require('./lang/style.js'),
-      require('./lang/disaster.js')
+      require('./lang/disaster.js'),
+      require('./lang/selfmock.js'),
+      require('./lang/aitopic.js')
     );
   } else {
     var JOF = root.JOF = root.JOF || {};
-    JOF.scoring = factory(JOF.normalize, JOF.categories, JOF.lang, JOF.langBuild, JOF.style, JOF.disaster);
+    JOF.scoring = factory(JOF.normalize, JOF.categories, JOF.lang, JOF.langBuild, JOF.style, JOF.disaster, JOF.selfmock, JOF.aitopic);
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (normalize, categories, lang, build, style, disaster) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (normalize, categories, lang, build, style, disaster, selfmock, aitopic) {
   'use strict';
 
   var SATURATION = 2.4;
@@ -101,10 +103,22 @@
       byCat[cat] = (byCat[cat] || 0) + w;
       if (entry) terms.push(entry);
     }
-    function emit(hit, w, kind) {
-      // 災害系は world_affairs から disaster へ移し替える（見る/隠すを独立制御するため）
+    function emit(hit, w, kind, start, end) {
       var cat = hit.cat;
+      // 災害系は world_affairs から disaster へ移し替える（見る/隠すを独立制御するため）
       if (cat === 'world_affairs' && disaster && disaster.isTerm(hit.n, pack.id)) cat = 'disaster';
+      // AI の技術・界隈の話題は ai_dispute から ai_topic へ移し替える
+      if (cat === 'ai_dispute' && aitopic && aitopic.isTerm(hit.n, pack.id)) cat = 'ai_topic';
+      // 自虐（自己卑下そのもの／一人称＋否定語）は selfmock へ移し替える
+      if (cat !== 'selfmock' && selfmock) {
+        if (
+          selfmock.isSelfTerm(hit.n, pack.id) ||
+          (typeof start === 'number' &&
+            selfmock.isSelfContext(text, start, typeof end === 'number' ? end : start, pack.id))
+        ) {
+          cat = 'selfmock';
+        }
+      }
       add(cat, w, {
         term: hit.term,
         cat: cat,
@@ -130,6 +144,16 @@
     if (disaster) {
       var ex = disaster.extraIndex(pack);
       if (ex && ex.index) scanExtra(ex.match, ex.index, text, emit);
+    }
+    // ---- 辞書に無い自虐表現（どうせ俺/自分なんて 等）----
+    if (selfmock) {
+      var exs = selfmock.extraIndex(pack);
+      if (exs && exs.index) scanExtra(exs.match, exs.index, text, emit);
+    }
+    // ---- 辞書に無い AI 技術・界隈の語（機械学習/プロンプト 等）----
+    if (aitopic) {
+      var exa = aitopic.extraIndex(pack);
+      if (exa && exa.index) scanExtra(exa.match, exa.index, text, emit);
     }
 
     // ---- 4. 文型パターン ----
@@ -267,7 +291,7 @@
           w *= 0.5;
           if (kind === 'normal') kind = 'quoted';
         }
-        emit(hit, w, kind);
+        emit(hit, w, kind, i, end);
       }
       i = end;
     }
@@ -331,7 +355,7 @@
           w *= 0.5;
           if (kind === 'normal') kind = 'quoted';
         }
-        emit(hit, w, kind);
+        emit(hit, w, kind, toks[i].start, toks[i + n - 1].end);
       }
       i += n;
     }
@@ -369,7 +393,7 @@
           i++;
           continue;
         }
-        emit(hit, hit.w, 'disaster');
+        emit(hit, hit.w, 'disaster', toks[i].start, toks[i + n - 1].end);
         i += n;
       }
     } else {
@@ -389,7 +413,7 @@
           j++;
           continue;
         }
-        emit(hit2, hit2.w, 'disaster');
+        emit(hit2, hit2.w, 'disaster', j, j + hit2.n.length);
         j += hit2.n.length;
       }
     }

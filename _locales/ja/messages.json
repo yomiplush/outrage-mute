@@ -48,5 +48,7 @@
   "cat_conspiracy": { "message": "陰謀論" },
   "cat_ai_dispute": { "message": "AI論争" },
   "cat_world_affairs": { "message": "世界情勢・戦争" },
-  "cat_disaster": { "message": "災害・緊急情報" }
+  "cat_disaster": { "message": "災害・緊急情報" },
+  "cat_selfmock": { "message": "自虐・自己卑下" },
+  "cat_ai_topic": { "message": "AI技術・界隈" }
 }

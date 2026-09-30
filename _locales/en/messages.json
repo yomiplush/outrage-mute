@@ -48,5 +48,7 @@
   "cat_conspiracy": { "message": "Conspiracy" },
   "cat_ai_dispute": { "message": "AI debate" },
   "cat_world_affairs": { "message": "World affairs / war" },
-  "cat_disaster": { "message": "Disasters / emergency" }
+  "cat_disaster": { "message": "Disasters / emergency" },
+  "cat_selfmock": { "message": "Self-deprecation" },
+  "cat_ai_topic": { "message": "AI tech / community" }
 }

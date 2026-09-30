@@ -18,6 +18,7 @@
     'politics',
     'conspiracy',
     'ai_dispute',
+    'ai_topic',
     'world_affairs',
     'disaster',
     'badwords'
