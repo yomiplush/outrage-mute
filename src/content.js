@@ -533,9 +533,11 @@
     }, 1600);
   }
 
-  // ---- ショートカット: Shift+End で有効/無効を切替（PC）----
+  // ---- ショートカット: Shift+1 で有効/無効を切替（PC）----
   function onShortcut(e) {
-    if (!e.shiftKey || e.ctrlKey || e.altKey || e.metaKey || e.key !== 'End') return;
+    if (!e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+    // 配列差を吸収（US/JIS いずれも Shift+1 はコード Digit1）
+    if (e.code !== 'Digit1' && e.key !== '!') return;
     var t = e.target;
     if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
     e.preventDefault();
