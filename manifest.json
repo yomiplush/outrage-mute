@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "default_locale": "ja",
   "description": "__MSG_extDesc__",
   "permissions": ["storage"],
@@ -39,6 +39,7 @@
         "src/lib/lang/ja.js",
         "src/lib/lang/en.js",
         "src/lib/lang/zh.js",
+        "src/lib/lang/zh_hant.js",
         "src/lib/lang/ko.js",
         "src/lib/lang/ru.js",
         "src/lib/lang/uk.js",

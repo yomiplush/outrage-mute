@@ -19,7 +19,7 @@ X（x.com / twitter.com）の投稿を **日本語の「義憤」スコア**で�
 - 右下の操作バーから「全表示／隠す」「一時停止」を切替
 - ポップアップでしきい値・隠し方・検出カテゴリを設定し、**その場でスコアを試せる**
 - **政治・陰謀論・AI論争・世界情勢（戦争/テロ/災害）・下品語**をまとめて隠すオプショントグル（既定OFF）
-- **多言語対応**: 日本語 / 英語 / 中国語 / 韓国語 / ロシア語 / ウクライナ語、ほか LDNOOBW が持つ24言語。**投稿ごとに言語を自動判定**
+- **多言語対応**: 日本語 / 英語 / 中国語（簡体・繁体） / 韓国語 / ロシア語 / ウクライナ語、ほか LDNOOBW が持つ言語。**投稿ごとに言語を自動判定**（簡体字と繁体字も判別）
 - UI も多言語化（`_locales`。Chrome の表示言語に追従）
 - きょう隠した数のバッジ表示（統計）
 
@@ -89,12 +89,13 @@ X（x.com / twitter.com）の投稿を **日本語の「義憤」スコア**で�
 | 日本語 `ja` | 部分一致 | 語尾（〜ない） | 自作 ＋ MosasoM(MIT) ＋ 話題語 |
 | 英語 `en` | 単語境界 | 前置（not / don't） | 自作 ＋ LDNOOBW(CC-BY-4.0) |
 | 中国語(簡体) `zh` | 部分一致 | 前置（不 / 没） | 自作 ＋ LDNOOBW |
+| 中国語(繁体) `zh_hant` | 部分一致 | 前置（不 / 沒） | 自作 |
 | 韓国語 `ko` | 部分一致 | 前置（못 / 아니） | 自作 ＋ LDNOOBW |
 | ロシア語 `ru` | 単語境界 | 前置（не / ни） | 自作 ＋ LDNOOBW |
 | ウクライナ語 `uk` | 単語境界 | 前置（не / ні） | 自作 |
 | その他約20言語 | 言語による | － | LDNOOBW（`badwords` のみ） |
 
-- 投稿ごとに**言語を自動判定**（かな/漢字→ja、ハングル→ko、キリル→ru/uk、ラテン→en …）。ポップアップで固定もできます。
+- 投稿ごとに**言語を自動判定**（かな/漢字→ja、ハングル→ko、キリル→ru/uk、ラテン→en …）。**中国語は簡体字と繁体字を判別**します（例: `战争` vs `戰爭`）。ポップアップで固定もできます。
 - 英語など分かち書きする言語は**単語境界**で照合するので、`class` の中の `ass` を拾いません。
 - 新しい言語を足すのは、`src/lib/lang/<code>.js` を1つ書いて `index.js` に登録するだけです（LDNOOBW にある言語はデータだけで自動登録されます）。
 
@@ -128,7 +129,7 @@ X（x.com / twitter.com）の投稿を **日本語の「義憤」スコア**で�
 ```
 outrage-mute/
 ├── manifest.json                 # MV3（default_locale: ja）
-├── _locales/{ja,en,zh_CN,ko,ru,uk}/messages.json  # UI 多言語
+├── _locales/{ja,en,zh_CN,zh_TW,ko,ru,uk}/messages.json  # UI 多言語
 ├── icons/                        # 16/32/48/128（生成）
 ├── src/
 │   ├── background.js             # 既定設定・バッジ・統計
@@ -142,7 +143,7 @@ outrage-mute/
 │       ├── lexicon.*.js          # 日本語辞書（curated/vendor/topics）
 │       ├── lang/
 │       │   ├── build.js          # 索引ビルダー（substring / word）
-│       │   ├── ja.js en.js zh.js ko.js ru.js uk.js  # 言語パック
+│       │   ├── ja.js en.js zh.js zh_hant.js ko.js ru.js uk.js  # 言語パック
 │       │   ├── index.js          # レジストリ＋言語自動判定
 │       │   └── data/ldnoobw.js   # 多言語罵倒語（生成）
 │       ├── i18n.js               # UI 文言ヘルパー

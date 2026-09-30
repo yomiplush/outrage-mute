@@ -193,3 +193,24 @@ test('bangla: 言語パックは同じカテゴリ id を使う', () => {
     assert.ok(categories.CATEGORY_LABELS[id], `label: ${id}`);
   }
 });
+
+test('中国語: 簡体字と繁体字を区別して判定する', () => {
+  assert.equal(lang.detect('你这个傻逼'), 'zh');
+  assert.equal(lang.detect('你這個傻逼'), 'zh_hant');
+  assert.ok(lang.get('zh_hant'), 'zh_hant pack');
+
+  const hans = analyze('你这个傻逼，滚出去！', {});
+  const hant = analyze('你這個傻逼，滾出去！', {});
+  assert.equal(hans.lang, 'zh');
+  assert.equal(hant.lang, 'zh_hant');
+  assert.ok(hans.score > 0.7 && hant.score > 0.7, `hans=${hans.score} hant=${hant.score}`);
+
+  // 繁体字の話題系
+  assert.ok(analyze('戰爭爆發，平民遭屠殺', {}).score > 0.7);
+  assert.equal(analyze('戰爭爆發，平民遭屠殺', {}).lang, 'zh_hant');
+
+  // 簡体字パックは繁体字表記に当たらない（別字体なので別辞書が必要）
+  assert.equal(analyze('戰爭', { lang: 'zh' }).score, 0);
+  assert.ok(analyze('戰爭', { lang: 'zh_hant' }).score > 0.5);
+  assert.equal(analyze('战争', { lang: 'zh_hant' }).score, 0);
+});

@@ -11,6 +11,7 @@
       require('./ja.js'),
       require('./en.js'),
       require('./zh.js'),
+      require('./zh_hant.js'),
       require('./ko.js'),
       require('./ru.js'),
       require('./uk.js'),
@@ -23,6 +24,7 @@
       JOF.langJa,
       JOF.langEn,
       JOF.langZh,
+      JOF.langZhHant,
       JOF.langKo,
       JOF.langRu,
       JOF.langUk,
@@ -30,11 +32,11 @@
       JOF.ldnoobw
     );
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (ja, en, zh, ko, ru, uk, build, ldnoobw) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (ja, en, zh, zhHant, ko, ru, uk, build, ldnoobw) {
   'use strict';
 
   var PACKS = {};
-  [ja, en, zh, ko, ru, uk].forEach(function (p) {
+  [ja, en, zh, zhHant, ko, ru, uk].forEach(function (p) {
     if (p && p.id) PACKS[p.id] = p;
   });
 
@@ -46,7 +48,7 @@
     sv: 'Svenska', th: 'ไทย', tr: 'Türkçe', zh: '中文'
   };
 
-  var SUBSTRING_LANGS = { zh: 1, ja: 1, ko: 1, th: 1 };
+  var SUBSTRING_LANGS = { zh: 1, zh_hant: 1, ja: 1, ko: 1, th: 1 };
   var GENERIC_NEGATION = ['not', 'no', 'never', 'не', 'nicht', 'no', 'não', 'non', 'não'];
 
   // LDNOOBW にしか無い言語は、badwords だけの汎用パックにする
@@ -78,6 +80,23 @@
 
   var DEFAULT_LANG = 'ja';
 
+  // 簡体字/繁体字を区別するための判別文字（各字体に特徴的な字）
+  var HANS_CHARS =
+    '这个说国战开关门时间话语实体发对后听写读买卖义议乐药医书画学绝废脑残瘫货贱杂种无耻脸厌恶该气愤仇恨闭嘴滚杀网举报须毫疑显从汉贼军圣键盘侠红狼应报紧转扩盘经济来及选举总统执党官员税阴谋济尔减幕后黑讯闻伪点胁导弹袭击枪啸变严难灭';
+  var HANT_CHARS =
+    '這個說道國戰開關門時間話語實體發對後聽寫讀買賣義議樂藥醫書畫學絕廢腦殘癱貨賤雜種無恥臉厭惡該氣憤仇恨閉嘴滾殺網舉報須毫疑顯從漢賊軍聖鍵盤俠紅狼應報緊轉擴盤經濟來及選舉總統執黨官員稅陰謀濟爾減幕後黑訊聞偽點脅導彈襲擊槍嘯變嚴難滅';
+
+  function hanVariant(s) {
+    var hans = 0;
+    var hant = 0;
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charAt(i);
+      if (HANS_CHARS.indexOf(c) >= 0) hans++;
+      else if (HANT_CHARS.indexOf(c) >= 0) hant++;
+    }
+    return hant > hans ? 'zh_hant' : 'zh';
+  }
+
   function detect(text) {
     var s = String(text == null ? '' : text);
     var n = Math.min(s.length, 2000);
@@ -98,7 +117,7 @@
     }
     if (hangul > 0) return 'ko';
     if (hira + kata > 0) return 'ja';
-    if (han > 0) return 'zh';
+    if (han > 0) return hanVariant(s);
     if (thai > 0) return 'th';
     if (arab > 0) return 'ar';
     if (devan > 0) return 'hi';

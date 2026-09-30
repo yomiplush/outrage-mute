@@ -1,0 +1,50 @@
+{
+  "extName": { "message": "義憤靜音" },
+  "extDesc": {
+    "message": "為 X 的貼文計算義憤分數，用 CSS 模糊或隱藏。完全本機執行（不傳送資料），支援多語言。"
+  },
+  "title": { "message": "義憤靜音" },
+  "enabled": { "message": "啟用" },
+  "note": {
+    "message": "一切都在你的裝置上判定（不傳送任何資料）。達到門檻的貼文會被模糊或隱藏。願你保持平靜。"
+  },
+  "threshold": { "message": "門檻" },
+  "thresholdHint": { "message": "越低隱藏得越多（誤判也會增加）。" },
+  "mode": { "message": "隱藏方式" },
+  "modeBlur": { "message": "模糊（點擊顯示）" },
+  "modeHide": { "message": "完全隱藏" },
+  "showOverlay": { "message": "顯示理由標籤" },
+  "minLength": { "message": "最短字數" },
+  "language": { "message": "語言" },
+  "languageAuto": { "message": "自動判定" },
+  "categories": { "message": "偵測類別" },
+  "categoriesHint": {
+    "message": "前七項判斷「語氣是否具攻擊性」。後面（政治、陰謀論、AI 爭論、世界局勢、粗俗語）為話題類，預設關閉。"
+  },
+  "optionalSuffix": { "message": "（選用）" },
+  "tryScore": { "message": "測試分數" },
+  "samplePlaceholder": { "message": "在此輸入貼文（例如：絕對不可原諒。）" },
+  "statToday": { "message": "今日已隱藏" },
+  "statTotal": { "message": "累計" },
+  "reset": { "message": "重設設定" },
+  "maskedBadge": { "message": "已靜音 $1%" },
+  "show": { "message": "顯示" },
+  "hide": { "message": "隱藏" },
+  "pause": { "message": "暫停" },
+  "resume": { "message": "繼續" },
+  "barLabel": { "message": "已靜音: $1" },
+  "cat_attack": { "message": "攻擊·侮辱" },
+  "cat_hostility": { "message": "憎恨·敵意" },
+  "cat_incitement": { "message": "煽動·號召" },
+  "cat_absolute": { "message": "斷言·絕對化" },
+  "cat_othering": { "message": "對立·標籤" },
+  "cat_cynicism": { "message": "冷笑·諷刺" },
+  "cat_urgency": { "message": "危機煽動" },
+  "cat_profanity": { "message": "歧視·蔑稱" },
+  "cat_badwords": { "message": "粗俗·罵語" },
+  "cat_amplifier": { "message": "情緒誇張" },
+  "cat_politics": { "message": "政治" },
+  "cat_conspiracy": { "message": "陰謀論" },
+  "cat_ai_dispute": { "message": "AI 爭論" },
+  "cat_world_affairs": { "message": "世界局勢·戰爭" }
+}
