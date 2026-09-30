@@ -533,7 +533,7 @@
     }, 1600);
   }
 
-  // ---- ショートカット: Shift+1 で有効/無効を切替（PC）----
+  // ---- ショートカット: Shift+1 で有効/無効を切替（PCのみ・タッチ端末では無効）----
   function onShortcut(e) {
     if (!e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
     // 配列差を吸収（US/JIS いずれも Shift+1 はコード Digit1）
@@ -573,7 +573,10 @@
         });
         observer.observe(document.body, { childList: true, subtree: true });
         updateBar();
-        document.addEventListener('keydown', onShortcut, true);
+        // タッチ端末（iOS/Android）ではショートカットを登録しない（タッチ優先）
+        if (!(JOF.platform && JOF.platform.detect())) {
+          document.addEventListener('keydown', onShortcut, true);
+        }
       });
   }
 

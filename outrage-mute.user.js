@@ -2,7 +2,7 @@
 // @name         義憤ミュート (Outrage Mute)
 // @name:en      Outrage Mute
 // @namespace    https://github.com/yomiplush/outrage-mute
-// @version      0.22.2
+// @version      0.23.0
 // @description  X の投稿を義憤スコアで判定し、CSS でぼかし/非表示にします（ローカル完結・外部送信なし・多言語対応）
 // @description:en  Score X posts for outrage and blur/hide them with CSS. Fully local (no external requests), multilingual.
 // @author       yomiplush
@@ -449,6 +449,49 @@ window.JOF.mobile = false;
     effectiveReplyHide: effectiveReplyHide,
     toggleEnabled: toggleEnabled
   };
+});
+
+
+/* ===== src/lib/platform.js ===== */
+
+/**
+ * 実行環境（タッチ端末かどうか）の判定。
+ *
+ * iOS / Android ではキーボードショートカットを無効にしてタッチ操作を優先する。
+ * UA 依存の純関数にしてテスト可能にしてある。
+ */
+(function (root, factory) {
+  'use strict';
+  var api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else (root.JOF = root.JOF || {}).platform = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+
+  /**
+   * @param {string} ua navigator.userAgent
+   * @param {number} maxTouchPoints navigator.maxTouchPoints
+   * @param {boolean} forceMobile ユーザースクリプトのモバイルビルド等
+   */
+  function isTouch(ua, maxTouchPoints, forceMobile) {
+    var s = String(ua == null ? '' : ua);
+    if (/Android|iPhone|iPad|iPod/i.test(s)) return true;
+    // iPadOS は Macintosh UA + 複数タッチで判定
+    if (/Macintosh/i.test(s) && Number(maxTouchPoints) > 1) return true;
+    if (forceMobile === true) return true;
+    return false;
+  }
+
+  function detect() {
+    try {
+      var mobile = !!(globalThis.JOF && globalThis.JOF.mobile);
+      return isTouch(navigator.userAgent, navigator.maxTouchPoints, mobile);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  return { isTouch: isTouch, detect: detect };
 });
 
 
@@ -5781,7 +5824,7 @@ window.JOF.mobile = false;
     }, 1600);
   }
 
-  // ---- ショートカット: Shift+1 で有効/無効を切替（PC）----
+  // ---- ショートカット: Shift+1 で有効/無効を切替（PCのみ・タッチ端末では無効）----
   function onShortcut(e) {
     if (!e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
     // 配列差を吸収（US/JIS いずれも Shift+1 はコード Digit1）
@@ -5821,7 +5864,10 @@ window.JOF.mobile = false;
         });
         observer.observe(document.body, { childList: true, subtree: true });
         updateBar();
-        document.addEventListener('keydown', onShortcut, true);
+        // タッチ端末（iOS/Android）ではショートカットを登録しない（タッチ優先）
+        if (!(JOF.platform && JOF.platform.detect())) {
+          document.addEventListener('keydown', onShortcut, true);
+        }
       });
   }
 
@@ -5868,6 +5914,14 @@ window.JOF.mobile = false;
     '.jof-ui-panel .hint{color:#9a9aa5;font-size:11px;margin:4px 0 0}' +
     '.jof-ui-panel select,.jof-ui-panel input[type=number],.jof-ui-panel textarea{background:#101014;color:#eee;' +
     'border:1px solid #33343c;border-radius:6px;padding:3px 6px;font:inherit}' +
+    '.jof-ui-panel input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;margin:2px 0;' +
+    'background:transparent;cursor:pointer;touch-action:none}' +
+    '.jof-ui-panel input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:999px;background:#2f2f38}' +
+    '.jof-ui-panel input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;' +
+    'margin-top:-7px;border-radius:50%;background:#e4572e;border:2px solid #17171b;box-shadow:0 1px 4px rgba(0,0,0,.35)}' +
+    '.jof-ui-panel input[type=range]::-moz-range-track{height:8px;border-radius:999px;background:#2f2f38}' +
+    '.jof-ui-panel input[type=range]::-moz-range-thumb{width:22px;height:22px;border:2px solid #17171b;' +
+    'border-radius:50%;background:#e4572e}' +
     '.jof-ui-panel textarea{width:100%;min-height:48px;resize:vertical}' +
     '.jof-ui-panel .row{display:flex;justify-content:space-between;align-items:center;gap:8px}' +
     '.jof-ui-panel .res{margin-top:6px;padding:6px 8px;border-radius:6px;background:rgba(228,87,46,.12);font-size:12px}' +
@@ -5885,7 +5939,12 @@ window.JOF.mobile = false;
     '.jof-ui-panel button{padding:9px 16px;font-size:14px}' +
     '.jof-ui-panel label{margin:6px 0}' +
     '.jof-ui-panel input[type=checkbox]{width:18px;height:18px}' +
-    '.jof-ui-panel select,.jof-ui-panel input[type=number]{padding:7px 9px;font-size:15px}';
+    '.jof-ui-panel select,.jof-ui-panel input[type=number]{padding:7px 9px;font-size:15px}' +
+    '.jof-ui-panel input[type=range]{height:44px}' +
+    '.jof-ui-panel input[type=range]::-webkit-slider-runnable-track{height:12px}' +
+    '.jof-ui-panel input[type=range]::-webkit-slider-thumb{width:32px;height:32px;margin-top:-10px}' +
+    '.jof-ui-panel input[type=range]::-moz-range-track{height:12px}' +
+    '.jof-ui-panel input[type=range]::-moz-range-thumb{width:32px;height:32px}';
 
   function h(tag, cls, text) {
     var e = document.createElement(tag);
@@ -6090,9 +6149,9 @@ window.JOF.mobile = false;
     body.textContent = '';
     var hd = h('h2');
     hd.appendChild(document.createTextNode(t('title') + '　'));
-    hd.appendChild(h('span', 'kbd', 'Shift+1'));
-    var onOff = h('span', settings.enabled ? 'on' : 'off', '　' + (settings.enabled ? t('enabledOn') : t('enabledOff')));
-    hd.appendChild(onOff);
+    var touch = !!(JOF.platform && JOF.platform.detect());
+    if (!touch) hd.appendChild(h('span', 'kbd', 'Shift+1'));
+    hd.appendChild(h('span', settings.enabled ? 'on' : 'off', '　' + (settings.enabled ? t('enabledOn') : t('enabledOff'))));
     body.appendChild(hd);
     body.appendChild(check('enabled', t('enabled'), settings.enabled));
     body.appendChild(heading(t('focusMode')));

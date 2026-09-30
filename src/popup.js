@@ -132,6 +132,10 @@
   function reflect(s) {
     el('enabled').checked = s.enabled;
     el('enabledLabel').textContent = s.enabled ? t('enabledOn') : t('enabledOff');
+    // タッチ端末ではキーボードショートカットの表示を隠す
+    if (el('shortcutHint') && JOF.platform && JOF.platform.detect()) {
+      el('shortcutHint').style.display = 'none';
+    }
     el('threshold').value = String(s.threshold);
     el('thresholdValue').textContent = s.threshold.toFixed(2);
     el('showOverlay').checked = s.showOverlay;

@@ -34,6 +34,14 @@
     '.jof-ui-panel .hint{color:#9a9aa5;font-size:11px;margin:4px 0 0}' +
     '.jof-ui-panel select,.jof-ui-panel input[type=number],.jof-ui-panel textarea{background:#101014;color:#eee;' +
     'border:1px solid #33343c;border-radius:6px;padding:3px 6px;font:inherit}' +
+    '.jof-ui-panel input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;margin:2px 0;' +
+    'background:transparent;cursor:pointer;touch-action:none}' +
+    '.jof-ui-panel input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:999px;background:#2f2f38}' +
+    '.jof-ui-panel input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;' +
+    'margin-top:-7px;border-radius:50%;background:#e4572e;border:2px solid #17171b;box-shadow:0 1px 4px rgba(0,0,0,.35)}' +
+    '.jof-ui-panel input[type=range]::-moz-range-track{height:8px;border-radius:999px;background:#2f2f38}' +
+    '.jof-ui-panel input[type=range]::-moz-range-thumb{width:22px;height:22px;border:2px solid #17171b;' +
+    'border-radius:50%;background:#e4572e}' +
     '.jof-ui-panel textarea{width:100%;min-height:48px;resize:vertical}' +
     '.jof-ui-panel .row{display:flex;justify-content:space-between;align-items:center;gap:8px}' +
     '.jof-ui-panel .res{margin-top:6px;padding:6px 8px;border-radius:6px;background:rgba(228,87,46,.12);font-size:12px}' +
@@ -51,7 +59,12 @@
     '.jof-ui-panel button{padding:9px 16px;font-size:14px}' +
     '.jof-ui-panel label{margin:6px 0}' +
     '.jof-ui-panel input[type=checkbox]{width:18px;height:18px}' +
-    '.jof-ui-panel select,.jof-ui-panel input[type=number]{padding:7px 9px;font-size:15px}';
+    '.jof-ui-panel select,.jof-ui-panel input[type=number]{padding:7px 9px;font-size:15px}' +
+    '.jof-ui-panel input[type=range]{height:44px}' +
+    '.jof-ui-panel input[type=range]::-webkit-slider-runnable-track{height:12px}' +
+    '.jof-ui-panel input[type=range]::-webkit-slider-thumb{width:32px;height:32px;margin-top:-10px}' +
+    '.jof-ui-panel input[type=range]::-moz-range-track{height:12px}' +
+    '.jof-ui-panel input[type=range]::-moz-range-thumb{width:32px;height:32px}';
 
   function h(tag, cls, text) {
     var e = document.createElement(tag);
@@ -256,9 +269,9 @@
     body.textContent = '';
     var hd = h('h2');
     hd.appendChild(document.createTextNode(t('title') + '　'));
-    hd.appendChild(h('span', 'kbd', 'Shift+1'));
-    var onOff = h('span', settings.enabled ? 'on' : 'off', '　' + (settings.enabled ? t('enabledOn') : t('enabledOff')));
-    hd.appendChild(onOff);
+    var touch = !!(JOF.platform && JOF.platform.detect());
+    if (!touch) hd.appendChild(h('span', 'kbd', 'Shift+1'));
+    hd.appendChild(h('span', settings.enabled ? 'on' : 'off', '　' + (settings.enabled ? t('enabledOn') : t('enabledOff'))));
     body.appendChild(hd);
     body.appendChild(check('enabled', t('enabled'), settings.enabled));
     body.appendChild(heading(t('focusMode')));

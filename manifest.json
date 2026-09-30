@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.22.2",
+  "version": "0.23.0",
   "default_locale": "en",
   "description": "__MSG_extDesc__",
   "permissions": ["storage"],
@@ -36,6 +36,7 @@
         "src/lib/normalize.js",
         "src/lib/categories.js",
         "src/lib/config.js",
+        "src/lib/platform.js",
         "src/lib/lexicon.curated.js",
         "src/lib/lexicon.vendor.js",
         "src/lib/lexicon.topics.js",

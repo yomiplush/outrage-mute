@@ -392,6 +392,21 @@ test('自分の投稿の除外: ハンドル解析と設定', () => {
   assert.equal(config.normalizeSettings({ excludeReplies: 1 }).excludeReplies, false);
 });
 
+test('タッチ端末判定（iOS/Android はショートカット無効）', () => {
+  const p = require('../src/lib/platform.js');
+  assert.equal(p.isTouch('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15', 5), true);
+  assert.equal(p.isTouch('Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X)', 5), true);
+  assert.equal(p.isTouch('Mozilla/5.0 (Linux; Android 14; Pixel 8)', 5), true);
+  // iPadOS は Macintosh UA + 複数タッチで判定
+  assert.equal(p.isTouch('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', 5), true);
+  // 通常のMac（タッチなし）は false
+  assert.equal(p.isTouch('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', 0), false);
+  // Windows はタッチ対応でもキーボード前提 → ショートカット有効
+  assert.equal(p.isTouch('Mozilla/5.0 (Windows NT 10.0; Win64; x64)', 10), false);
+  // モバイルビルド指定
+  assert.equal(p.isTouch('Mozilla/5.0 (X11; Linux x86_64)', 0, true), true);
+});
+
 test('有効/無効トグル（ショートカット用）', () => {
   assert.equal(config.toggleEnabled({ enabled: true }).enabled, false);
   assert.equal(config.toggleEnabled({ enabled: false }).enabled, true);
