@@ -74,6 +74,16 @@
     </section>
 
     <section class="block">
+      <div class="row"><span data-i18n="userDict">ユーザー辞書</span></div>
+      <label class="check"><input type="checkbox" id="userWordsEnabled" /> <span data-i18n="userDictEnabled"></span></label>
+      <div class="row">
+        <span id="userWordsCount" class="hint"></span>
+        <button id="openDict" type="button" data-i18n="userDictManage"></button>
+      </div>
+      <p class="hint" data-i18n="userDictHint"></p>
+    </section>
+
+    <section class="block">
       <div class="row"><span data-i18n="tryScore">スコアを試す</span></div>
       <textarea id="sample" rows="3" data-i18n-placeholder="samplePlaceholder"></textarea>
       <div id="result" class="result">—</div>

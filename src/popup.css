@@ -166,6 +166,22 @@ textarea {
   color: var(--accent);
 }
 
+.block button {
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.block button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --fg: #f2f2f5;

@@ -81,7 +81,19 @@
     reasonReply: 'リプライを非表示',
     focusMaxLength: '集中モードで隠す長さ（文字）',
     focusMaxLengthHint: '集中モード中、これより長い投稿は隠します（0で無効）。',
-    focusHideReplies: '集中モードでリプライも隠す'
+    focusHideReplies: '集中モードでリプライも隠す',
+    userDict: 'ユーザー辞書',
+    userDictEnabled: 'ユーザー辞書を使う',
+    userDictManage: '単語を管理',
+    userDictHint: '自分で登録した語を含む投稿を隠します（部分一致・大文字小文字と全角/半角は無視）。',
+    userDictPlaceholder: 'ミュートしたい語を入力（例: 案件、副業）',
+    userDictAdd: '追加',
+    userDictAll: 'すべて削除',
+    userDictEmpty: 'まだ登録されていません',
+    userDictDelete: '削除',
+    userDictCount: '$1 語',
+    userDictNote: '※ 部分一致のため、短い語は誤って多くを隠すことがあります。',
+    reasonUser: 'ユーザー辞書: $1'
   };
 
   var DEFAULT_LOCALE = 'en';

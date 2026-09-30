@@ -217,6 +217,28 @@
     }
   }
 
+  // ユーザー辞書は別ウィンドウで編集（拡張の dict.html 相当をその場で生成）
+  function openDictWindow() {
+    var w = window.open('', 'jof-dict', 'width=420,height=580,menubar=no,toolbar=no,location=no,status=no');
+    if (!w) return;
+    try {
+      var d = w.document;
+      d.open();
+      d.write(
+        '<!DOCTYPE html><html lang="' +
+          (navigator.language || 'ja') +
+          '"><head><meta charset="utf-8"><title>' +
+          (t('userDict') || 'User dictionary') +
+          '</title></head><body><div id="jof-dict-root"></div></body></html>'
+      );
+      d.close();
+      if (JOF.dictEditor) JOF.dictEditor.createEditor(d, chrome).load();
+    } catch (e) {
+      /* noop */
+    }
+    w.focus();
+  }
+
   function render() {
     body.textContent = '';
     body.appendChild(h('h2', null, t('title')));
@@ -245,6 +267,16 @@
     body.appendChild(check('hideNotificationTab', t('hideNotificationTab'), settings.hideNotificationTab));
     body.appendChild(check('hideDm', t('hideDm'), settings.hideDm));
     body.appendChild(hint(t('quietHint')));
+    body.appendChild(heading(t('userDict')));
+    body.appendChild(check('userWordsEnabled', t('userDictEnabled'), settings.userWordsEnabled));
+    var drow = h('div', 'row');
+    drow.appendChild(h('span', 'hint', t('userDictCount', [(settings.userWords || []).length])));
+    var dbtn = h('button', null, t('userDictManage'));
+    dbtn.type = 'button';
+    dbtn.addEventListener('click', openDictWindow);
+    drow.appendChild(dbtn);
+    body.appendChild(drow);
+    body.appendChild(hint(t('userDictHint')));
     body.appendChild(heading(t('categories')));
     var grid = h('div', 'grid');
     var enabled = Array.isArray(settings.categories) ? settings.categories : coreCats();

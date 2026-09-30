@@ -21,6 +21,7 @@
   var i18n = JOF.i18n;
   var selfpost = JOF.selfpost;
   var reply = JOF.reply;
+  var userdict = JOF.userdict;
 
   var TWEET_SEL = 'article[data-testid="tweet"]';
   var CELL_SEL = '[data-testid="cellInnerDiv"]';
@@ -279,7 +280,9 @@
         ? i18n.t('reasonLong', [result.length])
         : result && result.reason === 'reply'
           ? i18n.t('reasonReply')
-          : i18n.t('maskedBadge', [Math.round((result.score || 0) * 100)]);
+          : result && result.reason === 'user'
+            ? i18n.t('reasonUser', [result.word || ''])
+            : i18n.t('maskedBadge', [Math.round((result.score || 0) * 100)]);
 
     var catEl = document.createElement('div');
     catEl.className = 'jof-cats';
@@ -377,6 +380,26 @@
       cell.dataset.jofScore = '1';
       mask(cell, replyResult);
       return;
+    }
+
+    // ユーザー辞書（自分で登録したミュートワード）
+    if (settings.userWordsEnabled !== false && userdict && settings.userWords && settings.userWords.length) {
+      var uw = userdict.find(combined, settings.userWords);
+      if (uw) {
+        var userResult = {
+          score: 1,
+          raw: 0,
+          categories: [],
+          byCat: {},
+          terms: [],
+          reason: 'user',
+          word: uw
+        };
+        cell.dataset.jofResult = JSON.stringify(userResult);
+        cell.dataset.jofScore = '1';
+        mask(cell, userResult);
+        return;
+      }
     }
 
     var result = scoring.analyze(combined, {

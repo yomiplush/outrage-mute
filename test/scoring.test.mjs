@@ -414,6 +414,25 @@ test('NSFW: 独立トグル（badwords から性的語を分離）', () => {
   assert.ok(ja.categories.includes('nsfw'));
 });
 
+test('ユーザー辞書: 解析と照合', () => {
+  const ud = require('../src/lib/userdict.js');
+  assert.deepEqual(ud.parseList('a, b\nc\n\nb\n'), ['a', 'b', 'c']);
+  assert.deepEqual(ud.parseList('案件、副業'), ['案件', '副業']);
+  assert.equal(ud.find('今日は雨です', ['雨']), '雨');
+  assert.equal(ud.find('Hello World', ['world']), 'world');
+  assert.equal(ud.find('カスタム設定', ['カスタム']), 'カスタム');
+  assert.equal(ud.find('全角ＡＢＣ', ['abc']), 'abc'); // NFKC で吸収
+  assert.equal(ud.find('今日は晴れ', ['雨']), null);
+  assert.equal(ud.find('なんでも', []), null);
+  assert.equal(ud.find('https://example.com/nyan', ['nyan']), null); // URL は除外
+  // 設定
+  assert.equal(config.DEFAULTS.userWordsEnabled, true);
+  assert.deepEqual(config.DEFAULTS.userWords, []);
+  const s = config.normalizeSettings({ userWords: ['a', '', 1, 'b'], userWordsEnabled: false });
+  assert.deepEqual(s.userWords, ['a', 'b']);
+  assert.equal(s.userWordsEnabled, false);
+});
+
 test('集中モード: リプライ非表示の判定と設定', () => {
   const reply = require('../src/lib/reply.js');
   // 多言語の「返信先」を判定

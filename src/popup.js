@@ -138,6 +138,8 @@
     buildPresets(s.preset);
     el('focusMaxLength').value = String(s.focusMaxLength);
     el('focusHideReplies').checked = s.focusHideReplies;
+    el('userWordsEnabled').checked = s.userWordsEnabled;
+    el('userWordsCount').textContent = t('userDictCount', [(s.userWords || []).length]);
     el('hideNotifications').checked = s.hideNotifications;
     el('hideNotificationTab').checked = s.hideNotificationTab;
     el('hideDm').checked = s.hideDm;
@@ -150,6 +152,7 @@
 
   function readAndSave() {
     var prevLang = settings.language;
+    var prevWords = settings.userWords;
     settings = config.normalizeSettings({
       enabled: el('enabled').checked,
       threshold: parseFloat(el('threshold').value),
@@ -161,12 +164,15 @@
       preset: el('preset') ? el('preset').value : 'off',
       focusMaxLength: parseInt(el('focusMaxLength').value, 10),
       focusHideReplies: el('focusHideReplies').checked,
+      userWordsEnabled: el('userWordsEnabled').checked,
+      userWords: prevWords,
       hideNotifications: el('hideNotifications').checked,
       hideNotificationTab: el('hideNotificationTab').checked,
       hideDm: el('hideDm').checked,
       excludeSelf: el('excludeSelf').checked
     });
     el('thresholdValue').textContent = settings.threshold.toFixed(2);
+    el('userWordsCount').textContent = t('userDictCount', [(settings.userWords || []).length]);
     var patch = {};
     patch[config.PERSIST_KEY] = settings;
     chrome.storage.local.set(patch);
@@ -238,9 +244,24 @@
   }
 
   // ------------------------------------------------------------ wire up
-  ['enabled', 'threshold', 'showOverlay', 'minLength', 'focusMaxLength', 'focusHideReplies', 'hideNotifications', 'hideNotificationTab', 'hideDm', 'excludeSelf'].forEach(function (id) {
+  ['enabled', 'threshold', 'showOverlay', 'minLength', 'focusMaxLength', 'focusHideReplies', 'userWordsEnabled', 'hideNotifications', 'hideNotificationTab', 'hideDm', 'excludeSelf'].forEach(function (id) {
     el(id).addEventListener('input', readAndSave);
     el(id).addEventListener('change', readAndSave);
+  });
+  el('openDict').addEventListener('click', function () {
+    try {
+      if (chrome.windows && chrome.windows.create) {
+        chrome.windows.create({
+          url: chrome.runtime.getURL('src/dict.html'),
+          type: 'popup',
+          width: 420,
+          height: 580
+        });
+        window.close();
+      }
+    } catch (e) {
+      /* noop */
+    }
   });
   if (el('preset')) el('preset').addEventListener('change', readAndSave);
   document.querySelectorAll('input[name="mode"]').forEach(function (radio) {

@@ -39,6 +39,8 @@
     preset: 'off',
     focusMaxLength: 160, // 集中モード時、これより長い投稿は隠す（0で無効）
     focusHideReplies: true, // 集中モード時、リプライ投稿も隠す
+    userWordsEnabled: true, // ユーザー辞書（自分のミュートワード）を使う
+    userWords: [], // 自分で追加したミュートワード
     hideNotifications: false, // X上の通知バッジを隠す
     hideNotificationTab: false, // 通知タブ自体を隠す
     hideDm: false, // X上のDMバッジを隠す
@@ -61,6 +63,17 @@
       preset: PRESET_KEYS.indexOf(value.preset) >= 0 ? value.preset : value.focusMode === true ? 'normal' : DEFAULTS.preset,
       focusMaxLength: clampNumber(value.focusMaxLength, 0, 1000, DEFAULTS.focusMaxLength),
       focusHideReplies: value.focusHideReplies !== false,
+      userWordsEnabled: value.userWordsEnabled !== false,
+      userWords: Array.isArray(value.userWords)
+        ? value.userWords
+            .filter(function (w) {
+              return typeof w === 'string' && w.trim();
+            })
+            .map(function (w) {
+              return w.trim().slice(0, 100);
+            })
+            .slice(0, 500)
+        : [],
       hideNotifications: value.hideNotifications === true,
       hideNotificationTab: value.hideNotificationTab === true,
       hideDm: value.hideDm === true,
