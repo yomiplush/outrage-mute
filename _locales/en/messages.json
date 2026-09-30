@@ -39,6 +39,7 @@
   "cat_absolute": { "message": "Absolutism" },
   "cat_othering": { "message": "Othering" },
   "cat_cynicism": { "message": "Cynicism" },
+  "cat_tone": { "message": "Tone / style" },
   "cat_urgency": { "message": "Fear-mongering" },
   "cat_profanity": { "message": "Slurs" },
   "cat_badwords": { "message": "Profanity" },

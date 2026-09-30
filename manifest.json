@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "default_locale": "en",
   "description": "__MSG_extDesc__",
   "permissions": ["storage"],
@@ -45,6 +45,7 @@
         "src/lib/lang/ru.js",
         "src/lib/lang/uk.js",
         "src/lib/lang/index.js",
+        "src/lib/lang/style.js",
         "src/lib/i18n.js",
         "src/lib/scoring.js",
         "src/content.js"

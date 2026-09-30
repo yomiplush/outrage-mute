@@ -39,6 +39,7 @@
   "cat_absolute": { "message": "断定・絶対化" },
   "cat_othering": { "message": "二項対立・レッテル" },
   "cat_cynicism": { "message": "冷笑・皮肉" },
+  "cat_tone": { "message": "文体・口調" },
   "cat_urgency": { "message": "危機煽り" },
   "cat_profanity": { "message": "差別・蔑称語" },
   "cat_badwords": { "message": "下品・罵倒語" },

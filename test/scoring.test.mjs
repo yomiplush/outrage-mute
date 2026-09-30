@@ -268,6 +268,24 @@ test('言語パック数と主要言語の存在', () => {
   }
 });
 
+test('文体・口調(tone): 語彙が無くても義憤を検出し、ポジティブは誤爆しない', () => {
+  for (const t of ['は？ふざけんなよ！！', 'はぁ？何言ってんの？？', 'はいはい、そうですね（笑）', '😡😡😡 許さん']) {
+    const r = analyze(t, {});
+    assert.ok(r.score >= 0.5, `${t} -> ${r.score}`);
+    assert.ok(r.categories.includes('tone'), `${t} tone`);
+  }
+  // ポジティブな叫び・感謝は誤爆しない
+  assert.ok(analyze('すごい！！！！最高！！！！', {}).score < 0.5, 'positive shout');
+  assert.ok(analyze('😊👍 ありがとう！', {}).score < 0.5, 'thanks');
+  assert.equal(analyze('そうですね、承知しました。', {}).score, 0);
+  // tone は既定ON（任意カテゴリではない）／OFFにすると効かない
+  assert.ok(!config.OPTIONAL_CATEGORIES.includes('tone'));
+  const core = categories.CATEGORY_ORDER.filter((id) => !config.OPTIONAL_CATEGORIES.includes(id) && id !== 'tone');
+  assert.equal(analyze('😡😡😡', { categories: core }).score, 0);
+  assert.ok(analyze('😡😡😡', {}).score > 0.5);
+  assert.ok(categories.CATEGORY_LABELS.tone, 'tone label');
+});
+
 test('追加言語（パックが無かったもの）を判定できる', () => {
   const cases = [
     ['vi', 'Mày là đồ ngu, tao ghét mày!'],

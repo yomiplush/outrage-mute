@@ -272,6 +272,18 @@
     ['危機', 1.0, 'urgency'],
     ['警鐘', 1.0, 'urgency'],
     ['このままでは', 0.8, 'urgency'],
-    ['滅び', 1.4, 'urgency']
+    ['滅び', 1.4, 'urgency'],
+
+    // ---- 口調・言い回し（文体レイヤーと補完）----
+    ['うるさい', 1.6, 'attack'],
+    ['許さん', 1.8, 'hostility', 'noNeg'],
+    ['ふざけんな', 2.4, 'hostility', 'noNeg'],
+    ['ふざけるな', 2.4, 'hostility', 'noNeg'],
+    ['なめてんのか', 2.4, 'hostility'],
+    ['なめんな', 2.2, 'hostility'],
+    ['何言ってんの', 1.8, 'hostility'],
+    ['いい加減にしろ', 2.0, 'incitement'],
+    ['よく考えろ', 1.6, 'incitement'],
+    ['反省しろ', 1.8, 'incitement']
   ];
 });

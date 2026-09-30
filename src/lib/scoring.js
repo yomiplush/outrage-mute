@@ -21,13 +21,14 @@
       require('./normalize.js'),
       require('./categories.js'),
       require('./lang/index.js'),
-      require('./lang/build.js')
+      require('./lang/build.js'),
+      require('./lang/style.js')
     );
   } else {
     var JOF = root.JOF = root.JOF || {};
-    JOF.scoring = factory(JOF.normalize, JOF.categories, JOF.lang, JOF.langBuild);
+    JOF.scoring = factory(JOF.normalize, JOF.categories, JOF.lang, JOF.langBuild, JOF.style);
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (normalize, categories, lang, build) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (normalize, categories, lang, build, style) {
   'use strict';
 
   var SATURATION = 2.4;
@@ -143,6 +144,21 @@
       }
     });
 
+    // ---- 4.5 文体・口調（語彙に依存しない）----
+    var styleInfo = null;
+    if (style && ok('tone')) {
+      styleInfo = style.analyze(rawText, pack.id);
+      if (styleInfo.tone > 0) {
+        add('tone', styleInfo.tone, {
+          term: 'tone',
+          cat: 'tone',
+          label: CAT.tone,
+          weight: Math.round(styleInfo.tone * 1000) / 1000,
+          kind: 'style'
+        });
+      }
+    }
+
     // ---- 5. 書式の誇張 ----
     var em = pack.emphasis || {};
     var fmtScore =
@@ -178,7 +194,8 @@
       categories: cats,
       format: fmt,
       length: text.length,
-      lang: pack.id
+      lang: pack.id,
+      style: styleInfo
     };
   }
 
