@@ -9,16 +9,18 @@
  *
  * カテゴリを独立させてあるので、自虐ネタが好きな人は
  * ポップアップで selfmock をOFFにすれば見られる（＝他は隠したまま）。
+ *
+ * 用語索引は term-layer.js、文脈判定はこのファイル末尾。
  */
 (function (root, factory) {
   'use strict';
   if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('./build.js'));
+    module.exports = factory(require('./term-layer.js'), require('./build.js'));
   } else {
     var JOF = root.JOF = root.JOF || {};
-    JOF.selfmock = factory(JOF.langBuild);
+    JOF.selfmock = factory(JOF.termLayer, JOF.langBuild);
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (build) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (termLayer, build) {
   'use strict';
 
   var W = 2.2;
@@ -44,35 +46,23 @@
   var EN_P2 = ['you', 'your', 'yours', "you're", 'youre'];
 
   var LATIN = ['en', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'pl', 'cs', 'sk', 'hu', 'fi', 'sv', 'da',
-    'no', 'tr', 'fil', 'id', 'ms', 'vi', 'ro', 'hr', 'sl', 'lt', 'lv', 'et', 'ca', 'sw'];
+    'no', 'tr', 'fil', 'id', 'ms', 'vi', 'ro', 'hr', 'sl', 'lt', 'lv', 'et', 'ca', 'sw', 'latin'];
 
-  function groupOf(id) {
-    if (id === 'ja') return 'ja';
-    if (id === 'latin' || LATIN.indexOf(id) >= 0) return 'latin';
-    return null;
-  }
+  var LANG_GROUPS = { ja: 'ja' };
+  LATIN.forEach(function (id) {
+    LANG_GROUPS[id] = 'latin';
+  });
 
-  var BUILT = {};
-  function buildGroup(group) {
-    if (group in BUILT) return BUILT[group];
-    var rows = (group === 'ja' ? JA : EN).map(function (t) {
-      return [t, W, 'selfmock'];
-    });
-    var match = group === 'ja' ? 'substring' : 'word';
-    var lex = build.build(rows, { match: match });
-    var set = new Set();
-    lex.TERMS.forEach(function (e) {
-      set.add(e.n);
-    });
-    BUILT[group] = { match: match, lex: lex, set: set };
-    return BUILT[group];
-  }
-
-  /** 自己卑下そのものの語か */
-  function isSelfTerm(normTerm, langId) {
-    var g = groupOf(langId);
-    return g ? buildGroup(g).set.has(normTerm) : false;
-  }
+  var layer = termLayer.createTermLayer({
+    category: 'selfmock',
+    weight: W,
+    langGroups: LANG_GROUPS,
+    fallbackGroup: null,
+    groups: {
+      ja: { match: 'substring', terms: JA },
+      latin: { match: 'word', terms: EN }
+    }
+  });
 
   /**
    * 否定語の前後に人称があるとき、最も近いのが一人称なら自虐とみなす。
@@ -80,7 +70,7 @@
    * @param {number} end 一致終了
    */
   function isSelfContext(text, start, end, langId) {
-    var g = groupOf(langId);
+    var g = layer.groupOf(langId);
     if (g === 'ja') {
       var from = Math.max(0, start - 14);
       for (var i = start - 1; i >= from; i--) {
@@ -109,44 +99,8 @@
     return false;
   }
 
-  var PACK_SET_CACHE = new WeakMap();
-  function packTermSet(pack) {
-    var s = PACK_SET_CACHE.get(pack);
-    if (s) return s;
-    s = new Set();
-    (pack.TERMS || []).forEach(function (e) {
-      s.add(e.n);
-    });
-    PACK_SET_CACHE.set(pack, s);
-    return s;
-  }
-
-  var EXTRA_CACHE = new WeakMap();
-  function extraIndex(pack) {
-    var cached = EXTRA_CACHE.get(pack);
-    if (cached) return cached;
-    var g = groupOf(pack.id);
-    var res = { match: null, index: null };
-    if (g) {
-      var built = buildGroup(g);
-      var known = packTermSet(pack);
-      var rows = built.lex.TERMS.filter(function (e) {
-        return !known.has(e.n);
-      }).map(function (e) {
-        return [e.term, e.w, 'selfmock'];
-      });
-      res.match = built.match;
-      res.index = rows.length ? build.build(rows, { match: built.match }) : null;
-    }
-    EXTRA_CACHE.set(pack, res);
-    return res;
-  }
-
-  return {
-    groupOf: groupOf,
-    isSelfTerm: isSelfTerm,
-    isSelfContext: isSelfContext,
-    extraIndex: extraIndex,
-    WEIGHT: W
-  };
+  layer.isSelfContext = isSelfContext;
+  layer.isSelfTerm = layer.isTerm; // 旧名の別名（互換）
+  layer.WEIGHT = W;
+  return layer;
 });

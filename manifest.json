@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "default_locale": "en",
   "description": "__MSG_extDesc__",
   "permissions": ["storage"],
@@ -41,6 +41,7 @@
         "src/lib/lexicon.topics.js",
         "src/lib/lexicon.js",
         "src/lib/lang/build.js",
+        "src/lib/lang/term-layer.js",
         "src/lib/lang/data/ldnoobw.js",
         "src/lib/lang/curated.js",
         "src/lib/lang/ja.js",

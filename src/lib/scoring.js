@@ -103,21 +103,24 @@
       byCat[cat] = (byCat[cat] || 0) + w;
       if (entry) terms.push(entry);
     }
+    // 用語レイヤー（辞書の語を「独立トグルできるカテゴリ」へ移し替える）
+    //   from が null のレイヤーは全カテゴリに対して判定する（selfmock）
+    var LAYERS = [];
+    if (disaster) LAYERS.push({ id: 'disaster', api: disaster, from: 'world_affairs', context: false });
+    if (selfmock) LAYERS.push({ id: 'selfmock', api: selfmock, from: null, context: true });
+    if (aitopic) LAYERS.push({ id: 'ai_topic', api: aitopic, from: 'ai_dispute', context: false });
+
     function emit(hit, w, kind, start, end) {
       var cat = hit.cat;
-      // 災害系は world_affairs から disaster へ移し替える（見る/隠すを独立制御するため）
-      if (cat === 'world_affairs' && disaster && disaster.isTerm(hit.n, pack.id)) cat = 'disaster';
-      // AI の技術・界隈の話題は ai_dispute から ai_topic へ移し替える
-      if (cat === 'ai_dispute' && aitopic && aitopic.isTerm(hit.n, pack.id)) cat = 'ai_topic';
-      // 自虐（自己卑下そのもの／一人称＋否定語）は selfmock へ移し替える
-      if (cat !== 'selfmock' && selfmock) {
-        if (
-          selfmock.isSelfTerm(hit.n, pack.id) ||
-          (typeof start === 'number' &&
-            selfmock.isSelfContext(text, start, typeof end === 'number' ? end : start, pack.id))
-        ) {
-          cat = 'selfmock';
-        }
+      for (var li = 0; li < LAYERS.length; li++) {
+        var L = LAYERS[li];
+        if (L.from && cat !== L.from) continue;
+        var isLayerTerm = L.api.isTerm(hit.n, pack.id);
+        var inContext =
+          L.context &&
+          typeof start === 'number' &&
+          L.api.isSelfContext(text, start, typeof end === 'number' ? end : start, pack.id);
+        if (isLayerTerm || inContext) cat = L.id;
       }
       add(cat, w, {
         term: hit.term,
@@ -128,32 +131,18 @@
         source: hit.source || ''
       });
     }
-    // カテゴリの絞り込みは add() で行う（world_affairs→disaster の再分類があるため）
-    function ok() {
-      return true;
-    }
 
     // ---- 1-3. 辞書の一致 ----
     if (pack.match === 'word') {
-      scanWord(pack, text, emit, ok);
+      scanWord(pack, text, emit);
     } else {
-      scanSubstring(pack, text, emit, ok);
+      scanSubstring(pack, text, emit);
     }
 
-    // ---- 辞書に無い災害・緊急情報の語（地震速報/避難指示 等）----
-    if (disaster) {
-      var ex = disaster.extraIndex(pack);
+    // ---- 辞書に無い追加語（災害・自虐・AI技術）----
+    for (var ei = 0; ei < LAYERS.length; ei++) {
+      var ex = LAYERS[ei].api.extraIndex(pack);
       if (ex && ex.index) scanExtra(ex.match, ex.index, text, emit);
-    }
-    // ---- 辞書に無い自虐表現（どうせ俺/自分なんて 等）----
-    if (selfmock) {
-      var exs = selfmock.extraIndex(pack);
-      if (exs && exs.index) scanExtra(exs.match, exs.index, text, emit);
-    }
-    // ---- 辞書に無い AI 技術・界隈の語（機械学習/プロンプト 等）----
-    if (aitopic) {
-      var exa = aitopic.extraIndex(pack);
-      if (exa && exa.index) scanExtra(exa.match, exa.index, text, emit);
     }
 
     // ---- 4. 文型パターン ----
@@ -181,7 +170,7 @@
 
     // ---- 4.5 文体・口調（語彙に依存しない）----
     var styleInfo = null;
-    if (style && ok('tone')) {
+    if (style) {
       styleInfo = style.analyze(rawText, pack.id);
       if (styleInfo.tone > 0) {
         add('tone', styleInfo.tone, {
@@ -235,7 +224,7 @@
   }
 
   // ---- substring（CJK など） ----
-  function scanSubstring(pack, text, emit, ok) {
+  function scanSubstring(pack, text, emit) {
     var neg = pack.negation || {};
     var report = pack.report || [];
     var i = 0;
@@ -268,7 +257,7 @@
         }
       }
 
-      if (!excluded && ok(hit.cat)) {
+      if (!excluded) {
         var w = hit.w;
         var kind = 'normal';
         if (!hit.noNeg && neg.markers) {
@@ -298,7 +287,7 @@
   }
 
   // ---- word（英語・ロシア語など） ----
-  function scanWord(pack, text, emit, ok) {
+  function scanWord(pack, text, emit) {
     var toks = build.tokenizeWithPositions(text);
     var neg = pack.negation || {};
     var report = pack.report || [];
@@ -331,7 +320,7 @@
         continue;
       }
 
-      if (ok(hit.cat)) {
+      {
         var w = hit.w;
         var kind = 'normal';
         if (!hit.noNeg && neg.position === 'before') {

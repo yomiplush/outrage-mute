@@ -169,6 +169,7 @@ outrage-mute/
 │       ├── lexicon.*.js          # 日本語辞書（curated/vendor/topics）
 │       ├── lang/
 │       │   ├── build.js          # 索引ビルダー（substring / word）
+│       │   ├── term-layer.js     # 用語レイヤーの共通ファクトリ（再分類＋追加スキャン）
 │       │   ├── ja.js en.js zh.js zh_hant.js ko.js ru.js uk.js  # 言語パック
 │       │   ├── curated.js        # 日本語以外の義憤・話題語（作者作成）
 │       │   ├── style.js          # 文体・口調（語彙に依存しない感情レイヤー）

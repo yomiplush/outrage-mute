@@ -7,16 +7,18 @@
  *
  * 既存辞書の ai_dispute 語のうち技術・製品系を ai_topic へ「移し替え」、
  * 追加の技術語（機械学習/プロンプト/AIエージェント 等）をスキャンする。
+ *
+ * ロジックは term-layer.js に共通化してある。
  */
 (function (root, factory) {
   'use strict';
   if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('./build.js'));
+    module.exports = factory(require('./term-layer.js'));
   } else {
     var JOF = root.JOF = root.JOF || {};
-    JOF.aitopic = factory(JOF.langBuild);
+    JOF.aitopic = factory(JOF.termLayer);
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (build) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (termLayer) {
   'use strict';
 
   var W = 2.2;
@@ -46,67 +48,22 @@
   var LATIN_LANGS = ['en', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'pl', 'cs', 'sk', 'hu', 'fi', 'sv',
     'da', 'no', 'tr', 'fil', 'id', 'ms', 'vi', 'ro', 'hr', 'sl', 'lt', 'lv', 'et', 'ca', 'sw', 'latin'];
 
-  function groupOf(id) {
-    if (id === 'ja' || id === 'zh' || id === 'zh_hant') return 'cjk';
-    if (id === 'ko') return 'hangul';
-    if (LATIN_LANGS.indexOf(id) >= 0) return 'latin';
-    return null;
-  }
+  var LANG_GROUPS = { ja: 'cjk', zh: 'cjk', zh_hant: 'cjk', ko: 'hangul' };
+  LATIN_LANGS.forEach(function (id) {
+    LANG_GROUPS[id] = 'latin';
+  });
 
-  var BUILT = {};
-  function buildGroup(group) {
-    if (group in BUILT) return BUILT[group];
-    var src = group === 'cjk' ? CJK : group === 'hangul' ? HANGUL : LATIN;
-    var rows = src.map(function (t) {
-      return [t, W, 'ai_topic'];
-    });
-    var match = group === 'latin' ? 'word' : 'substring';
-    var lex = build.build(rows, { match: match });
-    var set = new Set();
-    lex.TERMS.forEach(function (e) {
-      set.add(e.n);
-    });
-    BUILT[group] = { match: match, lex: lex, set: set };
-    return BUILT[group];
-  }
-
-  function isTerm(normTerm, langId) {
-    var g = groupOf(langId);
-    return g ? buildGroup(g).set.has(normTerm) : false;
-  }
-
-  var PACK_SET_CACHE = new WeakMap();
-  function packTermSet(pack) {
-    var s = PACK_SET_CACHE.get(pack);
-    if (s) return s;
-    s = new Set();
-    (pack.TERMS || []).forEach(function (e) {
-      s.add(e.n);
-    });
-    PACK_SET_CACHE.set(pack, s);
-    return s;
-  }
-
-  var EXTRA_CACHE = new WeakMap();
-  function extraIndex(pack) {
-    var cached = EXTRA_CACHE.get(pack);
-    if (cached) return cached;
-    var g = groupOf(pack.id);
-    var res = { match: null, index: null };
-    if (g) {
-      var built = buildGroup(g);
-      var known = packTermSet(pack);
-      var rows = built.lex.TERMS.filter(function (e) {
-        return !known.has(e.n);
-      }).map(function (e) {
-        return [e.term, e.w, 'ai_topic'];
-      });
-      res.match = built.match;
-      res.index = rows.length ? build.build(rows, { match: built.match }) : null;
+  var layer = termLayer.createTermLayer({
+    category: 'ai_topic',
+    weight: W,
+    langGroups: LANG_GROUPS,
+    fallbackGroup: null,
+    groups: {
+      cjk: { match: 'substring', terms: CJK },
+      hangul: { match: 'substring', terms: HANGUL },
+      latin: { match: 'word', terms: LATIN }
     }
-    EXTRA_CACHE.set(pack, res);
-    return res;
-  }
-
-  return { groupOf: groupOf, isTerm: isTerm, extraIndex: extraIndex, WEIGHT: W };
+  });
+  layer.WEIGHT = W;
+  return layer;
 });

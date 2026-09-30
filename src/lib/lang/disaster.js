@@ -10,38 +10,34 @@
  *
  * 実装: 既存辞書の world_affairs 語のうち災害系のものを disaster に「移し替え」、
  *       追加の警報フレーズ（地震速報/避難指示 等）をスキャンする。
- *       全言語に効くよう、言語パックを編集せず後段で再分類する。
+ *       すべての言語に効くよう、言語パックを編集せず後段で再分類する。
+ *
+ * ロジックは term-layer.js に共通化してある。
  */
 (function (root, factory) {
   'use strict';
   if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('./build.js'));
+    module.exports = factory(require('./term-layer.js'));
   } else {
     var JOF = root.JOF = root.JOF || {};
-    JOF.disaster = factory(JOF.langBuild);
+    JOF.disaster = factory(JOF.termLayer);
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (build) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (termLayer) {
   'use strict';
 
-  var SCRIPT = {
-    cjk: ['ja', 'zh', 'zh_hant'],
-    hangul: ['ko'],
-    cyrillic: ['ru', 'uk', 'bg', 'sr', 'mk', 'mn', 'be'],
-    arabic: ['ar', 'fa', 'ur'],
-    latin: ['en', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'pl', 'cs', 'sk', 'hu', 'fi', 'sv', 'da',
-      'no', 'tr', 'fil', 'id', 'ms', 'vi', 'ro', 'hr', 'sl', 'lt', 'lv', 'et', 'ca', 'sw']
-  };
-  var GROUP_OF = {};
-  Object.keys(SCRIPT).forEach(function (g) {
-    SCRIPT[g].forEach(function (id) {
-      GROUP_OF[id] = g;
-    });
-  });
-  function groupOf(id) {
-    return GROUP_OF[id] || 'latin';
-  }
-
   var W = 2.2; // 1語で既定しきい値(0.5)を超える重み（≒0.60）
+
+  var LANG_GROUPS = {
+    ja: 'cjk', zh: 'cjk', zh_hant: 'cjk',
+    ko: 'hangul',
+    ru: 'cyrillic', uk: 'cyrillic', bg: 'cyrillic', sr: 'cyrillic', mk: 'cyrillic', mn: 'cyrillic', be: 'cyrillic',
+    ar: 'arabic', fa: 'arabic', ur: 'arabic',
+    en: 'latin', de: 'latin', fr: 'latin', es: 'latin', pt: 'latin', it: 'latin', nl: 'latin',
+    pl: 'latin', cs: 'latin', sk: 'latin', hu: 'latin', fi: 'latin', sv: 'latin', da: 'latin',
+    no: 'latin', tr: 'latin', fil: 'latin', id: 'latin', ms: 'latin', vi: 'latin', ro: 'latin',
+    hr: 'latin', sl: 'latin', lt: 'latin', lv: 'latin', et: 'latin', ca: 'latin', sw: 'latin',
+    latin: 'latin'
+  };
 
   // 災害・緊急情報の語（既存辞書と重なってよい。重複は再分類で処理）
   var TERMS = {
@@ -66,7 +62,7 @@
       'оползень', 'пожар', 'ураган', 'тайфун', 'предупреждение', 'попередження'
     ],
     arabic: [
-      'زلزال', 'زلزله', 'زلزلہ', 'تسونامي', 'سونامی', 'سونامی', 'إخلاء', 'تخلیه', 'فیض', 'سیلاب'
+      'زلزال', 'زلزله', 'زلزلہ', 'تسونامي', 'سونامی', 'إخلاء', 'تخلیه', 'فیض', 'سیلاب'
     ],
     latin: [
       'earthquake', 'tsunami', 'typhoon', 'hurricane', 'tornado', 'evacuation', 'evacuate',
@@ -93,65 +89,19 @@
     ]
   };
 
-  var BUILT = {};
-
-  function buildGroup(group) {
-    if (BUILT[group]) return BUILT[group];
-    var match = group === 'cjk' || group === 'hangul' ? 'substring' : 'word';
-    var rows = (TERMS[group] || []).map(function (t) {
-      return [t, W, 'disaster'];
-    });
-    var lex = build.build(rows, { match: match });
-    var set = new Set();
-    lex.TERMS.forEach(function (e) {
-      set.add(e.n);
-    });
-    BUILT[group] = { match: match, lex: lex, set: set };
-    return BUILT[group];
-  }
-
-  /** 正規化済み語が災害語か（world_affairs からの再分類に使う） */
-  function isTerm(normTerm, langId) {
-    return buildGroup(groupOf(langId)).set.has(normTerm);
-  }
-
-  var PACK_SET_CACHE = new WeakMap();
-
-  function packTermSet(pack) {
-    var s = PACK_SET_CACHE.get(pack);
-    if (s) return s;
-    s = new Set();
-    (pack.TERMS || []).forEach(function (e) {
-      s.add(e.n);
-    });
-    PACK_SET_CACHE.set(pack, s);
-    return s;
-  }
-
-  var EXTRA_CACHE = new WeakMap();
-
-  /** 言語パックに無い災害語だけの索引（追加スキャン用） */
-  function extraIndex(pack) {
-    var cached = EXTRA_CACHE.get(pack);
-    if (cached) return cached;
-    var group = groupOf(pack.id);
-    var built = buildGroup(group);
-    var known = packTermSet(pack);
-    var rows = built.lex.TERMS.filter(function (e) {
-      return !known.has(e.n);
-    }).map(function (e) {
-      return [e.term, e.w, 'disaster'];
-    });
-    var idx = rows.length ? build.build(rows, { match: built.match }) : null;
-    var res = { match: built.match, index: idx };
-    EXTRA_CACHE.set(pack, res);
-    return res;
-  }
-
-  return {
-    groupOf: groupOf,
-    isTerm: isTerm,
-    extraIndex: extraIndex,
-    WEIGHT: W
-  };
+  var layer = termLayer.createTermLayer({
+    category: 'disaster',
+    weight: W,
+    langGroups: LANG_GROUPS,
+    fallbackGroup: 'latin',
+    groups: {
+      cjk: { match: 'substring', terms: TERMS.cjk },
+      hangul: { match: 'substring', terms: TERMS.hangul },
+      cyrillic: { match: 'word', terms: TERMS.cyrillic },
+      arabic: { match: 'word', terms: TERMS.arabic },
+      latin: { match: 'word', terms: TERMS.latin }
+    }
+  });
+  layer.WEIGHT = W;
+  return layer;
 });
