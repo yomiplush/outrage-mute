@@ -113,6 +113,21 @@
     sel.addEventListener('change', readAndSave);
   }
 
+  // ------------------------------------------------------------ preset
+  function buildPresets(current) {
+    var sel = el('preset');
+    if (!sel) return;
+    sel.textContent = '';
+    ['off', 'soft', 'normal', 'hard'].forEach(function (key) {
+      var o = document.createElement('option');
+      o.value = key;
+      var label = t('preset' + key.charAt(0).toUpperCase() + key.slice(1));
+      o.textContent = label === 'preset' + key.charAt(0).toUpperCase() + key.slice(1) ? key : label;
+      sel.appendChild(o);
+    });
+    sel.value = current || 'off';
+  }
+
   // ------------------------------------------------------------ UI <-> storage
   function reflect(s) {
     el('enabled').checked = s.enabled;
@@ -120,8 +135,9 @@
     el('thresholdValue').textContent = s.threshold.toFixed(2);
     el('showOverlay').checked = s.showOverlay;
     el('minLength').value = String(s.minLength);
-    el('focusMode').checked = s.focusMode;
+    buildPresets(s.preset);
     el('hideNotifications').checked = s.hideNotifications;
+    el('hideNotificationTab').checked = s.hideNotificationTab;
     el('hideDm').checked = s.hideDm;
     var modes = document.querySelectorAll('input[name="mode"]');
     for (var i = 0; i < modes.length; i++) modes[i].checked = modes[i].value === s.mode;
@@ -138,8 +154,9 @@
       minLength: parseInt(el('minLength').value, 10),
       language: el('language') ? el('language').value : 'auto',
       categories: readCategories(),
-      focusMode: el('focusMode').checked,
+      preset: el('preset') ? el('preset').value : 'off',
       hideNotifications: el('hideNotifications').checked,
+      hideNotificationTab: el('hideNotificationTab').checked,
       hideDm: el('hideDm').checked
     });
     el('thresholdValue').textContent = settings.threshold.toFixed(2);
@@ -198,10 +215,11 @@
   }
 
   // ------------------------------------------------------------ wire up
-  ['enabled', 'threshold', 'showOverlay', 'minLength', 'focusMode', 'hideNotifications', 'hideDm'].forEach(function (id) {
+  ['enabled', 'threshold', 'showOverlay', 'minLength', 'hideNotifications', 'hideNotificationTab', 'hideDm'].forEach(function (id) {
     el(id).addEventListener('input', readAndSave);
     el(id).addEventListener('change', readAndSave);
   });
+  if (el('preset')) el('preset').addEventListener('change', readAndSave);
   document.querySelectorAll('input[name="mode"]').forEach(function (radio) {
     radio.addEventListener('change', readAndSave);
   });

@@ -24,6 +24,8 @@
     'badwords'
   ];
 
+  var PRESET_KEYS = ['off', 'soft', 'normal', 'hard'];
+
   var DEFAULTS = {
     enabled: true,
     threshold: 0.5, // この値以上でミュート
@@ -32,8 +34,10 @@
     minLength: 0, // これ未満の短い投稿は判定しない
     language: 'auto', // 'auto' | 'ja' | 'en' | 'zh' | 'ko' | 'ru' | 'uk' | ...
     categories: null, // null = 既定のカテゴリ構成（OPTIONAL_CATEGORIES を除く全部）
-    focusMode: false, // アート集中モード（全カテゴリをまとめて有効化）
+    // 集中プリセット: 'off' | 'soft'（やさしめ） | 'normal'（ふつう） | 'hard'（きびしめ）
+    preset: 'off',
     hideNotifications: false, // X上の通知バッジを隠す
+    hideNotificationTab: false, // 通知タブ自体を隠す
     hideDm: false // X上のDMバッジを隠す
   };
 
@@ -49,8 +53,10 @@
       minLength: clampNumber(value.minLength, 0, 500, DEFAULTS.minLength),
       language: typeof value.language === 'string' && value.language ? value.language : DEFAULTS.language,
       categories: Array.isArray(value.categories) ? value.categories.slice() : null,
-      focusMode: value.focusMode === true,
+      // 旧 focusMode(true) は 'normal' として引き継ぐ
+      preset: PRESET_KEYS.indexOf(value.preset) >= 0 ? value.preset : value.focusMode === true ? 'normal' : DEFAULTS.preset,
       hideNotifications: value.hideNotifications === true,
+      hideNotificationTab: value.hideNotificationTab === true,
       hideDm: value.hideDm === true
     };
     return out;
@@ -62,12 +68,42 @@
     return Math.min(hi, Math.max(lo, n));
   }
 
+  /**
+   * 集中プリセットのカテゴリ構成。
+   *   soft   … 義憤系のみ
+   *   normal … ざわつく話題も隠すが disaster（災害情報）は残す
+   *   hard   … 全部（災害も含む）
+   *   off    … null（ユーザーの個別設定を使う）
+   */
+  function presetCategories(preset, order, optional) {
+    var core = order.filter(function (id) {
+      return optional.indexOf(id) < 0;
+    });
+    if (preset === 'soft') return core;
+    if (preset === 'normal') {
+      return order.filter(function (id) {
+        return id !== 'disaster';
+      });
+    }
+    if (preset === 'hard') return order.slice();
+    return null;
+  }
+
+  function presetThreshold(preset, base) {
+    if (preset === 'soft') return Math.max(base, 0.6);
+    if (preset === 'hard') return Math.min(base, 0.4);
+    return base;
+  }
+
   return {
     PERSIST_KEY: PERSIST_KEY,
     STATS_KEY: STATS_KEY,
     DEFAULTS: DEFAULTS,
     OPTIONAL_CATEGORIES: OPTIONAL_CATEGORIES,
+    PRESET_KEYS: PRESET_KEYS,
     SCORE_VERSION: SCORE_VERSION,
-    normalizeSettings: normalizeSettings
+    normalizeSettings: normalizeSettings,
+    presetCategories: presetCategories,
+    presetThreshold: presetThreshold
   };
 });

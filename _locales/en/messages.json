@@ -52,9 +52,14 @@
   "cat_selfmock": { "message": "Self-deprecation" },
   "cat_ai_topic": { "message": "AI tech / community" },
   "focusMode": { "message": "Art focus mode" },
-  "focusModeHint": { "message": "Hides outrage plus politics, conspiracy, AI debate, AI tech, world affairs, disasters and profanity all at once for a calmer timeline. Turning it off restores your settings." },
+  "focusModeHint": { "message": "A hiding preset. Gentle = outrage only (0.6) / Normal = hide topics but keep disaster alerts (0.5) / Strict = hide everything incl. disasters (0.4). Choose Off to use your own settings." },
+  "presetOff": { "message": "Off (custom)" },
+  "presetSoft": { "message": "Gentle (fewer false positives)" },
+  "presetNormal": { "message": "Normal (keep disaster alerts)" },
+  "presetHard": { "message": "Strict (hide everything)" },
   "quiet": { "message": "Quiet notifications" },
   "hideNotifications": { "message": "Hide notification badge" },
+  "hideNotificationTab": { "message": "Hide the notifications tab" },
   "hideDm": { "message": "Hide DM badge" },
-  "quietHint": { "message": "Hides the badges on X (it does not stop notifications themselves)." }
+  "quietHint": { "message": "Hides badges/tabs on X (it does not stop notifications themselves)." }
 }

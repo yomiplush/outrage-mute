@@ -36,13 +36,28 @@
    * 有効カテゴリを解決する。
    * 設定が未指定(null)なら「トピック系(任意)を除く全部」を使う。
    */
-  function effectiveCategories() {
-    // アート集中モード: 全カテゴリをまとめて有効化（OFFで元の設定に戻る）
-    if (settings.focusMode) return cats.CATEGORY_ORDER.slice();
-    if (Array.isArray(settings.categories)) return settings.categories;
+  function coreCategories() {
     return cats.CATEGORY_ORDER.filter(function (id) {
       return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
     });
+  }
+
+  /**
+   * 集中プリセット。
+   *   soft(やさしめ)  … 義憤系のみ・しきい値0.6（誤爆少なめ）
+   *   normal(ふつう)  … ざわつく話題も隠す・災害情報は残す・0.5
+   *   hard(きびしめ)  … 災害も含め全部隠す・0.4
+   *   off             … ユーザーの個別設定
+   */
+  function effectiveCategories() {
+    var p = config.presetCategories(settings.preset, cats.CATEGORY_ORDER, config.OPTIONAL_CATEGORIES);
+    if (p) return p;
+    if (Array.isArray(settings.categories)) return settings.categories;
+    return coreCategories();
+  }
+
+  function effectiveThreshold() {
+    return config.presetThreshold(settings.preset, settings.threshold);
   }
 
   // ---------------------------------------------------------------- 静音（通知/DMバッジ）
@@ -63,10 +78,16 @@
   }
 
   function applyQuiet() {
-    if (!settings.hideNotifications && !settings.hideDm) {
+    if (!settings.hideNotifications && !settings.hideDm && !settings.hideNotificationTab) {
       restoreQuiet();
       return;
     }
+    // 通知タブごと隠す
+    if (settings.hideNotificationTab) {
+      var tabs = document.querySelectorAll('[data-testid="AppTabBar_Notifications_Link"]');
+      for (var t = 0; t < tabs.length; t++) hideQuiet(tabs[t]);
+    }
+    if (!settings.hideNotifications && !settings.hideDm) return;
     var sel = [];
     if (settings.hideNotifications) {
       sel.push('[data-testid="AppTabBar_Notifications_Link"]', '[data-testid="DMDrawer"]');
@@ -247,7 +268,7 @@
     });
     cell.dataset.jofScore = result.score.toFixed(3);
 
-    if (result.score >= settings.threshold) {
+    if (result.score >= effectiveThreshold()) {
       mask(cell, result);
     } else {
       cell.dataset.jofState = 'clear';

@@ -52,9 +52,14 @@
   "cat_selfmock": { "message": "自虐・自己卑下" },
   "cat_ai_topic": { "message": "AI技術・界隈" },
   "focusMode": { "message": "アート集中モード" },
-  "focusModeHint": { "message": "攻撃的な投稿と、政治・陰謀論・AI論争・AI技術・世界情勢・災害・下品語をまとめて隠し、穏やかなタイムラインにします。OFFで元の設定に戻ります。" },
+  "focusModeHint": { "message": "まとめて隠すプリセット。やさしめ=義憤系のみ(0.6)／ふつう=話題系も隠すが災害情報は残す(0.5)／きびしめ=災害も含め全部隠す(0.4)。「なし」で個別設定に戻ります。" },
+  "presetOff": { "message": "なし（個別設定）" },
+  "presetSoft": { "message": "やさしめ（誤爆少なめ）" },
+  "presetNormal": { "message": "ふつう（災害情報は残す）" },
+  "presetHard": { "message": "きびしめ（全部隠す）" },
   "quiet": { "message": "通知を静かにする" },
   "hideNotifications": { "message": "通知バッジを隠す" },
+  "hideNotificationTab": { "message": "通知タブごと隠す" },
   "hideDm": { "message": "DMバッジを隠す" },
-  "quietHint": { "message": "X上のバッジを非表示にします（通知そのものは止まりません）。" }
+  "quietHint": { "message": "X上のバッジ／タブを非表示にします（通知そのものは止まりません）。" }
 }

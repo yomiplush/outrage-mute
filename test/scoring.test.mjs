@@ -332,20 +332,44 @@ test('AI技術・界隈(ai_topic): 論争と分けて独立トグル', () => {
   assert.ok(analyze(tech, { categories: CORE }).score < 0.5);
 });
 
-test('アート集中モード/通知設定: 既定値と正規化', () => {
-  assert.equal(config.DEFAULTS.focusMode, false);
+test('アート集中モード/通知設定: 既定値・プリセット・正規化', () => {
+  assert.equal(config.DEFAULTS.preset, 'off');
   assert.equal(config.DEFAULTS.hideNotifications, false);
+  assert.equal(config.DEFAULTS.hideNotificationTab, false);
   assert.equal(config.DEFAULTS.hideDm, false);
-  const s = config.normalizeSettings({ focusMode: true, hideNotifications: 1, hideDm: 'yes' });
-  assert.equal(s.focusMode, true);
+
+  const s = config.normalizeSettings({ preset: 'hard', hideNotifications: 1, hideNotificationTab: true, hideDm: 'yes' });
+  assert.equal(s.preset, 'hard');
   assert.equal(s.hideNotifications, false); // true のみ許可
+  assert.equal(s.hideNotificationTab, true);
   assert.equal(s.hideDm, false);
-  // 集中モード相当（全カテゴリ）では、既定OFFの話題系もまとめて隠れる
-  const all = categories.CATEGORY_ORDER.slice();
-  assert.ok(analyze('首相が増税を決めた', { categories: all }).score >= 0.5, 'politics');
-  assert.ok(analyze('AI失業が心配だ', { categories: all }).score >= 0.5, 'ai_dispute');
-  assert.ok(analyze('LLMのプロンプト設計', { categories: all }).score >= 0.5, 'ai_topic');
-  assert.ok(analyze('ミサイル攻撃で死傷者', { categories: all }).score >= 0.5, 'world_affairs');
+  // 旧 focusMode:true は 'normal' として引き継ぐ／不正値は off
+  assert.equal(config.normalizeSettings({ focusMode: true }).preset, 'normal');
+  assert.equal(config.normalizeSettings({ preset: 'x' }).preset, 'off');
+
+  // プリセットのカテゴリ構成
+  const order = categories.CATEGORY_ORDER;
+  const optional = config.OPTIONAL_CATEGORIES;
+  const core = config.presetCategories('soft', order, optional);
+  assert.ok(!core.includes('politics') && !core.includes('disaster'));
+  const normal = config.presetCategories('normal', order, optional);
+  assert.ok(normal.includes('politics') && !normal.includes('disaster'), 'normal keeps disaster');
+  const hard = config.presetCategories('hard', order, optional);
+  assert.ok(hard.includes('disaster'), 'hard hides disaster');
+  assert.equal(config.presetCategories('off', order, optional), null);
+
+  // しきい値
+  assert.equal(config.presetThreshold('soft', 0.5), 0.6);
+  assert.equal(config.presetThreshold('hard', 0.5), 0.4);
+  assert.equal(config.presetThreshold('off', 0.5), 0.5);
+
+  // ふつうプリセット: 政治は隠れ、災害は残る
+  const war = 'ミサイル攻撃で多数の死傷者';
+  const quake = '【緊急地震速報】震度5強の地震。避難指示。';
+  assert.ok(analyze(war, { categories: normal }).score >= 0.5, 'normal hides war');
+  assert.ok(analyze(quake, { categories: normal }).score < 0.5, 'normal keeps quake');
+  assert.ok(analyze(quake, { categories: hard }).score >= 0.5, 'hard hides quake');
+  assert.ok(analyze('首相が増税を決めた', { categories: core }).score < 0.5, 'soft keeps politics');
 });
 
 test('災害・緊急情報(disaster): 独立トグルで見る/隠すを選べる', () => {
