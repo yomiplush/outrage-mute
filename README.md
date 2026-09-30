@@ -57,6 +57,21 @@ Chrome拡張とは別に、**Safari で動くユーザースクリプト**（`ou
 - 機能は拡張版と同等（ぼかし/完全非表示・再度ミュート・自分の投稿除外・通知バッジ非表示 等）
 - 生成: `npm run build:userscript`
 
+## Android で使う（Tampermonkey 版）
+
+Android には Safari が無いため、**Tampermonkey が動くブラウザ**と組み合わせます（Firefox for Android / Cromite / Mises など。Chrome for Android は拡張不可）。Android 向けに**タップしやすいUI**へ調整した専用スクリプトを用意しています。
+
+1. ブラウザに **Tampermonkey**（Playストア）を追加
+2. 次の **raw 直リンク**を開くとインストール画面が出ます
+   - Android/Tampermonkey 版: `https://raw.githubusercontent.com/yomiplush/outrage-mute/main/outrage-mute.tampermonkey.user.js`
+   - 汎用版: `https://raw.githubusercontent.com/yomiplush/outrage-mute/main/outrage-mute.user.js`
+3. x.com を開くと左下に **⚙**（モバイル向けに大きめ）。タップして設定
+
+補足:
+- `@downloadURL/@updateURL` が raw を指すため、**Tampermonkey の自動更新**が使えます
+- 判定エンジン・保存（localStorage）・設定項目は拡張版と同等です
+- `@grant none`（GM API 不使用）なので、Tampermonkey/Violentmonkey のどちらでも動作します
+
 ## 使い方
 
 - ポップアップの **しきい値**（既定 0.50）を下げるほど多く隠します。
