@@ -47,5 +47,6 @@
   "cat_politics": { "message": "Politics" },
   "cat_conspiracy": { "message": "Conspiracy" },
   "cat_ai_dispute": { "message": "AI debate" },
-  "cat_world_affairs": { "message": "World affairs / war" }
+  "cat_world_affairs": { "message": "World affairs / war" },
+  "cat_disaster": { "message": "Disasters / emergency" }
 }

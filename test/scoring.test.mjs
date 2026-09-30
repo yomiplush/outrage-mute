@@ -94,7 +94,7 @@ test('トピック系（政治・陰謀論・AI論争・世界情勢）は有効
     ['ケミカルトレイルは本当だった', 'conspiracy'],
     ['AI規制が必要だ', 'ai_dispute'],
     ['ウクライナ侵攻が激化している', 'world_affairs'],
-    ['大津波の被害が広がっている', 'world_affairs']
+    ['ミサイル攻撃で多数の死傷者', 'world_affairs']
   ];
   for (const [text, cat] of cases) {
     const r = analyze(text, { categories: [cat] });
@@ -284,6 +284,31 @@ test('文体・口調(tone): 語彙が無くても義憤を検出し、ポジテ
   assert.equal(analyze('😡😡😡', { categories: core }).score, 0);
   assert.ok(analyze('😡😡😡', {}).score > 0.5);
   assert.ok(categories.CATEGORY_LABELS.tone, 'tone label');
+});
+
+test('災害・緊急情報(disaster): 独立トグルで見る/隠すを選べる', () => {
+  const CORE = categories.CATEGORY_ORDER.filter((id) => !config.OPTIONAL_CATEGORIES.includes(id));
+  const WA = CORE.concat('world_affairs');
+  const WA_D = WA.concat('disaster');
+  const quake = '【緊急地震速報】震度5強の地震が発生しました。津波注意報。';
+  const war = 'ミサイル攻撃で多数の死傷者。侵攻は激化。';
+
+  // disaster は既定OFF（＝見る）
+  assert.ok(config.OPTIONAL_CATEGORIES.includes('disaster'));
+  assert.ok(analyze(quake, { categories: CORE }).score < config.DEFAULTS.threshold);
+  // 世界情勢を隠しても災害情報は残る（要点）
+  assert.ok(analyze(war, { categories: WA }).score >= config.DEFAULTS.threshold, 'war muted');
+  assert.ok(analyze(quake, { categories: WA }).score < config.DEFAULTS.threshold, 'quake visible');
+  // 災害トグルを入れると隠れる
+  assert.ok(analyze(quake, { categories: WA_D }).score >= config.DEFAULTS.threshold, 'quake muted');
+  // 災害語は disaster へ再分類される
+  const r = analyze('大きい地震があった。余震に注意。', { categories: WA_D });
+  assert.ok(r.categories.includes('disaster'), JSON.stringify(r.categories));
+  assert.ok(!r.categories.includes('world_affairs'));
+  // 英語の災害警報も
+  assert.ok(
+    analyze('Earthquake warning: tsunami advisory, evacuate immediately.', { categories: WA_D }).score >= 0.5
+  );
 });
 
 test('追加言語（パックが無かったもの）を判定できる', () => {

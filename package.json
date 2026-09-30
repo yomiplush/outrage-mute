@@ -1,6 +1,6 @@
 {
   "name": "outrage-mute",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "description": "Xの投稿を日本語の義憤スコアで判定し、CSSでミュートするChrome拡張（ローカル完結）",
   "type": "commonjs",

@@ -19,6 +19,7 @@
     'conspiracy',
     'ai_dispute',
     'world_affairs',
+    'disaster',
     'badwords'
   ];
 

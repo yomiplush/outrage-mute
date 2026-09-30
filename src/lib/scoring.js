@@ -22,13 +22,14 @@
       require('./categories.js'),
       require('./lang/index.js'),
       require('./lang/build.js'),
-      require('./lang/style.js')
+      require('./lang/style.js'),
+      require('./lang/disaster.js')
     );
   } else {
     var JOF = root.JOF = root.JOF || {};
-    JOF.scoring = factory(JOF.normalize, JOF.categories, JOF.lang, JOF.langBuild, JOF.style);
+    JOF.scoring = factory(JOF.normalize, JOF.categories, JOF.lang, JOF.langBuild, JOF.style, JOF.disaster);
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (normalize, categories, lang, build, style) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (normalize, categories, lang, build, style, disaster) {
   'use strict';
 
   var SATURATION = 2.4;
@@ -100,18 +101,22 @@
       byCat[cat] = (byCat[cat] || 0) + w;
       if (entry) terms.push(entry);
     }
-    function ok(cat) {
-      return !catFilter || catFilter.has(cat);
-    }
     function emit(hit, w, kind) {
-      add(hit.cat, w, {
+      // 災害系は world_affairs から disaster へ移し替える（見る/隠すを独立制御するため）
+      var cat = hit.cat;
+      if (cat === 'world_affairs' && disaster && disaster.isTerm(hit.n, pack.id)) cat = 'disaster';
+      add(cat, w, {
         term: hit.term,
-        cat: hit.cat,
-        label: CAT[hit.cat] || hit.cat,
+        cat: cat,
+        label: CAT[cat] || cat,
         weight: Math.round(w * 1000) / 1000,
         kind: kind,
         source: hit.source || ''
       });
+    }
+    // カテゴリの絞り込みは add() で行う（world_affairs→disaster の再分類があるため）
+    function ok() {
+      return true;
     }
 
     // ---- 1-3. 辞書の一致 ----
@@ -119,6 +124,12 @@
       scanWord(pack, text, emit, ok);
     } else {
       scanSubstring(pack, text, emit, ok);
+    }
+
+    // ---- 辞書に無い災害・緊急情報の語（地震速報/避難指示 等）----
+    if (disaster) {
+      var ex = disaster.extraIndex(pack);
+      if (ex && ex.index) scanExtra(ex.match, ex.index, text, emit);
     }
 
     // ---- 4. 文型パターン ----
@@ -323,6 +334,64 @@
         emit(hit, w, kind);
       }
       i += n;
+    }
+  }
+
+  // ---- 追加の災害語スキャン（否定・引用の補正なしの単純一致）----
+  function scanExtra(match, index, text, emit) {
+    if (match === 'word') {
+      var toks = build.tokenizeWithPositions(text);
+      var i = 0;
+      while (i < toks.length) {
+        var list = index.BY_WORD.get(toks[i].w);
+        var hit = null;
+        var n = 0;
+        if (list) {
+          for (var t = 0; t < list.length; t++) {
+            var e = list[t];
+            var len = e.tokens.length;
+            if (i + len > toks.length) continue;
+            var m = true;
+            for (var k = 0; k < len; k++) {
+              if (toks[i + k].w !== e.tokens[k]) {
+                m = false;
+                break;
+              }
+            }
+            if (m) {
+              hit = e;
+              n = len;
+              break;
+            }
+          }
+        }
+        if (!hit) {
+          i++;
+          continue;
+        }
+        emit(hit, hit.w, 'disaster');
+        i += n;
+      }
+    } else {
+      var j = 0;
+      while (j < text.length) {
+        var list2 = index.BY_FIRST.get(text.charAt(j));
+        var hit2 = null;
+        if (list2) {
+          for (var q = 0; q < list2.length; q++) {
+            if (text.indexOf(list2[q].n, j) === j) {
+              hit2 = list2[q];
+              break;
+            }
+          }
+        }
+        if (!hit2) {
+          j++;
+          continue;
+        }
+        emit(hit2, hit2.w, 'disaster');
+        j += hit2.n.length;
+      }
     }
   }
 

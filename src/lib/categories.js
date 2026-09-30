@@ -27,7 +27,8 @@
     politics: '政治',
     conspiracy: '陰謀論',
     ai_dispute: 'AI論争',
-    world_affairs: '世界情勢・戦争'
+    world_affairs: '世界情勢・戦争',
+    disaster: '災害・緊急情報'
   };
 
   var CATEGORY_ORDER = [
@@ -45,6 +46,7 @@
     'conspiracy',
     'ai_dispute',
     'world_affairs',
+    'disaster',
     'badwords'
   ];
 
