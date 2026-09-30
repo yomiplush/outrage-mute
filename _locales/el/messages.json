@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Ενεργό"
+  },
+  "threshold": {
+    "message": "Όριο"
+  },
+  "note": {
+    "message": "Όλα αξιολογούνται στη συσκευή σας (τίποτα δεν αποστέλλεται)."
+  },
+  "modeBlur": {
+    "message": "Θόλωμα (κλικ για εμφάνιση)"
+  },
+  "modeHide": {
+    "message": "Απόκρυψη εντελώς"
+  },
+  "languageAuto": {
+    "message": "Αυτόματο"
+  },
+  "reset": {
+    "message": "Επαναφορά"
+  },
+  "show": {
+    "message": "Εμφάνιση"
+  },
+  "hide": {
+    "message": "Απόκρυψη"
+  },
+  "maskedBadge": {
+    "message": "Σε σίγαση $1%"
+  }
+}

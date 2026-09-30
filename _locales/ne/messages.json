@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "आउटरेज म्युट"
+  },
+  "enabled": {
+    "message": "सक्रिय"
+  },
+  "threshold": {
+    "message": "सीमा"
+  },
+  "note": {
+    "message": "सबै तपाईंको यन्त्रमा जाँचिन्छ (केही पठाइँदैन)।"
+  },
+  "modeBlur": {
+    "message": "धुंध्याउनुहोस् (देखाउन क्लिक)"
+  },
+  "modeHide": {
+    "message": "पूर्ण रूपमा लुकाउनुहोस्"
+  },
+  "languageAuto": {
+    "message": "स्वतः"
+  },
+  "reset": {
+    "message": "रिसेट"
+  },
+  "show": {
+    "message": "देखाउनुहोस्"
+  },
+  "hide": {
+    "message": "लुकाउनुहोस्"
+  },
+  "maskedBadge": {
+    "message": "म्युट $1%"
+  }
+}

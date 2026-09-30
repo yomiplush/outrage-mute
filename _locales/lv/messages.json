@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Iesl"
+  },
+  "threshold": {
+    "message": "Slieksnis"
+  },
+  "note": {
+    "message": "Viss tiek novērtēts jūsu ierīcē (nekas netiek sūtīts)."
+  },
+  "modeBlur": {
+    "message": "Aizmiglot (klikšķis, lai rādītu)"
+  },
+  "modeHide": {
+    "message": "Paslēpt pilnībā"
+  },
+  "languageAuto": {
+    "message": "Automātiski"
+  },
+  "reset": {
+    "message": "Atiestatīt"
+  },
+  "show": {
+    "message": "Rādīt"
+  },
+  "hide": {
+    "message": "Slēpt"
+  },
+  "maskedBadge": {
+    "message": "Apklusināts $1%"
+  }
+}

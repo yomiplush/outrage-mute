@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "আউট্রেজ মিউট"
+  },
+  "enabled": {
+    "message": "চালু"
+  },
+  "threshold": {
+    "message": "সীমা"
+  },
+  "note": {
+    "message": "সবকিছু আপনার ডিভাইসে যাচাই হয় (কিছুই পাঠানো হয় না)।"
+  },
+  "modeBlur": {
+    "message": "ঝাপসা করুন (দেখতে ক্লিক)"
+  },
+  "modeHide": {
+    "message": "সম্পূর্ণ লুকান"
+  },
+  "languageAuto": {
+    "message": "স্বয়ংক্রিয়"
+  },
+  "reset": {
+    "message": "রিসেট"
+  },
+  "show": {
+    "message": "দেখান"
+  },
+  "hide": {
+    "message": "লুকান"
+  },
+  "maskedBadge": {
+    "message": "মিউট $1%"
+  }
+}

@@ -561,6 +561,399 @@
       ['pag-atake ng terorista', 2.6, 'world_affairs'], ['pagpatay', 2.4, 'world_affairs'], ['masaker', 2.6, 'world_affairs'],
       ['lindol', 2.0, 'world_affairs'], ['tsunami', 2.4, 'world_affairs'], ['pandemya', 2.2, 'world_affairs'],
       ['kudeta', 2.6, 'world_affairs'], ['mga refugee', 2.0, 'world_affairs']
+    ],
+
+    // ================================================================ Vietnamese
+    vi: [
+      ['ngu', 1.8, 'attack'], ['đồ ngu', 2.2, 'attack'], ['óc chó', 2.6, 'attack'],
+      ['thằng khốn', 2.4, 'attack'], ['khốn nạn', 2.2, 'attack'], ['súc vật', 2.6, 'attack'],
+      ['rác rưởi', 2.0, 'attack'], ['đần độn', 1.8, 'attack'],
+      ['ghét', 1.8, 'hostility'], ['căm thù', 2.2, 'hostility'], ['kinh tởm', 2.0, 'hostility'], ['đáng ghét', 1.8, 'hostility'],
+      ['câm mồm', 2.4, 'incitement'], ['im đi', 2.2, 'incitement'], ['biến đi', 2.4, 'incitement'], ['chết đi', 3.0, 'incitement'],
+      ['phản quốc', 2.4, 'othering'], ['bán nước', 2.6, 'othering'], ['giặc', 2.0, 'othering'],
+      ['bầu cử', 2.2, 'politics'], ['chính phủ', 2.2, 'politics'], ['tổng thống', 2.2, 'politics'],
+      ['chính trị', 2.2, 'politics'], ['thuế', 2.0, 'politics'],
+      ['âm mưu', 2.4, 'conspiracy'], ['thuyết âm mưu', 2.6, 'conspiracy'], ['tin giả', 2.0, 'conspiracy'],
+      ['trí tuệ nhân tạo', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['chiến tranh', 2.2, 'world_affairs'], ['xâm lược', 2.4, 'world_affairs'], ['ném bom', 2.6, 'world_affairs'],
+      ['tên lửa', 2.2, 'world_affairs'], ['chiến tranh hạt nhân', 2.8, 'world_affairs'], ['diệt chủng', 2.6, 'world_affairs'],
+      ['khủng bố', 2.4, 'world_affairs'], ['giết người', 2.4, 'world_affairs'], ['sóng thần', 2.4, 'world_affairs'],
+      ['đại dịch', 2.2, 'world_affairs'], ['đảo chính', 2.6, 'world_affairs'], ['tị nạn', 2.0, 'world_affairs']
+    ],
+
+    // ================================================================ Indonesian
+    id: [
+      ['bodoh', 1.8, 'attack'], ['goblok', 2.2, 'attack'], ['tolol', 2.0, 'attack'],
+      ['idiot', 1.8, 'attack'], ['sampah', 2.0, 'attack'], ['brengsek', 2.4, 'attack'],
+      ['keparat', 2.4, 'attack'], ['bajingan', 2.4, 'attack'],
+      ['benci', 2.0, 'hostility'], ['kebencian', 2.0, 'hostility'], ['menjijikkan', 2.0, 'hostility'], ['muak', 1.6, 'hostility'],
+      ['diam', 1.8, 'incitement'], ['pergi', 1.6, 'incitement'], ['mati', 2.6, 'incitement'], ['boikot', 1.6, 'incitement'],
+      ['pengkhianat', 2.4, 'othering'], ['komunis', 2.0, 'othering'],
+      ['pemilu', 2.2, 'politics'], ['pemerintah', 2.2, 'politics'], ['presiden', 2.2, 'politics'],
+      ['politik', 2.2, 'politics'], ['pajak', 2.0, 'politics'],
+      ['konspirasi', 2.4, 'conspiracy'], ['teori konspirasi', 2.6, 'conspiracy'], ['berita bohong', 2.0, 'conspiracy'],
+      ['kecerdasan buatan', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['perang', 2.2, 'world_affairs'], ['invasi', 2.4, 'world_affairs'], ['pengeboman', 2.6, 'world_affairs'],
+      ['rudal', 2.2, 'world_affairs'], ['perang nuklir', 2.8, 'world_affairs'], ['genosida', 2.6, 'world_affairs'],
+      ['teror', 2.4, 'world_affairs'], ['pembunuhan', 2.4, 'world_affairs'], ['gempa', 2.0, 'world_affairs'],
+      ['tsunami', 2.4, 'world_affairs'], ['pandemi', 2.2, 'world_affairs'], ['kudeta', 2.6, 'world_affairs'],
+      ['pengungsi', 2.0, 'world_affairs']
+    ],
+
+    // ================================================================ Malay
+    ms: [
+      ['bodoh', 1.8, 'attack'], ['goblok', 2.2, 'attack'], ['tolol', 2.0, 'attack'],
+      ['sial', 1.6, 'attack'], ['sampah', 2.0, 'attack'], ['bangsat', 2.4, 'attack'], ['jahanam', 2.4, 'attack'],
+      ['benci', 2.0, 'hostility'], ['kebencian', 2.0, 'hostility'], ['menjijikkan', 2.0, 'hostility'],
+      ['diam', 1.8, 'incitement'], ['pergi', 1.6, 'incitement'], ['mati', 2.6, 'incitement'], ['boikot', 1.6, 'incitement'],
+      ['pengkhianat', 2.4, 'othering'], ['komunis', 2.0, 'othering'],
+      ['pilihan raya', 2.2, 'politics'], ['kerajaan', 2.2, 'politics'], ['presiden', 2.2, 'politics'],
+      ['politik', 2.2, 'politics'], ['cukai', 2.0, 'politics'],
+      ['konspirasi', 2.4, 'conspiracy'], ['teori konspirasi', 2.6, 'conspiracy'], ['berita palsu', 2.0, 'conspiracy'],
+      ['kecerdasan buatan', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['perang', 2.2, 'world_affairs'], ['serangan', 2.4, 'world_affairs'], ['pengeboman', 2.6, 'world_affairs'],
+      ['peluru berpandu', 2.2, 'world_affairs'], ['perang nuklear', 2.8, 'world_affairs'], ['pembunuhan beramai-ramai', 2.6, 'world_affairs'],
+      ['keganasan', 2.4, 'world_affairs'], ['pembunuhan', 2.4, 'world_affairs'], ['gempa bumi', 2.0, 'world_affairs'],
+      ['tsunami', 2.4, 'world_affairs'], ['pandemik', 2.2, 'world_affairs'], ['rampasan kuasa', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Bengali
+    bn: [
+      ['বোকা', 1.8, 'attack'], ['মূর্খ', 1.8, 'attack'], ['গাধা', 2.0, 'attack'],
+      ['নিকম্মা', 1.8, 'attack'], ['জঘন্য', 2.0, 'attack'], ['কুত্তার বাচ্চা', 2.8, 'attack'],
+      ['ঘৃণা', 2.0, 'hostility'], ['অপছন্দ', 1.6, 'hostility'], ['বিরক্তিকর', 1.8, 'hostility'],
+      ['চুপ কর', 2.4, 'incitement'], ['পালাও', 2.4, 'incitement'], ['মরে যাও', 3.0, 'incitement'],
+      ['বিশ্বাসঘাতক', 2.4, 'othering'], ['দেশদ্রোহী', 2.6, 'othering'], ['সন্ত্রাসী', 2.4, 'othering'],
+      ['নির্বাচন', 2.2, 'politics'], ['সরকার', 2.2, 'politics'], ['প্রধানমন্ত্রী', 2.2, 'politics'],
+      ['রাজনীতি', 2.2, 'politics'],
+      ['ষড়যন্ত্র', 2.4, 'conspiracy'], ['ষড়যন্ত্র তত্ত্ব', 2.6, 'conspiracy'], ['ভুয়া খবর', 2.0, 'conspiracy'],
+      ['কৃত্রিম বুদ্ধিমত্তা', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['যুদ্ধ', 2.2, 'world_affairs'], ['আক্রমণ', 2.4, 'world_affairs'], ['বোমাবর্ষণ', 2.6, 'world_affairs'],
+      ['ক্ষেপণাস্ত্র', 2.2, 'world_affairs'], ['পারমাণবিক যুদ্ধ', 2.8, 'world_affairs'], ['গণহত্যা', 2.6, 'world_affairs'],
+      ['সন্ত্রাস', 2.4, 'world_affairs'], ['খুন', 2.4, 'world_affairs'], ['ভূমিকম্প', 2.0, 'world_affairs'],
+      ['সুনামি', 2.4, 'world_affairs'], ['মহামারি', 2.2, 'world_affairs'], ['অভ্যুত্থান', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Urdu
+    ur: [
+      ['بیوقوف', 1.8, 'attack'], ['احمق', 1.8, 'attack'], ['گدھا', 2.0, 'attack'],
+      ['ناکارہ', 1.8, 'attack'], ['کمینہ', 2.2, 'attack'], ['حرامی', 2.6, 'attack'],
+      ['نفرت', 2.0, 'hostility'], ['مکروہ', 2.0, 'hostility'], ['گھن', 1.8, 'hostility'],
+      ['چپ رہو', 2.4, 'incitement'], ['بھاگ جا', 2.4, 'incitement'], ['مر جا', 2.8, 'incitement'],
+      ['غدار', 2.4, 'othering'], ['دہشت گرد', 2.4, 'othering'],
+      ['الیکشن', 2.2, 'politics'], ['حکومت', 2.2, 'politics'], ['صدر', 2.2, 'politics'],
+      ['سیاست', 2.2, 'politics'], ['ٹیکس', 2.0, 'politics'],
+      ['سازش', 2.4, 'conspiracy'], ['سازشی نظریہ', 2.6, 'conspiracy'], ['جعلی خبر', 2.0, 'conspiracy'],
+      ['مصنوعی ذہانت', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['جنگ', 2.2, 'world_affairs'], ['حملہ', 2.4, 'world_affairs'], ['بمباری', 2.6, 'world_affairs'],
+      ['میزائل', 2.2, 'world_affairs'], ['ایٹمی جنگ', 2.8, 'world_affairs'], ['نسل کشی', 2.6, 'world_affairs'],
+      ['دہشت گردی', 2.4, 'world_affairs'], ['قتل', 2.4, 'world_affairs'], ['زلزلہ', 2.0, 'world_affairs'],
+      ['سونامی', 2.4, 'world_affairs'], ['وبا', 2.2, 'world_affairs'], ['بغاوت', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Tamil
+    ta: [
+      ['முட்டாள்', 1.8, 'attack'], ['அசடு', 1.8, 'attack'], ['கழுதை', 2.0, 'attack'],
+      ['அற்பன்', 1.8, 'attack'], ['கேவலம்', 2.0, 'attack'],
+      ['வெறுப்பு', 2.0, 'hostility'], ['அருவருப்பு', 2.0, 'hostility'], ['எரிச்சல்', 1.6, 'hostility'],
+      ['வாயை மூடு', 2.4, 'incitement'], ['ஓடிப்போ', 2.4, 'incitement'], ['செத்துப்போ', 3.0, 'incitement'],
+      ['துரோகி', 2.4, 'othering'], ['தேசத் துரோகி', 2.6, 'othering'],
+      ['தேர்தல்', 2.2, 'politics'], ['அரசு', 2.2, 'politics'], ['ஜனாதிபதி', 2.2, 'politics'],
+      ['அரசியல்', 2.2, 'politics'], ['வரி', 2.0, 'politics'],
+      ['சதி', 2.4, 'conspiracy'], ['சதிக் கோட்பாடு', 2.6, 'conspiracy'], ['பொய் செய்தி', 2.0, 'conspiracy'],
+      ['செயற்கை நுண்ணறிவு', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['போர்', 2.2, 'world_affairs'], ['படையெடுப்பு', 2.4, 'world_affairs'], ['குண்டுவீச்சு', 2.6, 'world_affairs'],
+      ['ஏவுகணை', 2.2, 'world_affairs'], ['அணுப்போர்', 2.8, 'world_affairs'], ['இனப்படுகொலை', 2.6, 'world_affairs'],
+      ['பயங்கரவாதம்', 2.4, 'world_affairs'], ['கொலை', 2.4, 'world_affairs'], ['பூகம்பம்', 2.0, 'world_affairs'],
+      ['சுனாமி', 2.4, 'world_affairs'], ['தொற்றுநோய்', 2.2, 'world_affairs'], ['ஆட்சிக் கவிழ்ப்பு', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Telugu
+    te: [
+      ['మూర్ఖుడు', 1.8, 'attack'], ['గాడిద', 2.0, 'attack'], ['నీచుడు', 2.0, 'attack'],
+      ['పనికిరాని', 1.8, 'attack'], ['దిక్కులేని', 1.8, 'attack'],
+      ['ద్వేషం', 2.0, 'hostility'], ['అసహ్యం', 2.0, 'hostility'], ['చిరాకు', 1.6, 'hostility'],
+      ['నోరు మూసుకో', 2.4, 'incitement'], ['పో', 2.0, 'incitement'], ['చావు', 2.8, 'incitement'],
+      ['ద్రోహి', 2.4, 'othering'], ['దేశద్రోహి', 2.6, 'othering'],
+      ['ఎన్నికలు', 2.2, 'politics'], ['ప్రభుత్వం', 2.2, 'politics'], ['అధ్యక్షుడు', 2.2, 'politics'],
+      ['రాజకీయాలు', 2.2, 'politics'], ['పన్ను', 2.0, 'politics'],
+      ['కుట్ర', 2.4, 'conspiracy'], ['కుట్ర సిద్ధాంతం', 2.6, 'conspiracy'], ['తప్పుడు వార్త', 2.0, 'conspiracy'],
+      ['కృత్రిమ మేధస్సు', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['యుద్ధం', 2.2, 'world_affairs'], ['దాడి', 2.4, 'world_affairs'], ['బాంబు దాడి', 2.6, 'world_affairs'],
+      ['క్షిపణి', 2.2, 'world_affairs'], ['అణు యుద్ధం', 2.8, 'world_affairs'], ['హత్యాకాండ', 2.6, 'world_affairs'],
+      ['ఉగ్రవాదం', 2.4, 'world_affairs'], ['హత్య', 2.4, 'world_affairs'], ['భూకంపం', 2.0, 'world_affairs'],
+      ['సునామీ', 2.4, 'world_affairs'], ['మహమ్మారి', 2.2, 'world_affairs'], ['తిరుగుబాటు', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Hebrew
+    he: [
+      ['מטומטם', 1.8, 'attack'], ['אידיוט', 1.8, 'attack'], ['טיפש', 1.8, 'attack'],
+      ['אפס', 1.8, 'attack'], ['חלאה', 2.4, 'attack'], ['בן זונה', 2.8, 'attack'],
+      ['שנאה', 2.0, 'hostility'], ['שונא', 1.8, 'hostility'], ['מגעיל', 2.0, 'hostility'], ['דוחה', 2.0, 'hostility'],
+      ['תשתוק', 2.4, 'incitement'], ['תסתלק', 2.4, 'incitement'], ['לך לעזאזל', 2.6, 'incitement'], ['תמות', 3.0, 'incitement'],
+      ['בוגד', 2.4, 'othering'], ['שמאלני', 1.8, 'othering'], ['פאשיסט', 2.2, 'othering'],
+      ['בחירות', 2.2, 'politics'], ['ממשלה', 2.2, 'politics'], ['ראש הממשלה', 2.2, 'politics'],
+      ['פוליטיקה', 2.2, 'politics'], ['מיסים', 2.0, 'politics'],
+      ['קונספירציה', 2.4, 'conspiracy'], ['תיאוריית קונספירציה', 2.6, 'conspiracy'], ['חדשות כזב', 2.0, 'conspiracy'],
+      ['בינה מלאכותית', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['מלחמה', 2.2, 'world_affairs'], ['פלישה', 2.4, 'world_affairs'], ['הפצצה', 2.6, 'world_affairs'],
+      ['טיל', 2.2, 'world_affairs'], ['מלחמה גרעינית', 2.8, 'world_affairs'], ['רצח עם', 2.6, 'world_affairs'],
+      ['פיגוע', 2.6, 'world_affairs'], ['רצח', 2.4, 'world_affairs'], ['רעידת אדמה', 2.0, 'world_affairs'],
+      ['צונאמי', 2.4, 'world_affairs'], ['מגפה', 2.2, 'world_affairs'], ['הפיכה', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Greek
+    el: [
+      ['ηλίθιος', 1.8, 'attack'], ['βλάκας', 1.8, 'attack'], ['μαλάκας', 2.6, 'attack'],
+      ['γαϊδούρι', 2.0, 'attack'], ['άχρηστος', 1.8, 'attack'], ['σκατά', 2.4, 'attack'],
+      ['μίσος', 2.0, 'hostility'], ['μισώ', 2.0, 'hostility'], ['αηδιαστικός', 2.0, 'hostility'], ['σιχαμένος', 2.0, 'hostility'],
+      ['σκάσε', 2.4, 'incitement'], ['φύγε', 2.2, 'incitement'], ['άντε γαμήσου', 2.8, 'incitement'], ['πεθάνε', 3.0, 'incitement'],
+      ['προδότης', 2.4, 'othering'], ['φασίστας', 2.2, 'othering'], ['κομμουνιστής', 2.0, 'othering'],
+      ['εκλογές', 2.2, 'politics'], ['κυβέρνηση', 2.2, 'politics'], ['πρωθυπουργός', 2.2, 'politics'],
+      ['πολιτική', 2.2, 'politics'], ['φόροι', 2.0, 'politics'],
+      ['συνωμοσία', 2.4, 'conspiracy'], ['θεωρία συνωμοσίας', 2.6, 'conspiracy'], ['ψεύτικες ειδήσεις', 2.0, 'conspiracy'],
+      ['τεχνητή νοημοσύνη', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['πόλεμος', 2.2, 'world_affairs'], ['εισβολή', 2.4, 'world_affairs'], ['βομβαρδισμός', 2.6, 'world_affairs'],
+      ['πύραυλος', 2.2, 'world_affairs'], ['πυρηνικός πόλεμος', 2.8, 'world_affairs'], ['γενοκτονία', 2.6, 'world_affairs'],
+      ['τρομοκρατία', 2.4, 'world_affairs'], ['δολοφονία', 2.4, 'world_affairs'], ['σεισμός', 2.0, 'world_affairs'],
+      ['τσουνάμι', 2.4, 'world_affairs'], ['πανδημία', 2.2, 'world_affairs'], ['πραξικόπημα', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Romanian
+    ro: [
+      ['idiot', 1.8, 'attack'], ['prost', 1.6, 'attack'], ['tâmpit', 2.0, 'attack'],
+      ['imbecil', 2.0, 'attack'], ['gunoi', 2.0, 'attack'], ['nemernic', 2.4, 'attack'],
+      ['javră', 2.6, 'attack'], ['nenorocit', 2.2, 'attack'],
+      ['ură', 2.0, 'hostility'], ['urăsc', 2.0, 'hostility'], ['dezgustător', 2.0, 'hostility'], ['scârbos', 2.0, 'hostility'],
+      ['taci', 2.4, 'incitement'], ['pleacă', 2.2, 'incitement'], ['du-te dracului', 2.6, 'incitement'], ['mori', 3.0, 'incitement'],
+      ['trădător', 2.4, 'othering'], ['comunist', 2.0, 'othering'], ['fascist', 2.2, 'othering'],
+      ['alegeri', 2.2, 'politics'], ['guvern', 2.2, 'politics'], ['președinte', 2.2, 'politics'],
+      ['politică', 2.2, 'politics'], ['taxe', 2.0, 'politics'],
+      ['conspirație', 2.4, 'conspiracy'], ['teoria conspirației', 2.6, 'conspiracy'], ['știri false', 2.0, 'conspiracy'],
+      ['inteligență artificială', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['război', 2.2, 'world_affairs'], ['invazie', 2.4, 'world_affairs'], ['bombardament', 2.6, 'world_affairs'],
+      ['rachetă', 2.2, 'world_affairs'], ['război nuclear', 2.8, 'world_affairs'], ['genocid', 2.6, 'world_affairs'],
+      ['terorism', 2.4, 'world_affairs'], ['crimă', 2.4, 'world_affairs'], ['cutremur', 2.0, 'world_affairs'],
+      ['tsunami', 2.4, 'world_affairs'], ['pandemie', 2.2, 'world_affairs'], ['lovitură de stat', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Bulgarian
+    bg: [
+      ['идиот', 1.8, 'attack'], ['глупак', 1.8, 'attack'], ['тъпак', 2.0, 'attack'],
+      ['малоумен', 2.0, 'attack'], ['боклук', 2.0, 'attack'], ['негодник', 2.2, 'attack'], ['копеле', 2.6, 'attack'],
+      ['омраза', 2.0, 'hostility'], ['мразя', 2.0, 'hostility'], ['отвратително', 2.0, 'hostility'], ['гнусно', 2.0, 'hostility'],
+      ['млъкни', 2.4, 'incitement'], ['махай се', 2.4, 'incitement'], ['върви по дяволите', 2.6, 'incitement'], ['умри', 3.0, 'incitement'],
+      ['предател', 2.4, 'othering'], ['комунист', 2.0, 'othering'], ['фашист', 2.2, 'othering'],
+      ['избори', 2.2, 'politics'], ['правителство', 2.2, 'politics'], ['президент', 2.2, 'politics'],
+      ['политика', 2.2, 'politics'], ['данъци', 2.0, 'politics'],
+      ['конспирация', 2.4, 'conspiracy'], ['теория на конспирацията', 2.6, 'conspiracy'], ['фалшиви новини', 2.0, 'conspiracy'],
+      ['изкуствен интелект', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['война', 2.2, 'world_affairs'], ['нашествие', 2.4, 'world_affairs'], ['бомбардировка', 2.6, 'world_affairs'],
+      ['ракета', 2.2, 'world_affairs'], ['ядрена война', 2.8, 'world_affairs'], ['геноцид', 2.6, 'world_affairs'],
+      ['тероризъм', 2.4, 'world_affairs'], ['убийство', 2.4, 'world_affairs'], ['земетресение', 2.0, 'world_affairs'],
+      ['цунами', 2.4, 'world_affairs'], ['пандемия', 2.2, 'world_affairs'], ['преврат', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Serbian
+    sr: [
+      ['идиот', 1.8, 'attack'], ['глупан', 1.8, 'attack'], ['будала', 1.8, 'attack'],
+      ['кретен', 2.2, 'attack'], ['смеће', 2.0, 'attack'], ['гњида', 2.6, 'attack'], ['копиле', 2.6, 'attack'],
+      ['мржња', 2.0, 'hostility'], ['мрзим', 2.0, 'hostility'], ['одвратно', 2.0, 'hostility'], ['гадно', 1.8, 'hostility'],
+      ['ћути', 2.4, 'incitement'], ['бежи', 2.4, 'incitement'], ['иди дођавола', 2.6, 'incitement'],
+      ['издајник', 2.4, 'othering'], ['комуниста', 2.0, 'othering'], ['фашиста', 2.2, 'othering'],
+      ['избори', 2.2, 'politics'], ['влада', 2.2, 'politics'], ['председник', 2.2, 'politics'],
+      ['политика', 2.2, 'politics'], ['порези', 2.0, 'politics'],
+      ['завера', 2.4, 'conspiracy'], ['теорија завере', 2.6, 'conspiracy'], ['лажне вести', 2.0, 'conspiracy'],
+      ['вештачка интелигенција', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['рат', 2.2, 'world_affairs'], ['инвазија', 2.4, 'world_affairs'], ['бомбардовање', 2.6, 'world_affairs'],
+      ['ракета', 2.2, 'world_affairs'], ['нуклеарни рат', 2.8, 'world_affairs'], ['геноцид', 2.6, 'world_affairs'],
+      ['тероризам', 2.4, 'world_affairs'], ['убиство', 2.4, 'world_affairs'], ['земљотрес', 2.0, 'world_affairs'],
+      ['цунами', 2.4, 'world_affairs'], ['пандемија', 2.2, 'world_affairs'], ['пуч', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Croatian
+    hr: [
+      ['idiot', 1.8, 'attack'], ['glupan', 1.8, 'attack'], ['budala', 1.8, 'attack'],
+      ['kreten', 2.2, 'attack'], ['smeće', 2.0, 'attack'], ['gnjida', 2.6, 'attack'],
+      ['mržnja', 2.0, 'hostility'], ['mrzim', 2.0, 'hostility'], ['odvratno', 2.0, 'hostility'], ['gadno', 1.8, 'hostility'],
+      ['šuti', 2.4, 'incitement'], ['bježi', 2.4, 'incitement'], ['idi do đavola', 2.6, 'incitement'],
+      ['izdajnik', 2.4, 'othering'], ['komunist', 2.0, 'othering'], ['fašist', 2.2, 'othering'],
+      ['izbori', 2.2, 'politics'], ['vlada', 2.2, 'politics'], ['predsjednik', 2.2, 'politics'],
+      ['politika', 2.2, 'politics'], ['porezi', 2.0, 'politics'],
+      ['zavjera', 2.4, 'conspiracy'], ['teorija zavjere', 2.6, 'conspiracy'], ['lažne vijesti', 2.0, 'conspiracy'],
+      ['umjetna inteligencija', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['rat', 2.2, 'world_affairs'], ['invazija', 2.4, 'world_affairs'], ['bombardiranje', 2.6, 'world_affairs'],
+      ['raketa', 2.2, 'world_affairs'], ['nuklearni rat', 2.8, 'world_affairs'], ['genocid', 2.6, 'world_affairs'],
+      ['terorizam', 2.4, 'world_affairs'], ['ubojstvo', 2.4, 'world_affairs'], ['potres', 2.0, 'world_affairs'],
+      ['tsunami', 2.4, 'world_affairs'], ['pandemija', 2.2, 'world_affairs'], ['državni udar', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Slovak
+    sk: [
+      ['idiot', 1.8, 'attack'], ['hlupák', 1.8, 'attack'], ['blbec', 2.0, 'attack'],
+      ['kretén', 2.2, 'attack'], ['odpad', 2.0, 'attack'], ['sviňa', 2.4, 'attack'],
+      ['nenávisť', 2.0, 'hostility'], ['nenávidím', 2.0, 'hostility'], ['odporný', 2.0, 'hostility'], ['hnusný', 2.0, 'hostility'],
+      ['drž hubu', 2.4, 'incitement'], ['vypadni', 2.4, 'incitement'], ['choď do pekla', 2.6, 'incitement'],
+      ['zradca', 2.4, 'othering'], ['komunista', 2.0, 'othering'], ['fašista', 2.2, 'othering'],
+      ['voľby', 2.2, 'politics'], ['vláda', 2.2, 'politics'], ['prezident', 2.2, 'politics'],
+      ['politika', 2.2, 'politics'], ['dane', 2.0, 'politics'],
+      ['sprisahanie', 2.4, 'conspiracy'], ['konšpiračná teória', 2.6, 'conspiracy'], ['falošné správy', 2.0, 'conspiracy'],
+      ['umelá inteligencia', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['vojna', 2.2, 'world_affairs'], ['invázia', 2.4, 'world_affairs'], ['bombardovanie', 2.6, 'world_affairs'],
+      ['raketa', 2.2, 'world_affairs'], ['jadrová vojna', 2.8, 'world_affairs'], ['genocída', 2.6, 'world_affairs'],
+      ['terorizmus', 2.4, 'world_affairs'], ['vražda', 2.4, 'world_affairs'], ['zemetrasenie', 2.0, 'world_affairs'],
+      ['cunami', 2.4, 'world_affairs'], ['pandémia', 2.2, 'world_affairs'], ['prevrat', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Lithuanian
+    lt: [
+      ['idiotas', 1.8, 'attack'], ['kvailys', 1.8, 'attack'], ['durnius', 2.0, 'attack'],
+      ['šiukšlė', 2.0, 'attack'], ['parazitas', 2.0, 'attack'],
+      ['neapykanta', 2.0, 'hostility'], ['nekenčiu', 2.0, 'hostility'], ['bjauru', 2.0, 'hostility'],
+      ['tylek', 2.4, 'incitement'], ['dingk', 2.4, 'incitement'], ['eik po velnių', 2.6, 'incitement'], ['mirk', 3.0, 'incitement'],
+      ['išdavikas', 2.4, 'othering'], ['komunistas', 2.0, 'othering'], ['fašistas', 2.2, 'othering'],
+      ['rinkimai', 2.2, 'politics'], ['vyriausybė', 2.2, 'politics'], ['prezidentas', 2.2, 'politics'],
+      ['politika', 2.2, 'politics'], ['mokesčiai', 2.0, 'politics'],
+      ['sąmokslas', 2.4, 'conspiracy'], ['sąmokslo teorija', 2.6, 'conspiracy'], ['melagingos naujienos', 2.0, 'conspiracy'],
+      ['dirbtinis intelektas', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['karas', 2.2, 'world_affairs'], ['invazija', 2.4, 'world_affairs'], ['bombardavimas', 2.6, 'world_affairs'],
+      ['raketa', 2.2, 'world_affairs'], ['branduolinis karas', 2.8, 'world_affairs'], ['genocidas', 2.6, 'world_affairs'],
+      ['terorizmas', 2.4, 'world_affairs'], ['žmogžudystė', 2.4, 'world_affairs'], ['žemės drebėjimas', 2.0, 'world_affairs'],
+      ['cunamis', 2.4, 'world_affairs'], ['pandemija', 2.2, 'world_affairs'], ['perversmas', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Latvian
+    lv: [
+      ['idiots', 1.8, 'attack'], ['muļķis', 1.8, 'attack'], ['stulbenis', 2.0, 'attack'],
+      ['atkritumi', 2.0, 'attack'], ['parazīts', 2.0, 'attack'],
+      ['naids', 2.0, 'hostility'], ['ienīstu', 2.0, 'hostility'], ['pretīgi', 2.0, 'hostility'],
+      ['klusē', 2.4, 'incitement'], ['pazūdi', 2.4, 'incitement'], ['ej ellē', 2.6, 'incitement'], ['mirsti', 3.0, 'incitement'],
+      ['nodevējs', 2.4, 'othering'], ['komunists', 2.0, 'othering'], ['fašists', 2.2, 'othering'],
+      ['vēlēšanas', 2.2, 'politics'], ['valdība', 2.2, 'politics'], ['prezidents', 2.2, 'politics'],
+      ['politika', 2.2, 'politics'], ['nodokļi', 2.0, 'politics'],
+      ['sazvērestība', 2.4, 'conspiracy'], ['sazvērestības teorija', 2.6, 'conspiracy'], ['viltus ziņas', 2.0, 'conspiracy'],
+      ['mākslīgais intelekts', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['karš', 2.2, 'world_affairs'], ['iebrukums', 2.4, 'world_affairs'], ['bombardēšana', 2.6, 'world_affairs'],
+      ['raķete', 2.2, 'world_affairs'], ['kodolkarš', 2.8, 'world_affairs'], ['genocīds', 2.6, 'world_affairs'],
+      ['terorisms', 2.4, 'world_affairs'], ['slepkavība', 2.4, 'world_affairs'], ['zemestrīce', 2.0, 'world_affairs'],
+      ['cunami', 2.4, 'world_affairs'], ['pandēmija', 2.2, 'world_affairs'], ['valsts apvērsums', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Estonian
+    et: [
+      ['idioot', 1.8, 'attack'], ['loll', 1.6, 'attack'], ['rumal', 1.6, 'attack'],
+      ['prügi', 2.0, 'attack'], ['parasiit', 2.0, 'attack'],
+      ['vihkamine', 2.0, 'hostility'], ['vihkan', 2.0, 'hostility'], ['vastik', 2.0, 'hostility'],
+      ['ole vait', 2.4, 'incitement'], ['kao', 2.4, 'incitement'], ['mine põrgusse', 2.6, 'incitement'], ['sure', 3.0, 'incitement'],
+      ['reetur', 2.4, 'othering'], ['kommunist', 2.0, 'othering'], ['fašist', 2.2, 'othering'],
+      ['valimised', 2.2, 'politics'], ['valitsus', 2.2, 'politics'], ['president', 2.2, 'politics'],
+      ['poliitika', 2.2, 'politics'], ['maksud', 2.0, 'politics'],
+      ['vandenõu', 2.4, 'conspiracy'], ['vandenõuteooria', 2.6, 'conspiracy'], ['valeuudised', 2.0, 'conspiracy'],
+      ['tehisintellekt', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['sõda', 2.2, 'world_affairs'], ['invasioon', 2.4, 'world_affairs'], ['pommitamine', 2.6, 'world_affairs'],
+      ['rakett', 2.2, 'world_affairs'], ['tuumasõda', 2.8, 'world_affairs'], ['genotsiid', 2.6, 'world_affairs'],
+      ['terrorism', 2.4, 'world_affairs'], ['mõrv', 2.4, 'world_affairs'], ['maavärin', 2.0, 'world_affairs'],
+      ['tsunami', 2.4, 'world_affairs'], ['pandeemia', 2.2, 'world_affairs'], ['riigipööre', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Catalan
+    ca: [
+      ['idiota', 1.8, 'attack'], ['imbècil', 2.0, 'attack'], ['estúpid', 1.6, 'attack'],
+      ['cretí', 2.2, 'attack'], ['escombraries', 2.0, 'attack'], ['cabró', 2.6, 'attack'],
+      ['odi', 1.8, 'hostility'], ['odio', 1.8, 'hostility'], ['fastigós', 2.0, 'hostility'], ['repugnant', 2.0, 'hostility'],
+      ['calla', 2.4, 'incitement'], ["ves-te'n", 2.4, 'incitement'], ["vés a l'infern", 2.6, 'incitement'],
+      ['traïdor', 2.4, 'othering'], ['comunista', 2.0, 'othering'], ['feixista', 2.2, 'othering'],
+      ['eleccions', 2.2, 'politics'], ['govern', 2.2, 'politics'], ['president', 2.2, 'politics'],
+      ['política', 2.2, 'politics'], ['impostos', 2.0, 'politics'],
+      ['conspiració', 2.4, 'conspiracy'], ['teoria de la conspiració', 2.6, 'conspiracy'], ['notícies falses', 2.0, 'conspiracy'],
+      ['intel·ligència artificial', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['guerra', 2.2, 'world_affairs'], ['invasió', 2.4, 'world_affairs'], ['bombardeig', 2.6, 'world_affairs'],
+      ['míssil', 2.2, 'world_affairs'], ['guerra nuclear', 2.8, 'world_affairs'], ['genocidi', 2.6, 'world_affairs'],
+      ['terrorisme', 2.4, 'world_affairs'], ['assassinat', 2.4, 'world_affairs'], ['terratrèmol', 2.0, 'world_affairs'],
+      ['tsunami', 2.4, 'world_affairs'], ['pandèmia', 2.2, 'world_affairs'], ["cop d'estat", 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Swahili
+    sw: [
+      ['mjinga', 1.8, 'attack'], ['punguani', 2.2, 'attack'], ['mpuuzi', 2.0, 'attack'],
+      ['takataka', 2.0, 'attack'], ['malaya', 2.6, 'attack'],
+      ['chuki', 2.0, 'hostility'], ['nachukia', 2.0, 'hostility'], ['karaha', 1.8, 'hostility'],
+      ['nyamaza', 2.4, 'incitement'], ['ondoka', 2.2, 'incitement'], ['nenda jehanamu', 2.6, 'incitement'], ['kufa', 2.8, 'incitement'],
+      ['msaliti', 2.4, 'othering'], ['mkomunisti', 2.0, 'othering'],
+      ['uchaguzi', 2.2, 'politics'], ['serikali', 2.2, 'politics'], ['rais', 2.2, 'politics'],
+      ['siasa', 2.2, 'politics'], ['kodi', 2.0, 'politics'],
+      ['njama', 2.4, 'conspiracy'], ['nadharia ya njama', 2.6, 'conspiracy'], ['habari za uongo', 2.0, 'conspiracy'],
+      ['akili bandia', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['vita', 2.2, 'world_affairs'], ['uvamizi', 2.4, 'world_affairs'], ['mashambulizi ya mabomu', 2.6, 'world_affairs'],
+      ['kombora', 2.2, 'world_affairs'], ['vita vya nyuklia', 2.8, 'world_affairs'], ['mauaji ya halaiki', 2.6, 'world_affairs'],
+      ['ugaidi', 2.4, 'world_affairs'], ['mauaji', 2.4, 'world_affairs'], ['tetemeko la ardhi', 2.0, 'world_affairs'],
+      ['tsunami', 2.4, 'world_affairs'], ['janga', 2.2, 'world_affairs'], ['mapinduzi', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Macedonian
+    mk: [
+      ['идиот', 1.8, 'attack'], ['глупак', 1.8, 'attack'], ['будала', 1.8, 'attack'],
+      ['кретен', 2.2, 'attack'], ['ѓубре', 2.0, 'attack'],
+      ['омраза', 2.0, 'hostility'], ['мразам', 2.0, 'hostility'], ['одвратно', 2.0, 'hostility'],
+      ['молчи', 2.4, 'incitement'], ['бегај', 2.4, 'incitement'], ['оди по ѓаволите', 2.6, 'incitement'],
+      ['предавник', 2.4, 'othering'], ['комунист', 2.0, 'othering'], ['фашист', 2.2, 'othering'],
+      ['избори', 2.2, 'politics'], ['влада', 2.2, 'politics'], ['претседател', 2.2, 'politics'],
+      ['политика', 2.2, 'politics'], ['даноци', 2.0, 'politics'],
+      ['завера', 2.4, 'conspiracy'], ['теорија на завера', 2.6, 'conspiracy'], ['лажни вести', 2.0, 'conspiracy'],
+      ['вештачка интелигенција', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['војна', 2.2, 'world_affairs'], ['инвазија', 2.4, 'world_affairs'], ['бомбардирање', 2.6, 'world_affairs'],
+      ['ракета', 2.2, 'world_affairs'], ['нуклеарна војна', 2.8, 'world_affairs'], ['геноцид', 2.6, 'world_affairs'],
+      ['тероризам', 2.4, 'world_affairs'], ['убиство', 2.4, 'world_affairs'], ['земјотрес', 2.0, 'world_affairs'],
+      ['цунами', 2.4, 'world_affairs'], ['пандемија', 2.2, 'world_affairs'], ['преврат', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Mongolian
+    mn: [
+      ['тэнэг', 1.8, 'attack'], ['мунхаг', 1.8, 'attack'], ['новш', 2.0, 'attack'], ['хог', 2.0, 'attack'],
+      ['хорсол', 2.0, 'hostility'], ['үзэн ядаж', 2.0, 'hostility'], ['жигшүүрт', 2.0, 'hostility'],
+      ['чимээгүй', 2.2, 'incitement'], ['зайл', 2.4, 'incitement'], ['там руу яв', 2.6, 'incitement'], ['үх', 2.8, 'incitement'],
+      ['урвагч', 2.4, 'othering'], ['коммунист', 2.0, 'othering'], ['фашист', 2.2, 'othering'],
+      ['сонгууль', 2.2, 'politics'], ['засгийн газар', 2.2, 'politics'], ['ерөнхийлөгч', 2.2, 'politics'],
+      ['улс төр', 2.2, 'politics'], ['татвар', 2.0, 'politics'],
+      ['хуйвалдаан', 2.4, 'conspiracy'], ['хуйвалдааны онол', 2.6, 'conspiracy'], ['хуурамч мэдээ', 2.0, 'conspiracy'],
+      ['хиймэл оюун ухаан', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['дайн', 2.2, 'world_affairs'], ['довтолгоо', 2.4, 'world_affairs'], ['бөмбөгдөлт', 2.6, 'world_affairs'],
+      ['пуужин', 2.2, 'world_affairs'], ['цөмийн дайн', 2.8, 'world_affairs'], ['геноцид', 2.6, 'world_affairs'],
+      ['терроризм', 2.4, 'world_affairs'], ['аллага', 2.4, 'world_affairs'], ['газар хөдлөлт', 2.0, 'world_affairs'],
+      ['цунами', 2.4, 'world_affairs'], ['халдвар', 2.2, 'world_affairs'], ['төрийн эргэлт', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Nepali
+    ne: [
+      ['मूर्ख', 1.8, 'attack'], ['बेवकूफ', 1.8, 'attack'], ['गधा', 2.0, 'attack'],
+      ['निकम्मा', 1.8, 'attack'], ['फोहोर', 2.0, 'attack'],
+      ['घृणा', 2.0, 'hostility'], ['घिन', 1.8, 'hostility'], ['नराम्रो', 1.6, 'hostility'],
+      ['चुप लाग', 2.4, 'incitement'], ['भाग', 2.2, 'incitement'], ['मर', 2.8, 'incitement'],
+      ['गद्दार', 2.4, 'othering'], ['देशद्रोही', 2.6, 'othering'], ['आतंकवादी', 2.4, 'othering'],
+      ['चुनाव', 2.2, 'politics'], ['सरकार', 2.2, 'politics'], ['प्रधानमन्त्री', 2.2, 'politics'],
+      ['राजनीति', 2.2, 'politics'],
+      ['षड्यन्त्र', 2.4, 'conspiracy'], ['षड्यन्त्र सिद्धान्त', 2.6, 'conspiracy'], ['झुटो समाचार', 2.0, 'conspiracy'],
+      ['कृत्रिम बुद्धिमत्ता', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['युद्ध', 2.2, 'world_affairs'], ['आक्रमण', 2.4, 'world_affairs'], ['बमबारी', 2.6, 'world_affairs'],
+      ['मिसाइल', 2.2, 'world_affairs'], ['आणविक युद्ध', 2.8, 'world_affairs'], ['नरसंहार', 2.6, 'world_affairs'],
+      ['आतंकवाद', 2.4, 'world_affairs'], ['हत्या', 2.4, 'world_affairs'], ['भूकम्प', 2.0, 'world_affairs'],
+      ['सुनामी', 2.4, 'world_affairs'], ['महामारी', 2.2, 'world_affairs'], ['विद्रोह', 2.6, 'world_affairs']
+    ],
+
+    // ================================================================ Sinhala
+    si: [
+      ['මෝඩයා', 1.8, 'attack'], ['ගොනා', 2.0, 'attack'], ['නිවට', 1.8, 'attack'], ['කුණු', 2.0, 'attack'],
+      ['වෛරය', 2.0, 'hostility'], ['පිළිකුල', 2.0, 'hostility'], ['දුක', 1.2, 'hostility'],
+      ['හිටපන්', 2.4, 'incitement'], ['යන්න', 2.0, 'incitement'], ['මැරෙන්න', 2.8, 'incitement'],
+      ['ද්‍රෝහියා', 2.4, 'othering'], ['ත්‍රස්තවාදී', 2.4, 'othering'],
+      ['මැතිවරණය', 2.2, 'politics'], ['රජය', 2.2, 'politics'], ['ජනාධිපති', 2.2, 'politics'],
+      ['දේශපාලනය', 2.2, 'politics'], ['බදු', 2.0, 'politics'],
+      ['කුමන්ත්‍රණය', 2.4, 'conspiracy'], ['කුමන්ත්‍රණ න්‍යාය', 2.6, 'conspiracy'], ['බොරු ප්‍රවෘත්ති', 2.0, 'conspiracy'],
+      ['කෘත්‍රිම බුද්ධිය', 2.2, 'ai_dispute'], ['chatgpt', 2.2, 'ai_dispute'],
+      ['යුද්ධය', 2.2, 'world_affairs'], ['ආක්‍රමණය', 2.4, 'world_affairs'], ['බෝම්බ', 2.6, 'world_affairs'],
+      ['මිසයිල', 2.2, 'world_affairs'], ['න්‍යෂ්ටික යුද්ධය', 2.8, 'world_affairs'], ['සමූලඝාතනය', 2.6, 'world_affairs'],
+      ['ත්‍රස්තවාදය', 2.4, 'world_affairs'], ['ඝාතනය', 2.4, 'world_affairs'], ['භූමිකම්පාව', 2.0, 'world_affairs'],
+      ['සුනාමි', 2.4, 'world_affairs'], ['වසංගතය', 2.2, 'world_affairs'], ['කැරලි', 2.6, 'world_affairs']
     ]
   };
 });

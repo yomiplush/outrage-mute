@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Zap"
+  },
+  "threshold": {
+    "message": "Prah"
+  },
+  "note": {
+    "message": "Všetko sa vyhodnocuje vo vašom zariadení (nič sa neposiela)."
+  },
+  "modeBlur": {
+    "message": "Rozmazať (kliknutím zobraziť)"
+  },
+  "modeHide": {
+    "message": "Úplne skryť"
+  },
+  "languageAuto": {
+    "message": "Automaticky"
+  },
+  "reset": {
+    "message": "Obnoviť"
+  },
+  "show": {
+    "message": "Zobraziť"
+  },
+  "hide": {
+    "message": "Skryť"
+  },
+  "maskedBadge": {
+    "message": "Stlmené $1%"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Ас"
+  },
+  "threshold": {
+    "message": "Босго"
+  },
+  "note": {
+    "message": "Бүгд таны төхөөрөмж дээр үнэлэгдэнэ (юу ч илгээгдэхгүй)."
+  },
+  "modeBlur": {
+    "message": "Бүдэгрүүлэх (харуулахын тулд дар)"
+  },
+  "modeHide": {
+    "message": "Бүрэн нуух"
+  },
+  "languageAuto": {
+    "message": "Автомат"
+  },
+  "reset": {
+    "message": "Дахин тохируулах"
+  },
+  "show": {
+    "message": "Харуулах"
+  },
+  "hide": {
+    "message": "Нуух"
+  },
+  "maskedBadge": {
+    "message": "Дуугүй $1%"
+  }
+}

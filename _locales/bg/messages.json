@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Вкл"
+  },
+  "threshold": {
+    "message": "Праг"
+  },
+  "note": {
+    "message": "Всичко се оценява на вашето устройство (нищо не се изпраща)."
+  },
+  "modeBlur": {
+    "message": "Замъгляване (клик за показване)"
+  },
+  "modeHide": {
+    "message": "Скрий напълно"
+  },
+  "languageAuto": {
+    "message": "Автоматично"
+  },
+  "reset": {
+    "message": "Нулиране"
+  },
+  "show": {
+    "message": "Покажи"
+  },
+  "hide": {
+    "message": "Скрий"
+  },
+  "maskedBadge": {
+    "message": "Заглушено $1%"
+  }
+}

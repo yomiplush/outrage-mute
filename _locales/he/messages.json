@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "פעיל"
+  },
+  "threshold": {
+    "message": "סף"
+  },
+  "note": {
+    "message": "הכל נבדק במכשיר שלך (שום דבר לא נשלח)."
+  },
+  "modeBlur": {
+    "message": "טשטש (לחץ להצגה)"
+  },
+  "modeHide": {
+    "message": "הסתר לגמרי"
+  },
+  "languageAuto": {
+    "message": "אוטומטי"
+  },
+  "reset": {
+    "message": "איפוס"
+  },
+  "show": {
+    "message": "הצג"
+  },
+  "hide": {
+    "message": "הסתר"
+  },
+  "maskedBadge": {
+    "message": "הושתק $1%"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Imewashwa"
+  },
+  "threshold": {
+    "message": "Kiwango"
+  },
+  "note": {
+    "message": "Kila kitu hupimwa kwenye kifaa chako (hakuna kinachotumwa)."
+  },
+  "modeBlur": {
+    "message": "Fifisha (bofya kuonyesha)"
+  },
+  "modeHide": {
+    "message": "Ficha kabisa"
+  },
+  "languageAuto": {
+    "message": "Otomatiki"
+  },
+  "reset": {
+    "message": "Weka upya"
+  },
+  "show": {
+    "message": "Onyesha"
+  },
+  "hide": {
+    "message": "Ficha"
+  },
+  "maskedBadge": {
+    "message": "Imenyamazishwa $1%"
+  }
+}

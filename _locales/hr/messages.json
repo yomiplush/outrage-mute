@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Uklj"
+  },
+  "threshold": {
+    "message": "Prag"
+  },
+  "note": {
+    "message": "Sve se ocjenjuje na tvom uređaju (ništa se ne šalje)."
+  },
+  "modeBlur": {
+    "message": "Zamućenje (klik za prikaz)"
+  },
+  "modeHide": {
+    "message": "Sakrij potpuno"
+  },
+  "languageAuto": {
+    "message": "Automatski"
+  },
+  "reset": {
+    "message": "Resetiraj"
+  },
+  "show": {
+    "message": "Prikaži"
+  },
+  "hide": {
+    "message": "Sakrij"
+  },
+  "maskedBadge": {
+    "message": "Utišano $1%"
+  }
+}

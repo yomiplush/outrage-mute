@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Aktif"
+  },
+  "threshold": {
+    "message": "Ambang"
+  },
+  "note": {
+    "message": "Semua dinilai pada peranti anda (tiada apa dihantar)."
+  },
+  "modeBlur": {
+    "message": "Kaburkan (klik untuk lihat)"
+  },
+  "modeHide": {
+    "message": "Sembunyikan sepenuhnya"
+  },
+  "languageAuto": {
+    "message": "Automatik"
+  },
+  "reset": {
+    "message": "Set semula"
+  },
+  "show": {
+    "message": "Tunjuk"
+  },
+  "hide": {
+    "message": "Sembunyi"
+  },
+  "maskedBadge": {
+    "message": "Dibisukan $1%"
+  }
+}

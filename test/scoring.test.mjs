@@ -267,3 +267,25 @@ test('言語パック数と主要言語の存在', () => {
     assert.ok(!lang.get(id).generic, `curated: ${id}`);
   }
 });
+
+test('追加言語（パックが無かったもの）を判定できる', () => {
+  const cases = [
+    ['vi', 'Mày là đồ ngu, tao ghét mày!'],
+    ['id', 'Kamu bodoh, aku benci kamu!'],
+    ['ms', 'Kau bodoh, aku benci kau!'],
+    ['he', 'אתה מטומטם, אני שונא אותך!'],
+    ['el', 'Είσαι ηλίθιος, σε μισώ!'],
+    ['sw', 'Wewe ni mjinga, ninakuchukia!'],
+    ['ne', 'तिमी मूर्ख छौ, म घृणा गर्छु!'],
+    ['bn', 'তুমি বোকা, আমি ঘৃণা করি!']
+  ];
+  for (const [code, text] of cases) {
+    const r = analyze(text, { lang: code });
+    assert.equal(r.lang, code, `${code} lang`);
+    assert.ok(r.score > 0.5, `${code}: ${r.score}`);
+  }
+  // 文字体系の判別（モンゴル語はキリル文字の中でも特有の字で判別）
+  assert.equal(lang.detect('Чи тэнэг, би чамайг үзэн ядаж байна!'), 'mn');
+  assert.equal(lang.detect('ඔබ මෝඩයෙක්'), 'si');
+  assert.ok(lang.list().length >= 50, `packs=${lang.list().length}`);
+});

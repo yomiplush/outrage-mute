@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "ఆన్"
+  },
+  "threshold": {
+    "message": "పరిమితి"
+  },
+  "note": {
+    "message": "అంతా మీ పరికరంలోనే (ఏమీ పంపబడదు)."
+  },
+  "modeBlur": {
+    "message": "మసక చేయి (చూపడానికి క్లిక్)"
+  },
+  "modeHide": {
+    "message": "పూర్తిగా దాచు"
+  },
+  "languageAuto": {
+    "message": "స్వయంచాలక"
+  },
+  "reset": {
+    "message": "రీసెట్"
+  },
+  "show": {
+    "message": "చూపించు"
+  },
+  "hide": {
+    "message": "దాచు"
+  },
+  "maskedBadge": {
+    "message": "మ్యూట్ $1%"
+  }
+}

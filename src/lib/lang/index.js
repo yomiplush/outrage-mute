@@ -261,8 +261,8 @@
   function detect(text) {
     var s = String(text == null ? '' : text);
     var n = Math.min(s.length, 2000);
-    var hira = 0, kata = 0, han = 0, hangul = 0, cyr = 0, latin = 0, ukc = 0;
-    var thai = 0, arab = 0, devan = 0, hebrew = 0, greek = 0, beng = 0, tamil = 0, telugu = 0, khmer = 0, lao = 0;
+    var hira = 0, kata = 0, han = 0, hangul = 0, cyr = 0, latin = 0, ukc = 0, mnc = 0;
+    var thai = 0, arab = 0, devan = 0, hebrew = 0, greek = 0, beng = 0, tamil = 0, telugu = 0, khmer = 0, lao = 0, sinhala = 0;
     for (var i = 0; i < n; i++) {
       var c = s.charCodeAt(i);
       if (c >= 0x3040 && c <= 0x309f) hira++;
@@ -271,7 +271,9 @@
       else if (c >= 0xac00 && c <= 0xd7a3) hangul++;
       else if (c >= 0x0400 && c <= 0x04ff) {
         cyr++;
-        if ('іїєґІЇЄҐ'.indexOf(s.charAt(i)) >= 0) ukc++;
+        var ch = s.charAt(i);
+        if ('іїєґІЇЄҐ'.indexOf(ch) >= 0) ukc++;
+        else if ('үөһҮӨҺ'.indexOf(ch) >= 0) mnc++;
       } else if ((c >= 0x41 && c <= 0x5a) || (c >= 0x61 && c <= 0x7a) || (c >= 0xc0 && c <= 0x17f)) latin++;
       else if (c >= 0x0e00 && c <= 0x0e7f) thai++;
       else if (c >= 0x0600 && c <= 0x06ff) arab++;
@@ -281,6 +283,7 @@
       else if (c >= 0x0980 && c <= 0x09ff) beng++;
       else if (c >= 0x0b80 && c <= 0x0bff) tamil++;
       else if (c >= 0x0c00 && c <= 0x0c7f) telugu++;
+      else if (c >= 0x0d80 && c <= 0x0dff) sinhala++;
       else if (c >= 0x1780 && c <= 0x17ff) khmer++;
       else if (c >= 0x0e80 && c <= 0x0eff) lao++;
     }
@@ -290,6 +293,7 @@
     if (thai > 0) return 'th';
     if (khmer > 0) return 'km';
     if (lao > 0) return 'lo';
+    if (sinhala > 0) return 'si';
     if (hebrew > 0) return 'he';
     if (greek > 0) return 'el';
     if (devan > 0) return 'hi';
@@ -297,7 +301,10 @@
     if (tamil > 0) return 'ta';
     if (telugu > 0) return 'te';
     if (arab > 0) return 'ar';
-    if (cyr > 0 && cyr >= latin) return ukc > 0 ? 'cyrillic_uk' : 'cyrillic_ru';
+    if (cyr > 0 && cyr >= latin) {
+      if (mnc > 0) return 'mn';
+      return ukc > 0 ? 'cyrillic_uk' : 'cyrillic_ru';
+    }
     if (latin > 0) return 'latin';
     return null;
   }
@@ -317,8 +324,10 @@
     ta: ['ta'],
     te: ['te'],
     ar: ['arabic', 'ar'],
+    mn: ['mn', 'cyrillic'],
+    si: ['si'],
     cyrillic_uk: ['uk', 'cyrillic'],
-    cyrillic_ru: ['ru', 'cyrillic'],
+    cyrillic_ru: ['cyrillic'],
     latin: ['latin', 'en']
   };
 

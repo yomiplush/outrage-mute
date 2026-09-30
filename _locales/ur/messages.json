@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "آؤٹریج میوٹ"
+  },
+  "enabled": {
+    "message": "فعال"
+  },
+  "threshold": {
+    "message": "حد"
+  },
+  "note": {
+    "message": "سب کچھ آپ کے ڈیوائس پر جانچا جاتا ہے (کچھ نہیں بھیجا جاتا)۔"
+  },
+  "modeBlur": {
+    "message": "دھندلا کریں (دیکھنے کے لیے کلک)"
+  },
+  "modeHide": {
+    "message": "مکمل چھپائیں"
+  },
+  "languageAuto": {
+    "message": "خودکار"
+  },
+  "reset": {
+    "message": "ری سیٹ"
+  },
+  "show": {
+    "message": "دکھائیں"
+  },
+  "hide": {
+    "message": "چھپائیں"
+  },
+  "maskedBadge": {
+    "message": "خاموش $1%"
+  }
+}

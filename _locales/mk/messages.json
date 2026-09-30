@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Вкл"
+  },
+  "threshold": {
+    "message": "Праг"
+  },
+  "note": {
+    "message": "Сè се оценува на вашиот уред (ништо не се испраќа)."
+  },
+  "modeBlur": {
+    "message": "Заматено (клик за приказ)"
+  },
+  "modeHide": {
+    "message": "Скрий целосно"
+  },
+  "languageAuto": {
+    "message": "Автоматски"
+  },
+  "reset": {
+    "message": "Ресетирај"
+  },
+  "show": {
+    "message": "Прикажи"
+  },
+  "hide": {
+    "message": "Скрий"
+  },
+  "maskedBadge": {
+    "message": "Замолчено $1%"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Actiu"
+  },
+  "threshold": {
+    "message": "Llindar"
+  },
+  "note": {
+    "message": "Tot es valora al teu dispositiu (no s’envia res)."
+  },
+  "modeBlur": {
+    "message": "Difumina (clic per mostrar)"
+  },
+  "modeHide": {
+    "message": "Amaga del tot"
+  },
+  "languageAuto": {
+    "message": "Automàtic"
+  },
+  "reset": {
+    "message": "Restableix"
+  },
+  "show": {
+    "message": "Mostra"
+  },
+  "hide": {
+    "message": "Amaga"
+  },
+  "maskedBadge": {
+    "message": "Silenciat $1%"
+  }
+}

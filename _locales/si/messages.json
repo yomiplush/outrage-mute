@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "ක්‍රියාත්මකයි"
+  },
+  "threshold": {
+    "message": "සීමාව"
+  },
+  "note": {
+    "message": "සියල්ල ඔබේ උපාංගයේ පරීක්ෂා වේ (කිසිවක් යවනු නොලැබේ)."
+  },
+  "modeBlur": {
+    "message": "මංජුල් කරන්න (පෙන්වීමට ක්ලික්)"
+  },
+  "modeHide": {
+    "message": "සම්පූර්ණයෙන් සඟවන්න"
+  },
+  "languageAuto": {
+    "message": "ස්වයංක්‍රීය"
+  },
+  "reset": {
+    "message": "නැවත සකසන්න"
+  },
+  "show": {
+    "message": "පෙන්වන්න"
+  },
+  "hide": {
+    "message": "සඟවන්න"
+  },
+  "maskedBadge": {
+    "message": "නිශ්ශබ්ද $1%"
+  }
+}

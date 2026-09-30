@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Activ"
+  },
+  "threshold": {
+    "message": "Prag"
+  },
+  "note": {
+    "message": "Totul este evaluat pe dispozitivul tău (nimic nu este trimis)."
+  },
+  "modeBlur": {
+    "message": "Estompează (clic pentru afișare)"
+  },
+  "modeHide": {
+    "message": "Ascunde complet"
+  },
+  "languageAuto": {
+    "message": "Automat"
+  },
+  "reset": {
+    "message": "Resetează"
+  },
+  "show": {
+    "message": "Arată"
+  },
+  "hide": {
+    "message": "Ascunde"
+  },
+  "maskedBadge": {
+    "message": "Silențios $1%"
+  }
+}

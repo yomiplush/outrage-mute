@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Bật"
+  },
+  "threshold": {
+    "message": "Ngưỡng"
+  },
+  "note": {
+    "message": "Mọi thứ được đánh giá trên thiết bị của bạn (không gửi dữ liệu)."
+  },
+  "modeBlur": {
+    "message": "Làm mờ (bấm để hiện)"
+  },
+  "modeHide": {
+    "message": "Ẩn hoàn toàn"
+  },
+  "languageAuto": {
+    "message": "Tự động"
+  },
+  "reset": {
+    "message": "Đặt lại"
+  },
+  "show": {
+    "message": "Hiện"
+  },
+  "hide": {
+    "message": "Ẩn"
+  },
+  "maskedBadge": {
+    "message": "Đã ẩn $1%"
+  }
+}

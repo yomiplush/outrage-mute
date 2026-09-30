@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Sees"
+  },
+  "threshold": {
+    "message": "Lävi"
+  },
+  "note": {
+    "message": "Kõik hinnatakse sinu seadmes (midagi ei saadeta)."
+  },
+  "modeBlur": {
+    "message": "Hägusta (klõpsa näitamiseks)"
+  },
+  "modeHide": {
+    "message": "Peida täielikult"
+  },
+  "languageAuto": {
+    "message": "Automaatne"
+  },
+  "reset": {
+    "message": "Lähtesta"
+  },
+  "show": {
+    "message": "Näita"
+  },
+  "hide": {
+    "message": "Peida"
+  },
+  "maskedBadge": {
+    "message": "Vaigistatud $1%"
+  }
+}

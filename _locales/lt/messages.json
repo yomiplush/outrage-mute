@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "Įj"
+  },
+  "threshold": {
+    "message": "Slenkstis"
+  },
+  "note": {
+    "message": "Viskas vertinama jūsų įrenginyje (nieko nesiunčiama)."
+  },
+  "modeBlur": {
+    "message": "Sulieti (spustelėkite, kad rodytų)"
+  },
+  "modeHide": {
+    "message": "Paslėpti visiškai"
+  },
+  "languageAuto": {
+    "message": "Automatiškai"
+  },
+  "reset": {
+    "message": "Atstatyti"
+  },
+  "show": {
+    "message": "Rodyti"
+  },
+  "hide": {
+    "message": "Slėpti"
+  },
+  "maskedBadge": {
+    "message": "Nutildyta $1%"
+  }
+}

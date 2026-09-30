@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Outrage Mute"
+  },
+  "enabled": {
+    "message": "இயக்கு"
+  },
+  "threshold": {
+    "message": "வரம்பு"
+  },
+  "note": {
+    "message": "அனைத்தும் உங்கள் சாதனத்தில் மதிப்பிடப்படும் (எதுவும் அனுப்பப்படாது)."
+  },
+  "modeBlur": {
+    "message": "மங்கலாக்கு (காட்ட கிளிக்)"
+  },
+  "modeHide": {
+    "message": "முழுமையாக மறை"
+  },
+  "languageAuto": {
+    "message": "தானியங்கி"
+  },
+  "reset": {
+    "message": "மீட்டமை"
+  },
+  "show": {
+    "message": "காட்டு"
+  },
+  "hide": {
+    "message": "மறை"
+  },
+  "maskedBadge": {
+    "message": "முடக்கப்பட்டது $1%"
+  }
+}
