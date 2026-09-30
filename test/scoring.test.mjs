@@ -397,6 +397,32 @@ test('UI言語: 判定言語からロケールを引く', () => {
   assert.equal(i18n.localeFor('latin'), null); // 統合パックはUI言語を持たない
 });
 
+test('NSFW: 独立トグル（badwords から性的語を分離）', () => {
+  const CORE = categories.CATEGORY_ORDER.filter((id) => !config.OPTIONAL_CATEGORIES.includes(id));
+  assert.ok(config.OPTIONAL_CATEGORIES.includes('nsfw'));
+  // 既定（nsfw/badwords ともOFF）では表示
+  assert.ok(analyze('nsfw porn video', { lang: 'en', categories: CORE }).score < 0.5);
+  // nsfw ON で隠れる
+  const on = analyze('nsfw porn video', { lang: 'en', categories: CORE.concat('nsfw') });
+  assert.ok(on.score >= 0.5, `on=${on.score}`);
+  assert.ok(on.categories.includes('nsfw'));
+  // badwords 単独では性的語は隠れない（nsfw へ移し替え）
+  assert.ok(analyze('nsfw porn video', { lang: 'en', categories: CORE.concat('badwords') }).score < 0.5);
+  // 日本語
+  const ja = analyze('全裸の写真', { categories: CORE.concat('nsfw') });
+  assert.ok(ja.score >= 0.5, `ja=${ja.score}`);
+  assert.ok(ja.categories.includes('nsfw'));
+});
+
+test('集中モードの長文ルール', () => {
+  assert.equal(config.DEFAULTS.focusMaxLength, 160);
+  assert.equal(config.effectiveMaxLength('off', 160), 0); // プリセットOFFなら無効
+  assert.equal(config.effectiveMaxLength('normal', 160), 160);
+  assert.equal(config.effectiveMaxLength('normal', 0), 0);
+  assert.equal(config.normalizeSettings({ focusMaxLength: 9999 }).focusMaxLength, 1000);
+  assert.equal(config.normalizeSettings({ focusMaxLength: -5 }).focusMaxLength, 0);
+});
+
 test('災害・緊急情報(disaster): 独立トグルで見る/隠すを選べる', () => {
   const CORE = categories.CATEGORY_ORDER.filter((id) => !config.OPTIONAL_CATEGORIES.includes(id));
   const WA = CORE.concat('world_affairs');

@@ -99,8 +99,7 @@
     return row;
   }
 
-  function rangeRow(key, label, value) {
-    var wrap = h('div');
+  function rangeRow(key, label, value) {    var wrap = h('div');
     var row = h('div', 'row');
     row.appendChild(h('span', null, label));
     var out = h('output', null, Number(value).toFixed(2));
@@ -119,6 +118,21 @@
     });
     wrap.appendChild(r);
     return wrap;
+  }
+
+  function numberRow(key, label, value, min, max) {
+    var row = h('div', 'row');
+    row.appendChild(h('span', null, label));
+    var i = document.createElement('input');
+    i.type = 'number';
+    i.min = String(min);
+    i.max = String(max);
+    i.step = '10';
+    i.value = String(value);
+    i.dataset.key = key;
+    i.style.width = '72px';
+    row.appendChild(i);
+    return row;
   }
 
   function radioRow(key, label, options, value) {
@@ -184,6 +198,8 @@
       settings.language = el.value;
     } else if (key === 'threshold') {
       settings.threshold = parseFloat(el.value);
+    } else if (key === 'focusMaxLength') {
+      settings.focusMaxLength = parseInt(el.value, 10) || 0;
     } else if (key === 'minLength') {
       settings.minLength = parseInt(el.value, 10) || 0;
     } else {
@@ -210,6 +226,8 @@
       return [k, t('preset' + k.charAt(0).toUpperCase() + k.slice(1))];
     });
     body.appendChild(selectRow('preset', t('focusMode'), presetOpts, settings.preset));
+    body.appendChild(numberRow('focusMaxLength', t('focusMaxLength'), settings.focusMaxLength, 0, 1000));
+    body.appendChild(hint(t('focusMaxLengthHint')));
     body.appendChild(hint(t('focusModeHint')));
     body.appendChild(rangeRow('threshold', t('threshold'), settings.threshold));
     body.appendChild(radioRow('mode', t('mode'), [['blur', t('modeBlur')], ['hide', t('modeHide')]], settings.mode));

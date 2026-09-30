@@ -247,16 +247,19 @@
 
     var badge = document.createElement('div');
     badge.className = 'jof-badge';
-    badge.textContent = i18n.t('maskedBadge', [Math.round(result.score * 100)]);
+    badge.textContent =
+      result && result.reason === 'long'
+        ? i18n.t('reasonLong', [result.length])
+        : i18n.t('maskedBadge', [Math.round((result.score || 0) * 100)]);
 
     var catEl = document.createElement('div');
     catEl.className = 'jof-cats';
-    var names = (result.categories || [])
+    var names = (result && result.categories ? result.categories : [])
       .slice(0, 3)
       .map(function (c) {
         return catLabel(c);
       });
-    catEl.textContent = names.length ? names.join(' / ') : '';
+    catEl.textContent = result && result.reason === 'long' ? '' : names.length ? names.join(' / ') : '';
 
     var btn = document.createElement('button');
     btn.type = 'button';
@@ -317,6 +320,24 @@
     var combined = tw.quote ? tw.text + '\n' + tw.quote : tw.text;
     if (!combined || combined.length < (settings.minLength || 0)) {
       cell.dataset.jofState = 'short';
+      return;
+    }
+
+    // 集中モードでは長文を避ける（アート中心のタイムラインに）
+    var maxLen = config.effectiveMaxLength(settings.preset, settings.focusMaxLength);
+    if (maxLen > 0 && combined.length > maxLen) {
+      var longResult = {
+        score: 1,
+        raw: 0,
+        categories: [],
+        byCat: {},
+        terms: [],
+        reason: 'long',
+        length: combined.length
+      };
+      cell.dataset.jofResult = JSON.stringify(longResult);
+      cell.dataset.jofScore = '1';
+      mask(cell, longResult);
       return;
     }
 

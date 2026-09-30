@@ -21,6 +21,7 @@
     'ai_topic',
     'world_affairs',
     'disaster',
+    'nsfw',
     'badwords'
   ];
 
@@ -36,6 +37,7 @@
     categories: null, // null = 既定のカテゴリ構成（OPTIONAL_CATEGORIES を除く全部）
     // 集中プリセット: 'off' | 'soft'（やさしめ） | 'normal'（ふつう） | 'hard'（きびしめ）
     preset: 'off',
+    focusMaxLength: 160, // 集中モード時、これより長い投稿は隠す（0で無効）
     hideNotifications: false, // X上の通知バッジを隠す
     hideNotificationTab: false, // 通知タブ自体を隠す
     hideDm: false, // X上のDMバッジを隠す
@@ -56,6 +58,7 @@
       categories: Array.isArray(value.categories) ? value.categories.slice() : null,
       // 旧 focusMode(true) は 'normal' として引き継ぐ
       preset: PRESET_KEYS.indexOf(value.preset) >= 0 ? value.preset : value.focusMode === true ? 'normal' : DEFAULTS.preset,
+      focusMaxLength: clampNumber(value.focusMaxLength, 0, 1000, DEFAULTS.focusMaxLength),
       hideNotifications: value.hideNotifications === true,
       hideNotificationTab: value.hideNotificationTab === true,
       hideDm: value.hideDm === true,
@@ -97,6 +100,13 @@
     return base;
   }
 
+  /** 集中モード時に長文を隠す閾値（プリセットOFFなら0＝無効） */
+  function effectiveMaxLength(preset, value) {
+    if (!preset || preset === 'off') return 0;
+    var n = Number(value);
+    return isFinite(n) && n > 0 ? n : 0;
+  }
+
   return {
     PERSIST_KEY: PERSIST_KEY,
     STATS_KEY: STATS_KEY,
@@ -106,6 +116,7 @@
     SCORE_VERSION: SCORE_VERSION,
     normalizeSettings: normalizeSettings,
     presetCategories: presetCategories,
-    presetThreshold: presetThreshold
+    presetThreshold: presetThreshold,
+    effectiveMaxLength: effectiveMaxLength
   };
 });

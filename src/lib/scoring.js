@@ -25,13 +25,14 @@
       require('./lang/style.js'),
       require('./lang/disaster.js'),
       require('./lang/selfmock.js'),
-      require('./lang/aitopic.js')
+      require('./lang/aitopic.js'),
+      require('./lang/nsfw.js')
     );
   } else {
     var JOF = root.JOF = root.JOF || {};
-    JOF.scoring = factory(JOF.normalize, JOF.categories, JOF.lang, JOF.langBuild, JOF.style, JOF.disaster, JOF.selfmock, JOF.aitopic);
+    JOF.scoring = factory(JOF.normalize, JOF.categories, JOF.lang, JOF.langBuild, JOF.style, JOF.disaster, JOF.selfmock, JOF.aitopic, JOF.nsfw);
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (normalize, categories, lang, build, style, disaster, selfmock, aitopic) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (normalize, categories, lang, build, style, disaster, selfmock, aitopic, nsfw) {
   'use strict';
 
   var SATURATION = 2.4;
@@ -109,6 +110,7 @@
     if (disaster) LAYERS.push({ id: 'disaster', api: disaster, from: 'world_affairs', context: false });
     if (selfmock) LAYERS.push({ id: 'selfmock', api: selfmock, from: null, context: true });
     if (aitopic) LAYERS.push({ id: 'ai_topic', api: aitopic, from: 'ai_dispute', context: false });
+    if (nsfw) LAYERS.push({ id: 'nsfw', api: nsfw, from: 'badwords', context: false });
 
     function emit(hit, w, kind, start, end) {
       var cat = hit.cat;

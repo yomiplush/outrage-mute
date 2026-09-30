@@ -30,7 +30,8 @@
     ai_dispute: 'AI論争',
     ai_topic: 'AI技術・界隈',
     world_affairs: '世界情勢・戦争',
-    disaster: '災害・緊急情報'
+    disaster: '災害・緊急情報',
+    nsfw: 'NSFW・性的表現'
   };
 
   var CATEGORY_ORDER = [
@@ -51,6 +52,7 @@
     'ai_topic',
     'world_affairs',
     'disaster',
+    'nsfw',
     'badwords'
   ];
 

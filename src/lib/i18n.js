@@ -66,7 +66,20 @@
     cat_politics: '政治',
     cat_conspiracy: '陰謀論',
     cat_ai_dispute: 'AI論争',
-    cat_world_affairs: '世界情勢・戦争'
+    cat_world_affairs: '世界情勢・戦争',
+    cat_tone: '文体・口調',
+    cat_selfmock: '自虐・自己卑下',
+    cat_disaster: '災害・緊急情報',
+    cat_ai_topic: 'AI技術・界隈',
+    cat_nsfw: 'NSFW・性的表現',
+    presetOff: 'なし（個別設定）',
+    presetSoft: 'やさしめ（誤爆少なめ）',
+    presetNormal: 'ふつう（災害情報は残す）',
+    presetHard: 'きびしめ（全部隠す）',
+    hideNotificationTab: '通知タブごと隠す',
+    reasonLong: '長文を非表示',
+    focusMaxLength: '集中モードで隠す長さ（文字）',
+    focusMaxLengthHint: '集中モード中、これより長い投稿は隠します（0で無効）。'
   };
 
   var DEFAULT_LOCALE = 'en';
