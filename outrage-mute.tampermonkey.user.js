@@ -2,7 +2,7 @@
 // @name         義憤ミュート (Outrage Mute) - Tampermonkey/Android
 // @name:en      Outrage Mute (Tampermonkey/Android)
 // @namespace    https://github.com/yomiplush/outrage-mute#tampermonkey
-// @version      0.23.0
+// @version      0.24.0
 // @description  X の投稿を義憤スコアで判定し、CSS でぼかし/非表示にします（ローカル完結・外部送信なし・多言語対応）
 // @description:en  Score X posts for outrage and blur/hide them with CSS. Fully local (no external requests), multilingual.
 // @author       yomiplush
@@ -154,7 +154,7 @@
 
 window.JOF = window.JOF || {};
 
-window.JOF.locales = {"ja":{"extName":"義憤ミュート","extDesc":"Xの投稿を義憤スコアで判定し、CSSでぼかし/非表示にするローカル完結の拡張機能（外部送信なし・多言語対応）","title":"義憤ミュート","enabled":"有効","note":"Xの投稿を端末内だけで判定します（外部送信なし）。しきい値以上でぼかし／非表示にします。あなたが穏やかな気持ちでいられますように。","threshold":"しきい値","thresholdHint":"低いほど多く隠します（誤判定も増えます）。","mode":"隠し方","modeBlur":"ぼかす（クリックで表示）","modeHide":"完全に隠す","showOverlay":"理由バッジを表示する","minLength":"最短文字数","language":"言語","languageAuto":"自動判定","categories":"検出カテゴリ","categoriesHint":"上の7つは「言い方の攻撃性」。下の「政治・陰謀論・AI論争・世界情勢・下品語（任意）」は話題そのものを隠します（既定OFF）。","optionalSuffix":"（任意）","tryScore":"スコアを試す","samplePlaceholder":"投稿文をここに入力（例: 絶対に許せない。けしからん。）","statToday":"きょう隠した数","statTotal":"累計","reset":"設定をリセット","maskedBadge":"義憤ミュート $1%","show":"表示","hide":"隠す","pause":"停止","resume":"再開","barLabel":"義憤ミュート: $1","cat_attack":"攻撃・侮蔑","cat_hostility":"憎悪・敵意","cat_incitement":"煽り・呼びかけ","cat_absolute":"断定・絶対化","cat_othering":"二項対立・レッテル","cat_cynicism":"冷笑・皮肉","cat_tone":"文体・口調","cat_urgency":"危機煽り","cat_profanity":"差別・蔑称語","cat_badwords":"下品・罵倒語","cat_amplifier":"感情誇張","cat_politics":"政治","cat_conspiracy":"陰謀論","cat_ai_dispute":"AI論争","cat_world_affairs":"世界情勢・戦争","cat_disaster":"災害・緊急情報","cat_selfmock":"自虐・自己卑下","cat_ai_topic":"AI技術・界隈","cat_nsfw":"NSFW・性的表現","reasonLong":"長文を非表示","reasonReply":"リプライを非表示","focusHideReplies":"集中モードでリプライも隠す","userDict":"ユーザー辞書","userDictEnabled":"ユーザー辞書を使う","userDictManage":"単語を管理","userDictHint":"自分で登録した語を含む投稿を隠します（部分一致・大文字小文字と全角/半角は無視）。","userDictPlaceholder":"ミュートしたい語を入力（例: 案件、副業）","userDictAdd":"追加","userDictAll":"すべて削除","userDictEmpty":"まだ登録されていません","userDictDelete":"削除","userDictCount":"$1 語","userDictNote":"※ 部分一致のため、短い語は誤って多くを隠すことがあります。","reasonUser":"ユーザー辞書: $1","enabledOn":"✅ 有効","enabledOff":"無効","toggledOn":"義憤ミュート: 有効","toggledOff":"義憤ミュート: 無効","focusMaxLength":"集中モードで隠す長さ（文字）","focusMaxLengthHint":"集中モード中、これより長い投稿は隠します（0で無効）。","focusMode":"アート集中モード","focusModeHint":"まとめて隠すプリセット。やさしめ=義憤系のみ(0.6)／ふつう=話題系も隠すが災害情報は残す(0.5)／きびしめ=災害も含め全部隠す(0.4)。「なし」で個別設定に戻ります。","presetOff":"なし（個別設定）","presetSoft":"やさしめ（誤爆少なめ）","presetNormal":"ふつう（災害情報は残す）","presetHard":"きびしめ（全部隠す）","quiet":"通知を静かにする","hideNotifications":"通知バッジを隠す","hideNotificationTab":"通知タブごと隠す","hideDm":"DMバッジを隠す","quietHint":"X上のバッジ／タブを非表示にします（通知そのものは止まりません）。","excludeSelf":"自分の投稿はフィルターから除外","excludeReplies":"リプライはフィルターしない","remute":"ミュート","remuteTitle":"この投稿を再度ミュートする"},"en":{"extName":"Outrage Mute","extDesc":"Scores X posts for outrage and blurs/hides them with CSS. Fully local (no external requests), multilingual.","title":"Outrage Mute","enabled":"On","note":"Everything is scored on your device (nothing is sent out). Posts at or above the threshold are blurred or hidden. May you stay calm.","threshold":"Threshold","thresholdHint":"Lower hides more (and raises false positives).","mode":"How to hide","modeBlur":"Blur (click to reveal)","modeHide":"Hide completely","showOverlay":"Show a reason badge","minLength":"Min length","language":"Language","languageAuto":"Auto detect","categories":"Categories","categoriesHint":"The top seven judge tone (attack, hate, incitement...). The optional ones (politics, conspiracy, AI, world affairs, profanity) hide the topic itself and are off by default.","optionalSuffix":" (optional)","tryScore":"Try a score","samplePlaceholder":"Type a post here (e.g. I will never forgive them.)","statToday":"Hidden today","statTotal":"Total","reset":"Reset settings","maskedBadge":"Muted $1%","show":"Show","hide":"Hide","pause":"Pause","resume":"Resume","barLabel":"Muted: $1","cat_attack":"Attack / insult","cat_hostility":"Hate / hostility","cat_incitement":"Incitement","cat_absolute":"Absolutism","cat_othering":"Othering","cat_cynicism":"Cynicism","cat_tone":"Tone / style","cat_urgency":"Fear-mongering","cat_profanity":"Slurs","cat_badwords":"Profanity","cat_amplifier":"Shouting","cat_politics":"Politics","cat_conspiracy":"Conspiracy","cat_ai_dispute":"AI debate","cat_world_affairs":"World affairs / war","cat_disaster":"Disasters / emergency","cat_selfmock":"Self-deprecation","cat_ai_topic":"AI tech / community","cat_nsfw":"NSFW / explicit","reasonLong":"Long post hidden","reasonReply":"Reply hidden","focusHideReplies":"Also hide replies in focus mode","userDict":"User dictionary","userDictEnabled":"Use my dictionary","userDictManage":"Manage words","userDictHint":"Hides posts that contain your words (substring match; case and width are ignored).","userDictPlaceholder":"Type a word to mute (e.g. crypto, giveaway)","userDictAdd":"Add","userDictAll":"Delete all","userDictEmpty":"No words yet","userDictDelete":"Delete","userDictCount":"$1 words","userDictNote":"Note: matching is substring-based, so short words may hide too much.","reasonUser":"User word: $1","enabledOn":"✅ On","enabledOff":"Off","toggledOn":"Outrage Mute: On","toggledOff":"Outrage Mute: Off","focusMaxLength":"Max length in focus mode","focusMaxLengthHint":"In focus mode, posts longer than this are hidden (0 disables).","focusMode":"Art focus mode","focusModeHint":"A hiding preset. Gentle = outrage only (0.6) / Normal = hide topics but keep disaster alerts (0.5) / Strict = hide everything incl. disasters (0.4). Choose Off to use your own settings.","presetOff":"Off (custom)","presetSoft":"Gentle (fewer false positives)","presetNormal":"Normal (keep disaster alerts)","presetHard":"Strict (hide everything)","quiet":"Quiet notifications","hideNotifications":"Hide notification badge","hideNotificationTab":"Hide the notifications tab","hideDm":"Hide DM badge","quietHint":"Hides badges/tabs on X (it does not stop notifications themselves).","excludeSelf":"Don't filter my own posts","excludeReplies":"Don't filter replies","remute":"Mute","remuteTitle":"Mute this post again"},"zh_CN":{"extName":"义愤屏蔽","extDesc":"为 X 的帖子计算义愤评分，用 CSS 模糊或隐藏。完全本地运行（不发送数据），支持多语言。","title":"义愤屏蔽","enabled":"启用","note":"一切在你的设备上判定（不发送任何数据）。达到阈值的帖子会被模糊或隐藏。愿你保持平静。","threshold":"阈值","thresholdHint":"越低隐藏得越多（误判也会增加）。","mode":"隐藏方式","modeBlur":"模糊（点击显示）","modeHide":"完全隐藏","showOverlay":"显示理由标签","minLength":"最短字数","language":"语言","languageAuto":"自动判定","categories":"检测类别","categoriesHint":"前七项判断“语气是否攻击性”。后面（政治、阴谋论、AI争论、世界局势、粗俗语）为话题类，默认关闭。","optionalSuffix":"（可选）","tryScore":"测试评分","samplePlaceholder":"在此输入帖子内容（如：绝对不可原谅。）","statToday":"今日已隐藏","statTotal":"累计","reset":"重置设置","maskedBadge":"已屏蔽 $1%","show":"显示","hide":"隐藏","pause":"暂停","resume":"继续","barLabel":"已屏蔽: $1","cat_attack":"攻击·侮辱","cat_hostility":"憎恨·敌意","cat_incitement":"煽动·号召","cat_absolute":"断言·绝对化","cat_othering":"对立·标签","cat_cynicism":"冷笑·讽刺","cat_urgency":"危机煽动","cat_profanity":"歧视·蔑称","cat_badwords":"粗俗·骂语","cat_amplifier":"情绪夸张","cat_politics":"政治","cat_conspiracy":"阴谋论","cat_ai_dispute":"AI 争论","cat_world_affairs":"世界局势·战争"},"zh_TW":{"extName":"義憤靜音","extDesc":"為 X 的貼文計算義憤分數，用 CSS 模糊或隱藏。完全本機執行（不傳送資料），支援多語言。","title":"義憤靜音","enabled":"啟用","note":"一切都在你的裝置上判定（不傳送任何資料）。達到門檻的貼文會被模糊或隱藏。願你保持平靜。","threshold":"門檻","thresholdHint":"越低隱藏得越多（誤判也會增加）。","mode":"隱藏方式","modeBlur":"模糊（點擊顯示）","modeHide":"完全隱藏","showOverlay":"顯示理由標籤","minLength":"最短字數","language":"語言","languageAuto":"自動判定","categories":"偵測類別","categoriesHint":"前七項判斷「語氣是否具攻擊性」。後面（政治、陰謀論、AI 爭論、世界局勢、粗俗語）為話題類，預設關閉。","optionalSuffix":"（選用）","tryScore":"測試分數","samplePlaceholder":"在此輸入貼文（例如：絕對不可原諒。）","statToday":"今日已隱藏","statTotal":"累計","reset":"重設設定","maskedBadge":"已靜音 $1%","show":"顯示","hide":"隱藏","pause":"暫停","resume":"繼續","barLabel":"已靜音: $1","cat_attack":"攻擊·侮辱","cat_hostility":"憎恨·敵意","cat_incitement":"煽動·號召","cat_absolute":"斷言·絕對化","cat_othering":"對立·標籤","cat_cynicism":"冷笑·諷刺","cat_urgency":"危機煽動","cat_profanity":"歧視·蔑稱","cat_badwords":"粗俗·罵語","cat_amplifier":"情緒誇張","cat_politics":"政治","cat_conspiracy":"陰謀論","cat_ai_dispute":"AI 爭論","cat_world_affairs":"世界局勢·戰爭"},"ko":{"extName":"분노 뮤트","extDesc":"X 게시물을 분노 점수로 판정해 CSS로 흐리게/숨김. 완전 로컬(외부 전송 없음), 다국어 지원.","title":"분노 뮤트","enabled":"사용","note":"모든 판정은 기기 안에서만 이루어집니다(외부 전송 없음). 임계값 이상이면 흐리게/숨김 처리합니다. 마음이 편안하시길 바랍니다.","threshold":"임계값","thresholdHint":"낮을수록 더 많이 숨깁니다(오탐도 늘어납니다).","mode":"숨김 방식","modeBlur":"흐리게 (클릭하면 표시)","modeHide":"완전히 숨김","showOverlay":"이유 배지 표시","minLength":"최소 글자 수","language":"언어","languageAuto":"자동 판정","categories":"탐지 카테고리","categoriesHint":"위 7개는 말투의 공격성입니다. 아래(정치·음모론·AI 논쟁·세계 정세·비속어)는 주제 자체를 숨기며 기본은 꺼짐입니다.","optionalSuffix":" (선택)","tryScore":"점수 테스트","samplePlaceholder":"게시물을 입력하세요 (예: 절대 용서할 수 없다.)","statToday":"오늘 숨김","statTotal":"누적","reset":"설정 초기화","maskedBadge":"뮤트 $1%","show":"표시","hide":"숨기기","pause":"정지","resume":"재개","barLabel":"뮤트: $1","cat_attack":"공격·모욕","cat_hostility":"증오·적대","cat_incitement":"선동·호소","cat_absolute":"단정·절대화","cat_othering":"대립·낙인","cat_cynicism":"냉소·비꼼","cat_urgency":"위기 선동","cat_profanity":"차별·멸칭","cat_badwords":"비속어·욕설","cat_amplifier":"감정 과장","cat_politics":"정치","cat_conspiracy":"음모론","cat_ai_dispute":"AI 논쟁","cat_world_affairs":"세계 정세·전쟁"},"ru":{"extName":"Outrage Mute","extDesc":"Оценивает посты X на негодование и размывает/скрывает их через CSS. Полностью локально (без отправки данных), многоязычно.","title":"Outrage Mute","enabled":"Вкл","note":"Всё оценивается на вашем устройстве (ничего не отправляется). Посты выше порога размываются или скрываются. Пусть вам будет спокойнее.","threshold":"Порог","thresholdHint":"Ниже — скрывает больше (и больше ошибок).","mode":"Способ скрытия","modeBlur":"Размытие (клик — показать)","modeHide":"Скрыть полностью","showOverlay":"Показывать причину","minLength":"Мин. длина","language":"Язык","languageAuto":"Автоопределение","categories":"Категории","categoriesHint":"Верхние семь — это агрессивность речи. Нижние (политика, теории заговора, споры об ИИ, мировые события, мат) скрывают саму тему и по умолчанию выключены.","optionalSuffix":" (опц.)","tryScore":"Проверить оценку","samplePlaceholder":"Введите пост (напр.: Я никогда их не прощу.)","statToday":"Скрыто сегодня","statTotal":"Всего","reset":"Сбросить настройки","maskedBadge":"Скрыто $1%","show":"Показать","hide":"Скрыть","pause":"Пауза","resume":"Продолжить","barLabel":"Скрыто: $1","cat_attack":"Оскорбления","cat_hostility":"Ненависть","cat_incitement":"Призывы","cat_absolute":"Категоричность","cat_othering":"Ярлыки","cat_cynicism":"Цинизм","cat_urgency":"Паникёрство","cat_profanity":"Сленг-оскорбления","cat_badwords":"Мат","cat_amplifier":"Крик","cat_politics":"Политика","cat_conspiracy":"Теории заговора","cat_ai_dispute":"Споры об ИИ","cat_world_affairs":"Мировые события / война"},"uk":{"extName":"Outrage Mute","extDesc":"Оцінює дописи X на обурення та розмиває/ховає їх через CSS. Повністю локально (без надсилань), багатомовно.","title":"Outrage Mute","enabled":"Увімк.","note":"Усе оцінюється на вашому пристрої (нічого не надсилається). Дописи вище порогу розмиваються або ховаються. Нехай вам буде спокійніше.","threshold":"Поріг","thresholdHint":"Нижче — ховає більше (і більше помилок).","mode":"Спосіб приховування","modeBlur":"Розмиття (клік — показати)","modeHide":"Сховати повністю","showOverlay":"Показувати причину","minLength":"Мін. довжина","language":"Мова","languageAuto":"Автовизначення","categories":"Категорії","categoriesHint":"Верхні сім — агресивність мовлення. Нижні (політика, теорії змов, суперечки про ШІ, світові події, лайка) ховають саму тему і типово вимкнені.","optionalSuffix":" (опц.)","tryScore":"Перевірити оцінку","samplePlaceholder":"Введіть допис (напр.: Я ніколи їх не прощу.)","statToday":"Сховано сьогодні","statTotal":"Усього","reset":"Скинути налаштування","maskedBadge":"Приховано $1%","show":"Показати","hide":"Сховати","pause":"Пауза","resume":"Продовжити","barLabel":"Приховано: $1","cat_attack":"Образи","cat_hostility":"Ненависть","cat_incitement":"Заклики","cat_absolute":"Категоричність","cat_othering":"Ярлики","cat_cynicism":"Цинізм","cat_urgency":"Панікерство","cat_profanity":"Сленг-образи","cat_badwords":"Лайка","cat_amplifier":"Крик","cat_politics":"Політика","cat_conspiracy":"Теорії змов","cat_ai_dispute":"Суперечки про ШІ","cat_world_affairs":"Світові події / війна"}};
+window.JOF.locales = {"ja":{"extName":"義憤ミュート","extDesc":"Xの投稿を義憤スコアで判定し、CSSでぼかし/非表示にするローカル完結の拡張機能（外部送信なし・多言語対応）","title":"義憤ミュート","enabled":"有効","note":"Xの投稿を端末内だけで判定します（外部送信なし）。しきい値以上でぼかし／非表示にします。あなたが穏やかな気持ちでいられますように。","threshold":"しきい値","thresholdHint":"低いほど多く隠します（誤判定も増えます）。","mode":"隠し方","modeBlur":"ぼかす（クリックで表示）","modeHide":"完全に隠す","showOverlay":"理由バッジを表示する","minLength":"最短文字数","language":"言語","languageAuto":"自動判定","muteLang":"言語ミュート","muteLangNone":"なし（隠さない）","muteLangHint":"選んだ言語の投稿をまとめて隠します（文字体系で自動判定）。ラテン文字・キリル文字は言語を厳密に区別できないため、それぞれ「（すべて）」の項目でまとめて隠します。漢字だけの日本語は中国語と判定されることがあります。","reasonLang":"$1の投稿を非表示","categories":"検出カテゴリ","categoriesHint":"上の7つは「言い方の攻撃性」。下の「政治・陰謀論・AI論争・世界情勢・下品語（任意）」は話題そのものを隠します（既定OFF）。","optionalSuffix":"（任意）","tryScore":"スコアを試す","samplePlaceholder":"投稿文をここに入力（例: 絶対に許せない。けしからん。）","statToday":"きょう隠した数","statTotal":"累計","reset":"設定をリセット","maskedBadge":"義憤ミュート $1%","show":"表示","hide":"隠す","pause":"停止","resume":"再開","barLabel":"義憤ミュート: $1","cat_attack":"攻撃・侮蔑","cat_hostility":"憎悪・敵意","cat_incitement":"煽り・呼びかけ","cat_absolute":"断定・絶対化","cat_othering":"二項対立・レッテル","cat_cynicism":"冷笑・皮肉","cat_tone":"文体・口調","cat_urgency":"危機煽り","cat_profanity":"差別・蔑称語","cat_badwords":"下品・罵倒語","cat_amplifier":"感情誇張","cat_politics":"政治","cat_conspiracy":"陰謀論","cat_ai_dispute":"AI論争","cat_world_affairs":"世界情勢・戦争","cat_disaster":"災害・緊急情報","cat_selfmock":"自虐・自己卑下","cat_ai_topic":"AI技術・界隈","cat_nsfw":"NSFW・性的表現","reasonLong":"長文を非表示","reasonReply":"リプライを非表示","focusHideReplies":"集中モードでリプライも隠す","userDict":"ユーザー辞書","userDictEnabled":"ユーザー辞書を使う","userDictManage":"単語を管理","userDictHint":"自分で登録した語を含む投稿を隠します（部分一致・大文字小文字と全角/半角は無視）。","userDictPlaceholder":"ミュートしたい語を入力（例: 案件、副業）","userDictAdd":"追加","userDictAll":"すべて削除","userDictEmpty":"まだ登録されていません","userDictDelete":"削除","userDictCount":"$1 語","userDictNote":"※ 部分一致のため、短い語は誤って多くを隠すことがあります。","reasonUser":"ユーザー辞書: $1","enabledOn":"✅ 有効","enabledOff":"無効","toggledOn":"義憤ミュート: 有効","toggledOff":"義憤ミュート: 無効","focusMaxLength":"集中モードで隠す長さ（文字）","focusMaxLengthHint":"集中モード中、これより長い投稿は隠します（0で無効）。","focusMode":"アート集中モード","focusModeHint":"まとめて隠すプリセット。やさしめ=義憤系のみ(0.6)／ふつう=話題系も隠すが災害情報は残す(0.5)／きびしめ=災害も含め全部隠す(0.4)。「なし」で個別設定に戻ります。","presetOff":"なし（個別設定）","presetSoft":"やさしめ（誤爆少なめ）","presetNormal":"ふつう（災害情報は残す）","presetHard":"きびしめ（全部隠す）","quiet":"通知を静かにする","hideNotifications":"通知バッジを隠す","hideNotificationTab":"通知タブごと隠す","hideDm":"DMバッジを隠す","quietHint":"X上のバッジ／タブを非表示にします（通知そのものは止まりません）。","excludeSelf":"自分の投稿はフィルターから除外","excludeReplies":"リプライはフィルターしない","remute":"ミュート","remuteTitle":"この投稿を再度ミュートする"},"en":{"extName":"Outrage Mute","extDesc":"Scores X posts for outrage and blurs/hides them with CSS. Fully local (no external requests), multilingual.","title":"Outrage Mute","enabled":"On","note":"Everything is scored on your device (nothing is sent out). Posts at or above the threshold are blurred or hidden. May you stay calm.","threshold":"Threshold","thresholdHint":"Lower hides more (and raises false positives).","mode":"How to hide","modeBlur":"Blur (click to reveal)","modeHide":"Hide completely","showOverlay":"Show a reason badge","minLength":"Min length","language":"Language","languageAuto":"Auto detect","muteLang":"Language mute","muteLangNone":"None (keep all)","muteLangHint":"Hides every post written in the language you pick (detected by script). Latin- and Cyrillic-script languages cannot be told apart, so use the “(all)” entries for those. Kanji-only Japanese may be detected as Chinese.","reasonLang":"Hidden: $1","categories":"Categories","categoriesHint":"The top seven judge tone (attack, hate, incitement...). The optional ones (politics, conspiracy, AI, world affairs, profanity) hide the topic itself and are off by default.","optionalSuffix":" (optional)","tryScore":"Try a score","samplePlaceholder":"Type a post here (e.g. I will never forgive them.)","statToday":"Hidden today","statTotal":"Total","reset":"Reset settings","maskedBadge":"Muted $1%","show":"Show","hide":"Hide","pause":"Pause","resume":"Resume","barLabel":"Muted: $1","cat_attack":"Attack / insult","cat_hostility":"Hate / hostility","cat_incitement":"Incitement","cat_absolute":"Absolutism","cat_othering":"Othering","cat_cynicism":"Cynicism","cat_tone":"Tone / style","cat_urgency":"Fear-mongering","cat_profanity":"Slurs","cat_badwords":"Profanity","cat_amplifier":"Shouting","cat_politics":"Politics","cat_conspiracy":"Conspiracy","cat_ai_dispute":"AI debate","cat_world_affairs":"World affairs / war","cat_disaster":"Disasters / emergency","cat_selfmock":"Self-deprecation","cat_ai_topic":"AI tech / community","cat_nsfw":"NSFW / explicit","reasonLong":"Long post hidden","reasonReply":"Reply hidden","focusHideReplies":"Also hide replies in focus mode","userDict":"User dictionary","userDictEnabled":"Use my dictionary","userDictManage":"Manage words","userDictHint":"Hides posts that contain your words (substring match; case and width are ignored).","userDictPlaceholder":"Type a word to mute (e.g. crypto, giveaway)","userDictAdd":"Add","userDictAll":"Delete all","userDictEmpty":"No words yet","userDictDelete":"Delete","userDictCount":"$1 words","userDictNote":"Note: matching is substring-based, so short words may hide too much.","reasonUser":"User word: $1","enabledOn":"✅ On","enabledOff":"Off","toggledOn":"Outrage Mute: On","toggledOff":"Outrage Mute: Off","focusMaxLength":"Max length in focus mode","focusMaxLengthHint":"In focus mode, posts longer than this are hidden (0 disables).","focusMode":"Art focus mode","focusModeHint":"A hiding preset. Gentle = outrage only (0.6) / Normal = hide topics but keep disaster alerts (0.5) / Strict = hide everything incl. disasters (0.4). Choose Off to use your own settings.","presetOff":"Off (custom)","presetSoft":"Gentle (fewer false positives)","presetNormal":"Normal (keep disaster alerts)","presetHard":"Strict (hide everything)","quiet":"Quiet notifications","hideNotifications":"Hide notification badge","hideNotificationTab":"Hide the notifications tab","hideDm":"Hide DM badge","quietHint":"Hides badges/tabs on X (it does not stop notifications themselves).","excludeSelf":"Don't filter my own posts","excludeReplies":"Don't filter replies","remute":"Mute","remuteTitle":"Mute this post again"},"zh_CN":{"extName":"义愤屏蔽","extDesc":"为 X 的帖子计算义愤评分，用 CSS 模糊或隐藏。完全本地运行（不发送数据），支持多语言。","title":"义愤屏蔽","enabled":"启用","note":"一切在你的设备上判定（不发送任何数据）。达到阈值的帖子会被模糊或隐藏。愿你保持平静。","threshold":"阈值","thresholdHint":"越低隐藏得越多（误判也会增加）。","mode":"隐藏方式","modeBlur":"模糊（点击显示）","modeHide":"完全隐藏","showOverlay":"显示理由标签","minLength":"最短字数","language":"语言","languageAuto":"自动判定","categories":"检测类别","categoriesHint":"前七项判断“语气是否攻击性”。后面（政治、阴谋论、AI争论、世界局势、粗俗语）为话题类，默认关闭。","optionalSuffix":"（可选）","tryScore":"测试评分","samplePlaceholder":"在此输入帖子内容（如：绝对不可原谅。）","statToday":"今日已隐藏","statTotal":"累计","reset":"重置设置","maskedBadge":"已屏蔽 $1%","show":"显示","hide":"隐藏","pause":"暂停","resume":"继续","barLabel":"已屏蔽: $1","cat_attack":"攻击·侮辱","cat_hostility":"憎恨·敌意","cat_incitement":"煽动·号召","cat_absolute":"断言·绝对化","cat_othering":"对立·标签","cat_cynicism":"冷笑·讽刺","cat_urgency":"危机煽动","cat_profanity":"歧视·蔑称","cat_badwords":"粗俗·骂语","cat_amplifier":"情绪夸张","cat_politics":"政治","cat_conspiracy":"阴谋论","cat_ai_dispute":"AI 争论","cat_world_affairs":"世界局势·战争"},"zh_TW":{"extName":"義憤靜音","extDesc":"為 X 的貼文計算義憤分數，用 CSS 模糊或隱藏。完全本機執行（不傳送資料），支援多語言。","title":"義憤靜音","enabled":"啟用","note":"一切都在你的裝置上判定（不傳送任何資料）。達到門檻的貼文會被模糊或隱藏。願你保持平靜。","threshold":"門檻","thresholdHint":"越低隱藏得越多（誤判也會增加）。","mode":"隱藏方式","modeBlur":"模糊（點擊顯示）","modeHide":"完全隱藏","showOverlay":"顯示理由標籤","minLength":"最短字數","language":"語言","languageAuto":"自動判定","categories":"偵測類別","categoriesHint":"前七項判斷「語氣是否具攻擊性」。後面（政治、陰謀論、AI 爭論、世界局勢、粗俗語）為話題類，預設關閉。","optionalSuffix":"（選用）","tryScore":"測試分數","samplePlaceholder":"在此輸入貼文（例如：絕對不可原諒。）","statToday":"今日已隱藏","statTotal":"累計","reset":"重設設定","maskedBadge":"已靜音 $1%","show":"顯示","hide":"隱藏","pause":"暫停","resume":"繼續","barLabel":"已靜音: $1","cat_attack":"攻擊·侮辱","cat_hostility":"憎恨·敵意","cat_incitement":"煽動·號召","cat_absolute":"斷言·絕對化","cat_othering":"對立·標籤","cat_cynicism":"冷笑·諷刺","cat_urgency":"危機煽動","cat_profanity":"歧視·蔑稱","cat_badwords":"粗俗·罵語","cat_amplifier":"情緒誇張","cat_politics":"政治","cat_conspiracy":"陰謀論","cat_ai_dispute":"AI 爭論","cat_world_affairs":"世界局勢·戰爭"},"ko":{"extName":"분노 뮤트","extDesc":"X 게시물을 분노 점수로 판정해 CSS로 흐리게/숨김. 완전 로컬(외부 전송 없음), 다국어 지원.","title":"분노 뮤트","enabled":"사용","note":"모든 판정은 기기 안에서만 이루어집니다(외부 전송 없음). 임계값 이상이면 흐리게/숨김 처리합니다. 마음이 편안하시길 바랍니다.","threshold":"임계값","thresholdHint":"낮을수록 더 많이 숨깁니다(오탐도 늘어납니다).","mode":"숨김 방식","modeBlur":"흐리게 (클릭하면 표시)","modeHide":"완전히 숨김","showOverlay":"이유 배지 표시","minLength":"최소 글자 수","language":"언어","languageAuto":"자동 판정","categories":"탐지 카테고리","categoriesHint":"위 7개는 말투의 공격성입니다. 아래(정치·음모론·AI 논쟁·세계 정세·비속어)는 주제 자체를 숨기며 기본은 꺼짐입니다.","optionalSuffix":" (선택)","tryScore":"점수 테스트","samplePlaceholder":"게시물을 입력하세요 (예: 절대 용서할 수 없다.)","statToday":"오늘 숨김","statTotal":"누적","reset":"설정 초기화","maskedBadge":"뮤트 $1%","show":"표시","hide":"숨기기","pause":"정지","resume":"재개","barLabel":"뮤트: $1","cat_attack":"공격·모욕","cat_hostility":"증오·적대","cat_incitement":"선동·호소","cat_absolute":"단정·절대화","cat_othering":"대립·낙인","cat_cynicism":"냉소·비꼼","cat_urgency":"위기 선동","cat_profanity":"차별·멸칭","cat_badwords":"비속어·욕설","cat_amplifier":"감정 과장","cat_politics":"정치","cat_conspiracy":"음모론","cat_ai_dispute":"AI 논쟁","cat_world_affairs":"세계 정세·전쟁"},"ru":{"extName":"Outrage Mute","extDesc":"Оценивает посты X на негодование и размывает/скрывает их через CSS. Полностью локально (без отправки данных), многоязычно.","title":"Outrage Mute","enabled":"Вкл","note":"Всё оценивается на вашем устройстве (ничего не отправляется). Посты выше порога размываются или скрываются. Пусть вам будет спокойнее.","threshold":"Порог","thresholdHint":"Ниже — скрывает больше (и больше ошибок).","mode":"Способ скрытия","modeBlur":"Размытие (клик — показать)","modeHide":"Скрыть полностью","showOverlay":"Показывать причину","minLength":"Мин. длина","language":"Язык","languageAuto":"Автоопределение","categories":"Категории","categoriesHint":"Верхние семь — это агрессивность речи. Нижние (политика, теории заговора, споры об ИИ, мировые события, мат) скрывают саму тему и по умолчанию выключены.","optionalSuffix":" (опц.)","tryScore":"Проверить оценку","samplePlaceholder":"Введите пост (напр.: Я никогда их не прощу.)","statToday":"Скрыто сегодня","statTotal":"Всего","reset":"Сбросить настройки","maskedBadge":"Скрыто $1%","show":"Показать","hide":"Скрыть","pause":"Пауза","resume":"Продолжить","barLabel":"Скрыто: $1","cat_attack":"Оскорбления","cat_hostility":"Ненависть","cat_incitement":"Призывы","cat_absolute":"Категоричность","cat_othering":"Ярлыки","cat_cynicism":"Цинизм","cat_urgency":"Паникёрство","cat_profanity":"Сленг-оскорбления","cat_badwords":"Мат","cat_amplifier":"Крик","cat_politics":"Политика","cat_conspiracy":"Теории заговора","cat_ai_dispute":"Споры об ИИ","cat_world_affairs":"Мировые события / война"},"uk":{"extName":"Outrage Mute","extDesc":"Оцінює дописи X на обурення та розмиває/ховає їх через CSS. Повністю локально (без надсилань), багатомовно.","title":"Outrage Mute","enabled":"Увімк.","note":"Усе оцінюється на вашому пристрої (нічого не надсилається). Дописи вище порогу розмиваються або ховаються. Нехай вам буде спокійніше.","threshold":"Поріг","thresholdHint":"Нижче — ховає більше (і більше помилок).","mode":"Спосіб приховування","modeBlur":"Розмиття (клік — показати)","modeHide":"Сховати повністю","showOverlay":"Показувати причину","minLength":"Мін. довжина","language":"Мова","languageAuto":"Автовизначення","categories":"Категорії","categoriesHint":"Верхні сім — агресивність мовлення. Нижні (політика, теорії змов, суперечки про ШІ, світові події, лайка) ховають саму тему і типово вимкнені.","optionalSuffix":" (опц.)","tryScore":"Перевірити оцінку","samplePlaceholder":"Введіть допис (напр.: Я ніколи їх не прощу.)","statToday":"Сховано сьогодні","statTotal":"Усього","reset":"Скинути налаштування","maskedBadge":"Приховано $1%","show":"Показати","hide":"Сховати","pause":"Пауза","resume":"Продовжити","barLabel":"Приховано: $1","cat_attack":"Образи","cat_hostility":"Ненависть","cat_incitement":"Заклики","cat_absolute":"Категоричність","cat_othering":"Ярлики","cat_cynicism":"Цинізм","cat_urgency":"Панікерство","cat_profanity":"Сленг-образи","cat_badwords":"Лайка","cat_amplifier":"Крик","cat_politics":"Політика","cat_conspiracy":"Теорії змов","cat_ai_dispute":"Суперечки про ШІ","cat_world_affairs":"Світові події / війна"}};
 
 window.JOF.css = "/* 義憤ミュート: 非表示・ぼかしの見た目 */\n\n/* セルを基準にしてオーバーレイを重ねる */\n.jof-blur {\n  position: relative !important;\n}\n\n/* 中身（オーバーレイ以外）をぼかして操作不能にする */\n.jof-blur > *:not(.jof-overlay) {\n  filter: blur(7px) !important;\n  opacity: 0.35 !important;\n  pointer-events: none !important;\n  user-select: none !important;\n}\n\n/* 完全非表示モード */\n.jof-gone {\n  display: none !important;\n}\n\n/* オーバーレイ */\n.jof-blur > .jof-overlay {\n  position: absolute !important;\n  inset: 0 !important;\n  z-index: 5 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  align-items: center !important;\n  justify-content: center !important;\n  gap: 6px !important;\n  padding: 10px !important;\n  box-sizing: border-box !important;\n  border: 1px dashed rgba(228, 87, 46, 0.7) !important;\n  border-radius: 12px !important;\n  background: rgba(20, 20, 24, 0.55) !important;\n  color: #fff !important;\n  font-size: 13px !important;\n  font-family: system-ui, -apple-system, \"Segoe UI\", \"Hiragino Kaku Gothic ProN\", Meiryo, sans-serif !important;\n  line-height: 1.3 !important;\n  text-align: center !important;\n  pointer-events: auto !important;\n}\n\n.jof-overlay .jof-badge {\n  font-weight: 700 !important;\n  color: #ffb59b !important;\n}\n\n.jof-overlay .jof-cats {\n  font-size: 11px !important;\n  opacity: 0.85 !important;\n}\n\n.jof-overlay .jof-show-btn {\n  margin-top: 2px !important;\n  padding: 4px 14px !important;\n  border: 1px solid rgba(255, 255, 255, 0.5) !important;\n  border-radius: 999px !important;\n  background: rgba(255, 255, 255, 0.12) !important;\n  color: #fff !important;\n  font-size: 12px !important;\n  cursor: pointer !important;\n}\n\n.jof-overlay .jof-show-btn:hover {\n  background: rgba(255, 255, 255, 0.25) !important;\n}\n\n/* 全表示トグル中は隠さない */\nbody.jof-reveal-all .jof-blur > *:not(.jof-overlay) {\n  filter: none !important;\n  opacity: 1 !important;\n  pointer-events: auto !important;\n  user-select: auto !important;\n}\n\nbody.jof-reveal-all .jof-overlay {\n  display: none !important;\n}\n\nbody.jof-reveal-all .jof-gone {\n  display: block !important;\n}\n\n/* 表示した投稿の右上に出る「再度ミュート」ボタン */\n.jof-relative {\n  position: relative !important;\n}\n\n.jof-remute {\n  position: absolute !important;\n  top: 6px !important;\n  right: 8px !important;\n  z-index: 6 !important;\n  padding: 3px 10px !important;\n  border: 1px solid rgba(228, 87, 46, 0.8) !important;\n  border-radius: 999px !important;\n  background: rgba(20, 20, 24, 0.85) !important;\n  color: #ffb59b !important;\n  font-size: 11px !important;\n  font-family: system-ui, -apple-system, \"Segoe UI\", \"Hiragino Kaku Gothic ProN\", Meiryo, sans-serif !important;\n  cursor: pointer !important;\n}\n\n.jof-remute:hover {\n  background: rgba(228, 87, 46, 0.9) !important;\n  color: #fff !important;\n}\n\n/* 有効/無効のトースト */\n.jof-toast {\n  position: fixed !important;\n  left: 50% !important;\n  bottom: 70px !important;\n  transform: translateX(-50%) !important;\n  z-index: 2147483647 !important;\n  padding: 8px 16px !important;\n  border-radius: 999px !important;\n  background: rgba(20, 20, 24, 0.94) !important;\n  color: #ffb59b !important;\n  font-size: 13px !important;\n  font-family: system-ui, -apple-system, \"Segoe UI\", \"Hiragino Kaku Gothic ProN\", Meiryo, sans-serif !important;\n  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;\n  opacity: 0 !important;\n  pointer-events: none !important;\n  transition: opacity 0.25s ease !important;\n}\n\n.jof-toast.jof-toast-on {\n  opacity: 1 !important;\n}\n\n/* 右下の操作バー */\n.jof-bar {\n  position: fixed !important;\n  right: 16px !important;\n  bottom: 16px !important;\n  z-index: 2147483646 !important;\n  display: flex !important;\n  align-items: center !important;\n  gap: 8px !important;\n  padding: 8px 10px !important;\n  border-radius: 999px !important;\n  background: rgba(20, 20, 24, 0.9) !important;\n  color: #fff !important;\n  font-size: 12px !important;\n  font-family: system-ui, -apple-system, \"Segoe UI\", \"Hiragino Kaku Gothic ProN\", Meiryo, sans-serif !important;\n  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;\n}\n\n.jof-bar-label {\n  font-weight: 600 !important;\n  color: #ffb59b !important;\n}\n\n.jof-bar button {\n  padding: 3px 10px !important;\n  border: 1px solid rgba(255, 255, 255, 0.4) !important;\n  border-radius: 999px !important;\n  background: rgba(255, 255, 255, 0.1) !important;\n  color: #fff !important;\n  font-size: 12px !important;\n  cursor: pointer !important;\n}\n\n.jof-bar button:hover {\n  background: rgba(255, 255, 255, 0.22) !important;\n}\n";
 
@@ -330,6 +330,7 @@ window.JOF.mobile = true;
     showOverlay: true,
     minLength: 0, // これ未満の短い投稿は判定しない
     language: 'auto', // 'auto' | 'ja' | 'en' | 'zh' | 'ko' | 'ru' | 'uk' | ...
+    muteLang: 'off', // 'off' | 言語コード | 'cyrillic' | 'latin' = その言語の投稿を丸ごと隠す
     categories: null, // null = 既定のカテゴリ構成（OPTIONAL_CATEGORIES を除く全部）
     // 集中プリセット: 'off' | 'soft'（やさしめ） | 'normal'（ふつう） | 'hard'（きびしめ）
     preset: 'off',
@@ -355,6 +356,7 @@ window.JOF.mobile = true;
       showOverlay: value.showOverlay !== false,
       minLength: clampNumber(value.minLength, 0, 500, DEFAULTS.minLength),
       language: typeof value.language === 'string' && value.language ? value.language : DEFAULTS.language,
+      muteLang: typeof value.muteLang === 'string' && value.muteLang ? value.muteLang : DEFAULTS.muteLang,
       categories: Array.isArray(value.categories) ? value.categories.slice() : null,
       // 旧 focusMode(true) は 'normal' として引き継ぐ
       preset: PRESET_KEYS.indexOf(value.preset) >= 0 ? value.preset : value.focusMode === true ? 'normal' : DEFAULTS.preset,
@@ -3630,14 +3632,69 @@ window.JOF.mobile = true;
       });
   }
 
+  // ---- 言語ミュート（選んだ言語の投稿を丸ごと隠す）----
+  // detect() が返すタグ単位で選ぶ。文字体系で話者言語を厳密に判別できないものは
+  // 統合タグ（cyrillic / latin）も選べるようにしてある。
+  // 例: 'ja' は「かな・カタカナを含む投稿」、'cyrillic' はキリル文字全般。
+  var MUTE_LANGS = [
+    { id: 'ja', name: LANG_NAMES.ja, tags: ['ja'] },
+    { id: 'ko', name: LANG_NAMES.ko, tags: ['ko'] },
+    { id: 'zh', name: LANG_NAMES.zh, tags: ['zh'] },
+    { id: 'zh_hant', name: LANG_NAMES.zh_hant, tags: ['zh_hant'] },
+    { id: 'th', name: LANG_NAMES.th, tags: ['th'] },
+    { id: 'km', name: LANG_NAMES.km, tags: ['km'] },
+    { id: 'lo', name: LANG_NAMES.lo, tags: ['lo'] },
+    { id: 'si', name: LANG_NAMES.si, tags: ['si'] },
+    { id: 'he', name: LANG_NAMES.he, tags: ['he'] },
+    { id: 'el', name: LANG_NAMES.el, tags: ['el'] },
+    { id: 'hi', name: LANG_NAMES.hi, tags: ['hi'] },
+    { id: 'bn', name: LANG_NAMES.bn, tags: ['bn'] },
+    { id: 'ta', name: LANG_NAMES.ta, tags: ['ta'] },
+    { id: 'te', name: LANG_NAMES.te, tags: ['te'] },
+    { id: 'ar', name: LANG_NAMES.ar, tags: ['ar'] },
+    { id: 'mn', name: LANG_NAMES.mn, tags: ['mn'] },
+    { id: 'ru', name: LANG_NAMES.ru, tags: ['cyrillic_ru'] },
+    { id: 'uk', name: LANG_NAMES.uk, tags: ['cyrillic_uk'] },
+    { id: 'cyrillic', name: LANG_NAMES.cyrillic, tags: ['cyrillic_ru', 'cyrillic_uk', 'mn'] },
+    { id: 'latin', name: LANG_NAMES.latin, tags: ['latin'] }
+  ];
+
+  var MUTE_BY_ID = {};
+  MUTE_LANGS.forEach(function (e) {
+    MUTE_BY_ID[e.id] = e;
+  });
+
+  function muteList() {
+    return MUTE_LANGS.map(function (e) {
+      return { id: e.id, name: e.name };
+    });
+  }
+
+  function muteName(id) {
+    return MUTE_BY_ID[id] ? MUTE_BY_ID[id].name : String(id == null ? '' : id);
+  }
+
+  /** 選んだ言語ミュートに一致する投稿か（'off' と未知の id は常に false） */
+  function isMutedLang(id, text) {
+    if (!id || id === 'off') return false;
+    var entry = MUTE_BY_ID[id];
+    if (!entry) return false;
+    var tag = detect(text);
+    return !!tag && entry.tags.indexOf(tag) >= 0;
+  }
+
   return {
     PACKS: PACKS,
     DEFAULT_LANG: DEFAULT_LANG,
     SCRIPT: SCRIPT,
+    MUTE_LANGS: MUTE_LANGS,
     detect: detect,
     resolve: resolve,
     get: get,
-    list: list
+    list: list,
+    muteList: muteList,
+    muteName: muteName,
+    isMutedLang: isMutedLang
   };
 });
 
@@ -4652,6 +4709,10 @@ window.JOF.mobile = true;
     minLength: '最短文字数',
     language: '言語',
     languageAuto: '自動判定',
+    muteLang: '言語ミュート',
+    muteLangNone: 'なし（隠さない）',
+    muteLangHint:
+      '選んだ言語の投稿をまとめて隠します（文字体系で自動判定）。ラテン文字・キリル文字は言語を厳密に区別できないため、それぞれ「（すべて）」の項目でまとめて隠します。漢字だけの日本語は中国語と判定されることがあります。',
     categories: '検出カテゴリ',
     categoriesHint: '上の7つは「言い方の攻撃性」。下の「政治・陰謀論・AI論争・世界情勢・下品語（任意）」は話題そのものを隠します（既定OFF）。',
     optionalSuffix: '（任意）',
@@ -4722,6 +4783,7 @@ window.JOF.mobile = true;
     userDictCount: '$1 語',
     userDictNote: '※ 部分一致のため、短い語は誤って多くを隠すことがあります。',
     reasonUser: 'ユーザー辞書: $1',
+    reasonLang: '$1の投稿を非表示',
     enabledOn: '✅ 有効',
     enabledOff: '無効',
     toggledOn: '義憤ミュート: 有効',
@@ -5311,6 +5373,7 @@ window.JOF.mobile = true;
   var config = JOF.config;
   var cats = JOF.categories;
   var i18n = JOF.i18n;
+  var lang = JOF.lang;
   var selfpost = JOF.selfpost;
   var reply = JOF.reply;
   var userdict = JOF.userdict;
@@ -5567,14 +5630,11 @@ window.JOF.mobile = true;
 
     var badge = document.createElement('div');
     badge.className = 'jof-badge';
-    badge.textContent =
-      result && result.reason === 'long'
-        ? i18n.t('reasonLong', [result.length])
-        : result && result.reason === 'reply'
-          ? i18n.t('reasonReply')
-          : result && result.reason === 'user'
-            ? i18n.t('reasonUser', [result.word || ''])
-            : i18n.t('maskedBadge', [Math.round((result.score || 0) * 100)]);
+    if (result && result.reason === 'long') badge.textContent = i18n.t('reasonLong', [result.length]);
+    else if (result && result.reason === 'reply') badge.textContent = i18n.t('reasonReply');
+    else if (result && result.reason === 'user') badge.textContent = i18n.t('reasonUser', [result.word || '']);
+    else if (result && result.reason === 'lang') badge.textContent = i18n.t('reasonLang', [result.langName || '']);
+    else badge.textContent = i18n.t('maskedBadge', [Math.round((result.score || 0) * 100)]);
 
     var catEl = document.createElement('div');
     catEl.className = 'jof-cats';
@@ -5650,6 +5710,23 @@ window.JOF.mobile = true;
     var combined = tw.quote ? tw.text + '\n' + tw.quote : tw.text;
     if (!combined || combined.length < (settings.minLength || 0)) {
       cell.dataset.jofState = 'short';
+      return;
+    }
+
+    // 言語ミュート: 選んだ言語の投稿はスコアに関係なく隠す（文字体系で自動判定）
+    if (lang && lang.isMutedLang(settings.muteLang, combined)) {
+      var langResult = {
+        score: 1,
+        raw: 0,
+        categories: [],
+        byCat: {},
+        terms: [],
+        reason: 'lang',
+        langName: lang.muteName(settings.muteLang)
+      };
+      cell.dataset.jofResult = JSON.stringify(langResult);
+      cell.dataset.jofScore = '1';
+      mask(cell, langResult);
       return;
     }
 
@@ -6175,6 +6252,13 @@ window.JOF.mobile = true;
       })
     );
     body.appendChild(selectRow('language', t('language'), langOpts, settings.language));
+    var muteOpts = [['off', t('muteLangNone')]].concat(
+      lang.muteList().map(function (p) {
+        return [p.id, p.name];
+      })
+    );
+    body.appendChild(selectRow('muteLang', t('muteLang'), muteOpts, settings.muteLang));
+    body.appendChild(hint(t('muteLangHint')));
     body.appendChild(heading(t('quiet')));
     body.appendChild(check('hideNotifications', t('hideNotifications'), settings.hideNotifications));
     body.appendChild(check('hideNotificationTab', t('hideNotificationTab'), settings.hideNotificationTab));

@@ -113,6 +113,24 @@
     sel.addEventListener('change', readAndSave);
   }
 
+  // ------------------------------------------------------------ language mute
+  function buildMuteLangs(current) {
+    var sel = el('muteLang');
+    if (!sel) return;
+    sel.textContent = '';
+    var none = document.createElement('option');
+    none.value = 'off';
+    none.textContent = t('muteLangNone');
+    sel.appendChild(none);
+    lang.muteList().forEach(function (p) {
+      var o = document.createElement('option');
+      o.value = p.id;
+      o.textContent = p.name;
+      sel.appendChild(o);
+    });
+    sel.value = current.muteLang || 'off';
+  }
+
   // ------------------------------------------------------------ preset
   function buildPresets(current) {
     var sel = el('preset');
@@ -154,6 +172,8 @@
     for (var i = 0; i < modes.length; i++) modes[i].checked = modes[i].value === s.mode;
     var sel = el('language');
     if (sel) sel.value = s.language || 'auto';
+    var msel = el('muteLang');
+    if (msel) msel.value = s.muteLang || 'off';
   }
 
   function readAndSave() {
@@ -166,6 +186,7 @@
       showOverlay: el('showOverlay').checked,
       minLength: parseInt(el('minLength').value, 10),
       language: el('language') ? el('language').value : 'auto',
+      muteLang: el('muteLang') ? el('muteLang').value : 'off',
       categories: readCategories(),
       preset: el('preset') ? el('preset').value : 'off',
       focusMaxLength: parseInt(el('focusMaxLength').value, 10),
@@ -195,6 +216,7 @@
         i18n.apply();
         reflect(settings);
         buildLanguages(settings);
+        buildMuteLangs(settings);
         buildPresets(settings.preset);
         buildCategories(settings);
         var stats = res[config.STATS_KEY] || {};
@@ -211,6 +233,7 @@
     i18n.load(i18n.localeFor(settings.language)).then(function () {
       i18n.apply();
       buildLanguages(settings);
+      buildMuteLangs(settings);
       buildPresets(settings.preset);
       buildCategories(settings);
       updateResult();
@@ -252,7 +275,7 @@
   }
 
   // ------------------------------------------------------------ wire up
-  ['enabled', 'threshold', 'showOverlay', 'minLength', 'focusMaxLength', 'focusHideReplies', 'userWordsEnabled', 'hideNotifications', 'hideNotificationTab', 'hideDm', 'excludeSelf', 'excludeReplies'].forEach(function (id) {
+  ['enabled', 'threshold', 'showOverlay', 'minLength', 'focusMaxLength', 'focusHideReplies', 'userWordsEnabled', 'hideNotifications', 'hideNotificationTab', 'hideDm', 'excludeSelf', 'excludeReplies', 'muteLang'].forEach(function (id) {
     el(id).addEventListener('input', readAndSave);
     el(id).addEventListener('change', readAndSave);
   });
@@ -283,6 +306,7 @@
     chrome.storage.local.set(patch, function () {
       reflect(settings);
       buildLanguages(settings);
+      buildMuteLangs(settings);
       buildCategories(settings);
       updateResult();
     });

@@ -25,6 +25,10 @@
     minLength: '最短文字数',
     language: '言語',
     languageAuto: '自動判定',
+    muteLang: '言語ミュート',
+    muteLangNone: 'なし（隠さない）',
+    muteLangHint:
+      '選んだ言語の投稿をまとめて隠します（文字体系で自動判定）。ラテン文字・キリル文字は言語を厳密に区別できないため、それぞれ「（すべて）」の項目でまとめて隠します。漢字だけの日本語は中国語と判定されることがあります。',
     categories: '検出カテゴリ',
     categoriesHint: '上の7つは「言い方の攻撃性」。下の「政治・陰謀論・AI論争・世界情勢・下品語（任意）」は話題そのものを隠します（既定OFF）。',
     optionalSuffix: '（任意）',
@@ -95,6 +99,7 @@
     userDictCount: '$1 語',
     userDictNote: '※ 部分一致のため、短い語は誤って多くを隠すことがあります。',
     reasonUser: 'ユーザー辞書: $1',
+    reasonLang: '$1の投稿を非表示',
     enabledOn: '✅ 有効',
     enabledOff: '無効',
     toggledOn: '義憤ミュート: 有効',

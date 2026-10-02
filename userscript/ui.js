@@ -294,6 +294,13 @@
       })
     );
     body.appendChild(selectRow('language', t('language'), langOpts, settings.language));
+    var muteOpts = [['off', t('muteLangNone')]].concat(
+      lang.muteList().map(function (p) {
+        return [p.id, p.name];
+      })
+    );
+    body.appendChild(selectRow('muteLang', t('muteLang'), muteOpts, settings.muteLang));
+    body.appendChild(hint(t('muteLangHint')));
     body.appendChild(heading(t('quiet')));
     body.appendChild(check('hideNotifications', t('hideNotifications'), settings.hideNotifications));
     body.appendChild(check('hideNotificationTab', t('hideNotificationTab'), settings.hideNotificationTab));

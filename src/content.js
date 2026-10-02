@@ -19,6 +19,7 @@
   var config = JOF.config;
   var cats = JOF.categories;
   var i18n = JOF.i18n;
+  var lang = JOF.lang;
   var selfpost = JOF.selfpost;
   var reply = JOF.reply;
   var userdict = JOF.userdict;
@@ -275,14 +276,11 @@
 
     var badge = document.createElement('div');
     badge.className = 'jof-badge';
-    badge.textContent =
-      result && result.reason === 'long'
-        ? i18n.t('reasonLong', [result.length])
-        : result && result.reason === 'reply'
-          ? i18n.t('reasonReply')
-          : result && result.reason === 'user'
-            ? i18n.t('reasonUser', [result.word || ''])
-            : i18n.t('maskedBadge', [Math.round((result.score || 0) * 100)]);
+    if (result && result.reason === 'long') badge.textContent = i18n.t('reasonLong', [result.length]);
+    else if (result && result.reason === 'reply') badge.textContent = i18n.t('reasonReply');
+    else if (result && result.reason === 'user') badge.textContent = i18n.t('reasonUser', [result.word || '']);
+    else if (result && result.reason === 'lang') badge.textContent = i18n.t('reasonLang', [result.langName || '']);
+    else badge.textContent = i18n.t('maskedBadge', [Math.round((result.score || 0) * 100)]);
 
     var catEl = document.createElement('div');
     catEl.className = 'jof-cats';
@@ -358,6 +356,23 @@
     var combined = tw.quote ? tw.text + '\n' + tw.quote : tw.text;
     if (!combined || combined.length < (settings.minLength || 0)) {
       cell.dataset.jofState = 'short';
+      return;
+    }
+
+    // 言語ミュート: 選んだ言語の投稿はスコアに関係なく隠す（文字体系で自動判定）
+    if (lang && lang.isMutedLang(settings.muteLang, combined)) {
+      var langResult = {
+        score: 1,
+        raw: 0,
+        categories: [],
+        byCat: {},
+        terms: [],
+        reason: 'lang',
+        langName: lang.muteName(settings.muteLang)
+      };
+      cell.dataset.jofResult = JSON.stringify(langResult);
+      cell.dataset.jofScore = '1';
+      mask(cell, langResult);
       return;
     }
 

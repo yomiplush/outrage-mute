@@ -355,13 +355,68 @@
       });
   }
 
+  // ---- 言語ミュート（選んだ言語の投稿を丸ごと隠す）----
+  // detect() が返すタグ単位で選ぶ。文字体系で話者言語を厳密に判別できないものは
+  // 統合タグ（cyrillic / latin）も選べるようにしてある。
+  // 例: 'ja' は「かな・カタカナを含む投稿」、'cyrillic' はキリル文字全般。
+  var MUTE_LANGS = [
+    { id: 'ja', name: LANG_NAMES.ja, tags: ['ja'] },
+    { id: 'ko', name: LANG_NAMES.ko, tags: ['ko'] },
+    { id: 'zh', name: LANG_NAMES.zh, tags: ['zh'] },
+    { id: 'zh_hant', name: LANG_NAMES.zh_hant, tags: ['zh_hant'] },
+    { id: 'th', name: LANG_NAMES.th, tags: ['th'] },
+    { id: 'km', name: LANG_NAMES.km, tags: ['km'] },
+    { id: 'lo', name: LANG_NAMES.lo, tags: ['lo'] },
+    { id: 'si', name: LANG_NAMES.si, tags: ['si'] },
+    { id: 'he', name: LANG_NAMES.he, tags: ['he'] },
+    { id: 'el', name: LANG_NAMES.el, tags: ['el'] },
+    { id: 'hi', name: LANG_NAMES.hi, tags: ['hi'] },
+    { id: 'bn', name: LANG_NAMES.bn, tags: ['bn'] },
+    { id: 'ta', name: LANG_NAMES.ta, tags: ['ta'] },
+    { id: 'te', name: LANG_NAMES.te, tags: ['te'] },
+    { id: 'ar', name: LANG_NAMES.ar, tags: ['ar'] },
+    { id: 'mn', name: LANG_NAMES.mn, tags: ['mn'] },
+    { id: 'ru', name: LANG_NAMES.ru, tags: ['cyrillic_ru'] },
+    { id: 'uk', name: LANG_NAMES.uk, tags: ['cyrillic_uk'] },
+    { id: 'cyrillic', name: LANG_NAMES.cyrillic, tags: ['cyrillic_ru', 'cyrillic_uk', 'mn'] },
+    { id: 'latin', name: LANG_NAMES.latin, tags: ['latin'] }
+  ];
+
+  var MUTE_BY_ID = {};
+  MUTE_LANGS.forEach(function (e) {
+    MUTE_BY_ID[e.id] = e;
+  });
+
+  function muteList() {
+    return MUTE_LANGS.map(function (e) {
+      return { id: e.id, name: e.name };
+    });
+  }
+
+  function muteName(id) {
+    return MUTE_BY_ID[id] ? MUTE_BY_ID[id].name : String(id == null ? '' : id);
+  }
+
+  /** 選んだ言語ミュートに一致する投稿か（'off' と未知の id は常に false） */
+  function isMutedLang(id, text) {
+    if (!id || id === 'off') return false;
+    var entry = MUTE_BY_ID[id];
+    if (!entry) return false;
+    var tag = detect(text);
+    return !!tag && entry.tags.indexOf(tag) >= 0;
+  }
+
   return {
     PACKS: PACKS,
     DEFAULT_LANG: DEFAULT_LANG,
     SCRIPT: SCRIPT,
+    MUTE_LANGS: MUTE_LANGS,
     detect: detect,
     resolve: resolve,
     get: get,
-    list: list
+    list: list,
+    muteList: muteList,
+    muteName: muteName,
+    isMutedLang: isMutedLang
   };
 });

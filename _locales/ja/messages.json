@@ -17,6 +17,12 @@
   "minLength": { "message": "最短文字数" },
   "language": { "message": "言語" },
   "languageAuto": { "message": "自動判定" },
+  "muteLang": { "message": "言語ミュート" },
+  "muteLangNone": { "message": "なし（隠さない）" },
+  "muteLangHint": {
+    "message": "選んだ言語の投稿をまとめて隠します（文字体系で自動判定）。ラテン文字・キリル文字は言語を厳密に区別できないため、それぞれ「（すべて）」の項目でまとめて隠します。漢字だけの日本語は中国語と判定されることがあります。"
+  },
+  "reasonLang": { "message": "$1の投稿を非表示" },
   "categories": { "message": "検出カテゴリ" },
   "categoriesHint": {
     "message": "上の7つは「言い方の攻撃性」。下の「政治・陰謀論・AI論争・世界情勢・下品語（任意）」は話題そのものを隠します（既定OFF）。"

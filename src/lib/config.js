@@ -34,6 +34,7 @@
     showOverlay: true,
     minLength: 0, // これ未満の短い投稿は判定しない
     language: 'auto', // 'auto' | 'ja' | 'en' | 'zh' | 'ko' | 'ru' | 'uk' | ...
+    muteLang: 'off', // 'off' | 言語コード | 'cyrillic' | 'latin' = その言語の投稿を丸ごと隠す
     categories: null, // null = 既定のカテゴリ構成（OPTIONAL_CATEGORIES を除く全部）
     // 集中プリセット: 'off' | 'soft'（やさしめ） | 'normal'（ふつう） | 'hard'（きびしめ）
     preset: 'off',
@@ -59,6 +60,7 @@
       showOverlay: value.showOverlay !== false,
       minLength: clampNumber(value.minLength, 0, 500, DEFAULTS.minLength),
       language: typeof value.language === 'string' && value.language ? value.language : DEFAULTS.language,
+      muteLang: typeof value.muteLang === 'string' && value.muteLang ? value.muteLang : DEFAULTS.muteLang,
       categories: Array.isArray(value.categories) ? value.categories.slice() : null,
       // 旧 focusMode(true) は 'normal' として引き継ぐ
       preset: PRESET_KEYS.indexOf(value.preset) >= 0 ? value.preset : value.focusMode === true ? 'normal' : DEFAULTS.preset,

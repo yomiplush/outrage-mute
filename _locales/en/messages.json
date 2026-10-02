@@ -17,6 +17,12 @@
   "minLength": { "message": "Min length" },
   "language": { "message": "Language" },
   "languageAuto": { "message": "Auto detect" },
+  "muteLang": { "message": "Language mute" },
+  "muteLangNone": { "message": "None (keep all)" },
+  "muteLangHint": {
+    "message": "Hides every post written in the language you pick (detected by script). Latin- and Cyrillic-script languages cannot be told apart, so use the “(all)” entries for those. Kanji-only Japanese may be detected as Chinese."
+  },
+  "reasonLang": { "message": "Hidden: $1" },
   "categories": { "message": "Categories" },
   "categoriesHint": {
     "message": "The top seven judge tone (attack, hate, incitement...). The optional ones (politics, conspiracy, AI, world affairs, profanity) hide the topic itself and are off by default."

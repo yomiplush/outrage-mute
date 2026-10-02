@@ -539,3 +539,51 @@ test('追加言語（パックが無かったもの）を判定できる', () =>
   assert.equal(lang.detect('ඔබ මෝඩයෙක්'), 'si');
   assert.ok(lang.list().length >= 50, `packs=${lang.list().length}`);
 });
+
+test('言語ミュート: 選んだ言語の投稿だけを隠す', () => {
+  // 既定は無効
+  assert.equal(config.DEFAULTS.muteLang, 'off');
+  assert.equal(config.normalizeSettings({}).muteLang, 'off');
+  assert.equal(config.normalizeSettings({ muteLang: 'ja' }).muteLang, 'ja');
+  assert.equal(lang.isMutedLang('off', '今日はいい天気だね'), false);
+  assert.equal(lang.isMutedLang('', '今日はいい天気だね'), false);
+  assert.equal(lang.isMutedLang('nope', '今日はいい天気だね'), false);
+
+  // 日本語だけを選ぶと日本語は隠れ、他言語は残る
+  assert.equal(lang.isMutedLang('ja', '今日はいい天気だね'), true);
+  assert.equal(lang.isMutedLang('ja', 'Hello, have a nice day'), false);
+  assert.equal(lang.isMutedLang('ja', '오늘 날씨 좋네요'), false);
+  assert.equal(lang.isMutedLang('ja', '今天天气不错'), false);
+  assert.equal(lang.isMutedLang('ja', ''), false);
+
+  // 簡体字と繁体字は別々に選べる
+  assert.equal(lang.isMutedLang('zh', '今天天气不错'), true);
+  assert.equal(lang.isMutedLang('zh', '今天天氣不錯'), false);
+  assert.equal(lang.isMutedLang('zh_hant', '今天天氣不錯'), true);
+  assert.equal(lang.isMutedLang('zh_hant', '今天天气不错'), false);
+
+  // キリル文字: ロシア語 / ウクライナ語 / 統合
+  assert.equal(lang.isMutedLang('ru', 'Сегодня хорошая погода'), true);
+  assert.equal(lang.isMutedLang('ru', 'Сьогодні гарна погода'), false);
+  assert.equal(lang.isMutedLang('uk', 'Сьогодні гарна погода'), true);
+  assert.equal(lang.isMutedLang('cyrillic', 'Сьогодні гарна погода'), true);
+  assert.equal(lang.isMutedLang('cyrillic', 'Сегодня хорошая погода'), true);
+  assert.equal(lang.isMutedLang('ru', 'Hello, have a nice day'), false);
+
+  // ラテン文字は話者言語を判別できないため「すべて」だけ
+  assert.equal(lang.isMutedLang('latin', 'Hello, have a nice day'), true);
+  assert.equal(lang.isMutedLang('latin', '今日はいい天気だね'), false);
+  assert.equal(lang.isMutedLang('latin', 'Bonjour tout le monde'), true);
+});
+
+test('言語ミュートの選択肢と表示名', () => {
+  const ids = lang.muteList().map((x) => x.id);
+  for (const id of ['ja', 'ko', 'zh', 'zh_hant', 'th', 'he', 'el', 'hi', 'ar', 'ru', 'uk', 'cyrillic', 'latin']) {
+    assert.ok(ids.includes(id), `mute option: ${id}`);
+  }
+  const names = new Map(lang.muteList().map((x) => [x.id, x.name]));
+  assert.equal(names.get('ja'), '日本語');
+  assert.equal(names.get('cyrillic'), 'Cyrillic (all)');
+  assert.equal(lang.muteName('cyrillic'), 'Cyrillic (all)');
+  assert.equal(lang.muteName('zzz'), 'zzz');
+});
