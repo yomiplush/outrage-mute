@@ -147,6 +147,36 @@
   }
 
   // ------------------------------------------------------------ UI <-> storage
+  // 全体OFF時に無効化する従属コントロール（値は保持し、見た目だけグレーアウト）
+  var GATED_IDS = [
+    'threshold',
+    'minLength',
+    'focusMaxLength',
+    'focusHideReplies',
+    'preset',
+    'showOverlay',
+    'excludeSelf',
+    'excludeReplies',
+    'language',
+    'muteLang',
+    'hideNotifications',
+    'hideNotificationTab',
+    'hideDm',
+    'userWordsEnabled',
+    'openDict'
+  ];
+
+  function applyGating(s) {
+    var off = !s.enabled;
+    GATED_IDS.forEach(function (id) {
+      var node = el(id);
+      if (node) node.disabled = off;
+    });
+    document.querySelectorAll('input[name="mode"], #categories input').forEach(function (node) {
+      node.disabled = off;
+    });
+  }
+
   function reflect(s) {
     el('enabled').checked = s.enabled;
     el('enabledLabel').textContent = s.enabled ? t('enabledOn') : t('enabledOff');
@@ -174,6 +204,7 @@
     if (sel) sel.value = s.language || 'auto';
     var msel = el('muteLang');
     if (msel) msel.value = s.muteLang || 'off';
+    applyGating(s);
   }
 
   function readAndSave() {
@@ -202,6 +233,7 @@
     el('thresholdValue').textContent = settings.threshold.toFixed(2);
     el('enabledLabel').textContent = settings.enabled ? t('enabledOn') : t('enabledOff');
     el('userWordsCount').textContent = t('userDictCount', [(settings.userWords || []).length]);
+    applyGating(settings);
     var patch = {};
     patch[config.PERSIST_KEY] = settings;
     chrome.storage.local.set(patch);
@@ -219,6 +251,7 @@
         buildMuteLangs(settings);
         buildPresets(settings.preset);
         buildCategories(settings);
+        applyGating(settings);
         var stats = res[config.STATS_KEY] || {};
         var today = stats.date === new Date().toISOString().slice(0, 10) ? stats.today || 0 : 0;
         el('statToday').textContent = String(today);
@@ -236,6 +269,7 @@
       buildMuteLangs(settings);
       buildPresets(settings.preset);
       buildCategories(settings);
+      applyGating(settings);
       updateResult();
     });
   }
@@ -308,6 +342,7 @@
       buildLanguages(settings);
       buildMuteLangs(settings);
       buildCategories(settings);
+      applyGating(settings);
       updateResult();
     });
   });

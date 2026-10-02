@@ -50,7 +50,9 @@
     '.jof-ui-panel .kbd{display:inline-block;padding:1px 6px;border:1px solid #33343c;border-radius:5px;' +
     'font-size:10px;color:#9a9aa5;white-space:nowrap}' +
     '.jof-ui-panel h2 .on{color:#6bd08a}' +
-    '.jof-ui-panel h2 .off{color:#9a9aa5}';
+    '.jof-ui-panel h2 .off{color:#9a9aa5}' +
+    '.jof-ui-panel :disabled{opacity:.45;cursor:not-allowed}' +
+    '.jof-ui-panel label:has(:disabled){opacity:.55}';
 
   // Tampermonkey/Android 向け（タップしやすく・画面幅に追従）
   var MOBILE_CSS =
@@ -238,6 +240,8 @@
     var wasLang = el.dataset.key === 'language';
     if (wasLang) {
       i18n.load(i18n.localeFor(settings.language)).then(render);
+    } else if (el.dataset.key === 'enabled') {
+      render();
     } else {
       updateTest();
     }
@@ -263,6 +267,14 @@
       /* noop */
     }
     w.focus();
+  }
+
+  // 全体OFF時は従属コントロールを無効化する（値は保持し、見た目だけグレーアウト）
+  function applyGating() {
+    var off = !settings.enabled;
+    body.querySelectorAll('[data-key]:not([data-key="enabled"]):not([data-key="sample"]), [data-dep]').forEach(function (node) {
+      node.disabled = off;
+    });
   }
 
   function render() {
@@ -312,6 +324,7 @@
     drow.appendChild(h('span', 'hint', t('userDictCount', [(settings.userWords || []).length])));
     var dbtn = h('button', null, t('userDictManage'));
     dbtn.type = 'button';
+    dbtn.dataset.dep = '1';
     dbtn.addEventListener('click', openDictWindow);
     drow.appendChild(dbtn);
     body.appendChild(drow);
@@ -354,6 +367,7 @@
       i18n.load(i18n.localeFor(settings.language)).then(render);
     });
     body.appendChild(reset);
+    applyGating();
     updateTest();
     document.documentElement.setAttribute('lang', i18n.localeFor(settings.language) || (navigator.language || 'ja'));
   }

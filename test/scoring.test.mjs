@@ -420,6 +420,32 @@ test('有効/無効トグル（ショートカット用）', () => {
   assert.ok(i18n.FALLBACK.toggledOn && i18n.FALLBACK.toggledOff);
 });
 
+test('全体OFFでも従属設定の値は保持される（通知バッジ/言語ミュートなど）', () => {
+  // 全体OFFは「値のリセット」ではなく「無効化」。保存値はそのまま残す。
+  const off = config.normalizeSettings({
+    enabled: false,
+    hideNotifications: true,
+    hideNotificationTab: true,
+    hideDm: true,
+    muteLang: 'en',
+    threshold: 0.7,
+    preset: 'hard'
+  });
+  assert.equal(off.enabled, false);
+  assert.equal(off.hideNotifications, true);
+  assert.equal(off.hideNotificationTab, true);
+  assert.equal(off.hideDm, true);
+  assert.equal(off.muteLang, 'en');
+  assert.equal(off.threshold, 0.7);
+  assert.equal(off.preset, 'hard');
+
+  // 再ONで同じ値が復帰する
+  const on = config.toggleEnabled(off);
+  assert.equal(on.enabled, true);
+  assert.equal(on.hideNotifications, true);
+  assert.equal(on.muteLang, 'en');
+});
+
 test('UI言語: 判定言語からロケールを引く', () => {
   // 'auto' は null（ブラウザ任せ）
   assert.equal(i18n.localeFor('auto'), null);

@@ -82,7 +82,8 @@
   }
 
   function applyQuiet() {
-    if (!settings.hideNotifications && !settings.hideDm && !settings.hideNotificationTab) {
+    // 全体OFFでは通知静音（バッジ／タブ非表示）も効かせない（値は保持したまま無効化）
+    if (!settings.enabled || (!settings.hideNotifications && !settings.hideDm && !settings.hideNotificationTab)) {
       restoreQuiet();
       return;
     }
@@ -257,10 +258,10 @@
     return !!(reply && reply.isReplyText(replyHeadText(article)));
   }
 
-  function mask(cell, result) {
+  function mask(cell, result, forceHide) {
     cell.classList.add('jof-masked');
     cell.dataset.jofState = 'masked';
-    if (settings.mode === 'hide') {
+    if (forceHide || settings.mode === 'hide') {
       cell.classList.add('jof-gone');
     } else {
       cell.classList.add('jof-blur');
@@ -320,12 +321,14 @@
     if (cell.dataset.jofSig === sig && state) {
       if (
         state === 'masked' &&
-        settings.mode !== 'hide' &&
+        !cell.classList.contains('jof-gone') &&
         settings.showOverlay !== false &&
         !cell.querySelector(':scope > .jof-overlay')
       ) {
         try {
-          cell.appendChild(buildOverlay(JSON.parse(cell.dataset.jofResult || '{}'), cell));
+          var prevResult = JSON.parse(cell.dataset.jofResult || '{}');
+          // 言語ミュートは常に完全非表示（理由バッジは出さない）
+          if (prevResult.reason !== 'lang') cell.appendChild(buildOverlay(prevResult, cell));
         } catch (e) {
           /* noop */
         }
@@ -341,25 +344,10 @@
       return;
     }
 
-    // 自分の投稿は除外（トグル）
-    if (isOwnArticle(article)) {
-      cell.dataset.jofState = 'self';
-      return;
-    }
-
-    // リプライはフィルターしない（トグル・既定OFF）
-    if (settings.excludeReplies && isReplyArticle(article)) {
-      cell.dataset.jofState = 'reply-skip';
-      return;
-    }
-
     var combined = tw.quote ? tw.text + '\n' + tw.quote : tw.text;
-    if (!combined || combined.length < (settings.minLength || 0)) {
-      cell.dataset.jofState = 'short';
-      return;
-    }
 
-    // 言語ミュート: 選んだ言語の投稿はスコアに関係なく隠す（文字体系で自動判定）
+    // 言語ミュート: 選んだ言語の投稿は他の条件（短文・自分の投稿・リプライ・スコア）に
+    //               関わらず丸ごと隠す。隠し方の設定に関係なく完全非表示にする。
     if (lang && lang.isMutedLang(settings.muteLang, combined)) {
       var langResult = {
         score: 1,
@@ -372,7 +360,24 @@
       };
       cell.dataset.jofResult = JSON.stringify(langResult);
       cell.dataset.jofScore = '1';
-      mask(cell, langResult);
+      mask(cell, langResult, true);
+      return;
+    }
+
+    // 自分の投稿は除外（トグル）
+    if (isOwnArticle(article)) {
+      cell.dataset.jofState = 'self';
+      return;
+    }
+
+    // リプライはフィルターしない（トグル・既定OFF）
+    if (settings.excludeReplies && isReplyArticle(article)) {
+      cell.dataset.jofState = 'reply-skip';
+      return;
+    }
+
+    if (!combined || combined.length < (settings.minLength || 0)) {
+      cell.dataset.jofState = 'short';
       return;
     }
 

@@ -20,7 +20,7 @@
   "muteLang": { "message": "Language mute" },
   "muteLangNone": { "message": "None (keep all)" },
   "muteLangHint": {
-    "message": "Hides every post written in the language you pick (detected by script). Latin- and Cyrillic-script languages cannot be told apart, so use the “(all)” entries for those. Kanji-only Japanese may be detected as Chinese."
+    "message": "Posts in the language you pick are always hidden completely, regardless of length, your own posts, replies, or the blur/hide mode (detected by script). Latin- and Cyrillic-script languages cannot be told apart, so use the “(all)” entries for those. Kanji-only Japanese may be detected as Chinese."
   },
   "reasonLang": { "message": "Hidden: $1" },
   "categories": { "message": "Categories" },
