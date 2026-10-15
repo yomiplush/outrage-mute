@@ -275,6 +275,7 @@ ZIP と `SHA256SUMS` を添付しています。
 
 - 投稿本文・アカウント情報を**外部に送信しません**（`host_permissions` は X のドメインのみ、通信コードなし）。
 - 設定と統計だけを `chrome.storage.local` に保存します。
+- 詳細は [`PRIVACY.md`](PRIVACY.md) を参照。
 
 ## 既知の制限
 
