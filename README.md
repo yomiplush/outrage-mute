@@ -1,286 +1,285 @@
-# 義憤ミュート (outrage-mute)
+# Outrage Mute
 
-X（x.com / twitter.com）の投稿を **日本語の「義憤」スコア**で判定し、CSSでぼかし／非表示にする Chrome 拡張です。判定はすべて端末内で完結し、**外部への通信は一切ありません**。
+A Chrome extension that scores posts on X (x.com / twitter.com) using a **Japanese "outrage" score** and blurs or hides them with CSS. All scoring happens entirely on your device — **there is no external communication whatsoever**.
 
-- 対象: X（`x.com`, `twitter.com`）
-- 方式: ローカル辞書＋ヒューリスティック（機械学習なし・APIキー不要・無料）
-- 単位: **投稿単位**で隠す
-- 表示: ぼかし（クリックで表示）／完全非表示 を切替
+- Target: X (`x.com`, `twitter.com`)
+- Approach: local dictionary + heuristics (no machine learning, no API keys, free)
+- Unit: hides **per post**
+- Display: toggle between blur (click to reveal) and complete hiding
 
-> 「義憤に駆られている」＝ 攻撃的・断定的・煽動的で、怒りや敵意が前面に出た投稿。
-> 主義主張そのものではなく、**言い方の攻撃性**を評価します（誤判定はあります）。
-
----
-
-## できること
-
-- X の投稿を検出し、本文＋引用本文をローカルでスコアリング（0.00〜1.00）
-- しきい値以上なら、投稿セルをぼかす（理由バッジ＋「表示」ボタン付き）か完全に隠す
-- 右下の操作バーから「全表示／隠す」「一時停止」を切替
-- ポップアップでしきい値・隠し方・検出カテゴリを設定し、**その場でスコアを試せる**
-- **政治・陰謀論・AI論争・世界情勢（戦争/テロ）・下品語**をまとめて隠すオプショントグル（既定OFF）
-- **災害・緊急情報（地震速報/津波警報/避難指示）は独立トグル**（既定は「見る」）。世界情勢を隠しても災害情報だけ残せます
-- **文体・口調（`tone`）レイヤー**: 語彙に無くても「は？ふざけんなよ！！」「😡😡😡」のような**言い方**を検出（既定ON）。覚醒度は敵意があるときだけ倍率
-- **自虐（`selfmock`）は独立トグル**（既定ON）。OFFにすれば自虐ネタだけ見られます（他は隠したまま）
-- **AI論争（`ai_dispute`）と AI技術・界隈（`ai_topic`）を分離**。技術者視点の話やAIクラスタの話題は、論争とは別にオン/オフできます
-- **多言語対応（52パック）**: 日本語 / 英語 / 中国語（簡体・繁体） / 韓国語 / ロシア語 / ウクライナ語 に加え、欧州・中東・南アジア・東南アジアの主要言語（独仏西伊葡蘭波捷洪芬瑞丁諾土希／阿ペルシア／ヒンディー・ベンガル・ウルドゥー・タミル・テルグ／タイ・ベトナム・インドネシア・マレー・ヘブライ・フィリピノ ほか）。**文字体系ベースで自動判定**（簡体/繁体・モンゴル語も判別）
-- UI も多言語化（`_locales`。Chrome の表示言語に追従）
-- **言語ミュート**: 選んだ**1つの言語の投稿をまとめて隠せます**（例: 母国語をタイムラインから消す）。文字体系ベースで自動判定し、日本語 / 韓国語 / 中国語（簡体・繁体） / タイ・ヘブライ・ギリシャ・ヒンディー・アラビア文字ほか / キリル文字（ロシア語・ウクライナ語・すべて） / ラテン文字（すべて）を選択可。スコアや他の条件（短文・自分の投稿・リプライ）に関係なく**常に完全非表示**にするので「その言語を読まない」用途に（既定 OFF）
-- **NSFW（性的表現）は独立トグル**（既定OFF）。罵倒語（`badwords`）の性的語を分離したので、罵倒語と別に隠せます
-- **ユーザー辞書**: 自分のミュートワードを登録して隠せます（追加・削除・すべて削除）。**別ウィンドウのエディタ**（ポップアップの「単語を管理」）で管理し、部分一致で判定（既定ON）
-- **アート集中モード（プリセット）**: まとめて隠す強さを選べます — **やさしめ**（義憤系のみ・0.6）／**ふつう**（話題系も隠すが災害情報は残す・0.5）／**きびしめ**（災害も含め全部・0.4）。「なし」で個別設定に戻ります。集中モード中は**長文**（既定160文字超、0で無効）と**リプライ投稿**（既定ON・フォローさん含む）も避けます
-- **通知を静かに**: X上の**通知バッジ・DMバッジ・通知タブ**を非表示にするトグル（メンタルヘルス配慮）
-- ぼかし（クリックで表示・理由バッジ付き）／完全非表示。**表示した投稿は右上の「ミュート」ボタンで再度隠せます**
-- **自分の投稿はフィルターから除外**（既定ON・トグルで変更可）
-- **リプライはフィルターしない**トグル（既定OFF＝リプライも対象。ONにすると会話を残せます。集中モードのリプライ非表示より優先）
-- **PCショートカット `Shift+1`**: 有効/無効を即トグル（入力中は無効化して誤爆防止）。**iOS/Android では無効**にしてタッチ操作を優先。ポップアップのヘッダにも `Shift+1　✅有効` と表示
-- **全体OFFの扱い**: `Shift+1` やヘッダのトグルで全体をOFFにすると、**通知バッジ／通知タブ／DMバッジの非表示・言語ミュート・カテゴリ指定などの従属機能もすべて停止**します（ポップアップの該当項目はグレーアウトして操作不可）。設定値は保持され、再ONで元どおりに戻ります
-- **しきい値スライダーはシークバー風**: 太いトラック＋大きめのつまみで、指で左右にドラッグしやすい（モバイルはさらに拡大・`touch-action` 調整で横ドラッグ優先）
-- きょう隠した数のバッジ表示（統計）
-
-## インストール（未パッケージ）
-
-1. Chrome で `chrome://extensions` を開く
-2. 右上の「デベロッパーモード」を ON
-3. 「パッケージ化されていない拡張機能を読み込む」で、この `outrage-mute` フォルダを選択
-4. X を開くと有効になります（アイコンクリックでポップアップ）
-
-## iOS / Safari で使う（ユーザースクリプト版）
-
-Chrome拡張とは別に、**Safari で動くユーザースクリプト**（`outrage-mute.user.js`）を Release に同梱しています。判定エンジンは拡張と同一で、`chrome.*` を localStorage に差し替えるシムと、ページ内の⚙設定パネルを足したものです。
-
-1. App Store で **Userscripts**（https://apps.apple.com/jp/app/userscripts/id1463298887）をインストール
-2. Safari の「設定 → 機能拡張」で Userscripts を有効化し、保存先フォルダを許可
-3. **raw 直リンク**を開くのが確実です: `https://raw.githubusercontent.com/yomiplush/outrage-mute/main/outrage-mute.user.js`（Tampermonkey/Userscripts がインストール画面を出します）
-4. Userscripts に読み込ませ、対象は `https://x.com/*` / `https://twitter.com/*`
-5. x.com を開くと左下に **⚙ボタン**が出ます。クリックして設定（しきい値・プリセット・カテゴリ・言語・通知の静音など）
-
-補足:
-- Userscripts にはポップアップが無いため、設定はページ内パネルで行い **localStorage** に保存します（拡張の `chrome.storage` とは別管理）
-- UI言語は同梱ロケール（日本語・英語・中国語簡体/繁体・韓国語・ロシア語・ウクライナ語）から選べます
-- 機能は拡張版と同等（ぼかし/完全非表示・再度ミュート・自分の投稿除外・通知バッジ非表示 等）
-- 生成: `npm run build:userscript`
-
-## Android で使う（Tampermonkey 版）
-
-Android には Safari が無いため、**Tampermonkey が動くブラウザ**と組み合わせます（Firefox for Android / Cromite / Mises など。Chrome for Android は拡張不可）。Android 向けに**タップしやすいUI**へ調整した専用スクリプトを用意しています。
-
-1. ブラウザに **Tampermonkey**（Playストア）を追加
-2. 次の **raw 直リンク**を開くとインストール画面が出ます
-   - Android/Tampermonkey 版: `https://raw.githubusercontent.com/yomiplush/outrage-mute/main/outrage-mute.tampermonkey.user.js`
-   - 汎用版: `https://raw.githubusercontent.com/yomiplush/outrage-mute/main/outrage-mute.user.js`
-3. x.com を開くと左下に **⚙**（モバイル向けに大きめ）。タップして設定
-
-補足:
-- `@downloadURL/@updateURL` が raw を指すため、**Tampermonkey の自動更新**が使えます
-- 判定エンジン・保存（localStorage）・設定項目は拡張版と同等です
-- `@grant none`（GM API 不使用）なので、Tampermonkey/Violentmonkey のどちらでも動作します
-
-## 使い方
-
-- ポップアップの **しきい値**（既定 0.50）を下げるほど多く隠します。
-- **言語ミュート**で言語を1つ選ぶと、その言語の投稿を他の条件に関係なく完全非表示にします（「なし」で解除。詳細は[多言語対応](#言語ミュート選んだ言語を丸ごと隠す)）。
-- **隠し方**は「ぼかす」「完全に隠す」から選択。
-- **検出カテゴリ**で、攻撃語／差別語／憎悪／煽り… を個別に ON/OFF。
-- 「スコアを試す」に文を入れると、判定と理由がその場で見えます。
+> "Driven by outrage" = a post that is aggressive, declarative, and inflammatory, with anger or hostility front and center.
+> It does not judge the opinion itself — it evaluates the **aggressiveness of how it is said** (false positives do occur).
 
 ---
 
-## 義憤スコアの仕組み
+## What it does
 
-`src/lib/scoring.js` が本体です。5段階でスコアを積み上げ、`1 - exp(-raw/2.4)` で 0..1 に飽和変換します。
+- Detects posts on X and scores the body text plus quoted text locally (0.00–1.00)
+- When the score is at or above the threshold, blurs the post cell (with a reason badge and a "Show" button) or hides it completely
+- Toggle "Show all / Hide" and "Pause" from the control bar in the bottom right
+- Configure the threshold, hiding style, and detected categories in the popup, and **try the score right there**
+- Option to hide **politics, conspiracy theories, AI disputes, world affairs (war/terrorism), and vulgar language** all at once (default OFF)
+- **Disaster and emergency information (earthquake early warnings / tsunami warnings / evacuation orders) has its own independent toggle** (default "show"). Even if you hide world affairs, you can keep just disaster information
+- **Style / tone (`tone`) layer**: detects **ways of speaking** like "What? Are you kidding me!!" or "😡😡😡" even when they are not in the vocabulary (default ON). Arousal is only used as a multiplier when hostility is present
+- **Self-mockery (`selfmock`) has its own independent toggle** (default ON). Turn it OFF to see only self-deprecating jokes (everything else stays hidden)
+- **AI disputes (`ai_dispute`) and AI technology/community (`ai_topic`) are separated**. Technical discussions and AI-community topics can be turned on/off independently of disputes
+- **Multilingual support (52 packs)**: Japanese / English / Chinese (Simplified and Traditional) / Korean / Russian / Ukrainian, plus major languages of Europe, the Middle East, South Asia, and Southeast Asia (German, French, Spanish, Italian, Portuguese, Dutch, Polish, Czech, Hungarian, Finnish, Swedish, Danish, Norwegian, Turkish, Greek / Arabic, Persian / Hindi, Bengali, Urdu, Tamil, Telugu / Thai, Vietnamese, Indonesian, Malay, Hebrew, Filipino, and more). **Automatically determined by writing system** (also distinguishes Simplified/Traditional and Mongolian)
+- The UI is also localized (`_locales`, following Chrome's display language)
+- **Language mute**: lets you **hide posts in one chosen language all at once** (e.g. remove your native language from the timeline). Determined automatically by writing system; selectable options include Japanese / Korean / Chinese (Simplified and Traditional) / Thai, Hebrew, Greek, Hindi, Arabic scripts and more / Cyrillic (Russian, Ukrainian, all of them) / Latin (all of them). It is **always completely hidden** regardless of score or other conditions (short posts, your own posts, replies), making it useful for "I don't read that language" (default OFF)
+- **NSFW (sexual expression) has its own independent toggle** (default OFF). Sexual terms have been separated out of the profanity list (`badwords`), so they can be hidden independently of profanity
+- **User dictionary**: register your own mute words to hide posts (add, delete, delete all). Managed in a **separate-window editor** (the "Manage words" button in the popup), matched by substring (default ON)
+- **Art focus mode (presets)**: choose how strongly to hide things all at once — **Gentle** (outrage categories only, 0.6) / **Normal** (also hides topical categories but keeps disaster information, 0.5) / **Strict** (everything including disasters, 0.4). "None" returns you to your individual settings. While focus mode is on, it also avoids **long posts** (default: over 160 characters, 0 disables) and **reply posts** (default ON, including posts from people you follow)
+- **Quiet notifications**: a toggle that hides the **notification badge, DM badge, and notifications tab** on X (for mental-health considerations)
+- Blur (click to reveal, with a reason badge) / complete hiding. **A post you revealed can be hidden again with the "Mute" button in its top-right corner**
+- **Your own posts are excluded from filtering** (default ON, changeable via toggle)
+- **"Do not filter replies" toggle** (default OFF = replies are also targeted. Turning it ON keeps conversations. It takes priority over the reply hiding in focus mode)
+- **PC shortcut `Shift+1`**: instantly toggles enabled/disabled (disabled while typing to prevent accidental triggers). **Disabled on iOS/Android** to prioritize touch input. The popup header also shows `Shift+1 ✅Enabled`
+- **Behavior when turned off globally**: turning everything OFF via `Shift+1` or the header toggle also **stops all dependent features such as hiding the notification badge / notifications tab / DM badge, language mute, and category selection** (the corresponding items in the popup are grayed out and cannot be operated). Your settings are preserved and return to normal when turned back ON
+- **The threshold slider looks like a seek bar**: a thick track and a larger knob make it easy to drag left and right with a finger (even larger on mobile, with `touch-action` tuned to prioritize horizontal dragging)
+- Badge display of how many posts were hidden today (statistics)
 
-1. **辞書の最長一致** — 日本語は分かち書きがないため、形態素解析器を使わず、表層形の長い語から部分一致で照合（`アホ` より `クソ野郎` を優先）。
-2. **否定の補正** — 直後の `〜ない / 〜ではない / 〜じゃねえ` 等で減衰。ただし `許さない` `あり得ない` のような **それ自体が義憤な語** は `noNeg` で保護。
-3. **引用・伝聞の補正** — `「」` の内側や `〜という / 〜らしい` の後は減衰（報道・被害報告を誤って罰しないため）。
-4. **文型パターン** — `〜すべき / 〜しろ / 〜するな` 等を正規表現で加点。
-5. **書式の誇張** — `！！！` `？？？` `wwww` の連続を加点。
+## Install (unpackaged)
 
-### 文体・口調レイヤー（`tone`）
+1. Open `chrome://extensions` in Chrome
+2. Turn ON "Developer mode" in the top right
+3. Click "Load unpacked" and select this `outrage-mute` folder
+4. It becomes active when you open X (click the icon for the popup)
 
-語彙辞書では拾えない「言い方」を `src/lib/lang/style.js` が評価します（**既定ON**）。
+## Using it on iOS / Safari (userscript version)
 
-- **覚醒度**: 感嘆符・疑問符の連続、長音/繰り返し（`ぅぅぅ`）、全大文字、短文連打、`www`
-- **敵意の型**: 二人称（お前 / you）、命令・禁止（しろ / やめろ / shut up）、詰問（ふざけんな / 何言ってんの）、皮肉（はいはい / （笑））、感嘆詞（うわ / はい？）、怒り・侮蔑の絵文字（😡🤬🙄😒）
-- **重要**: 覚醒度は単独では加点しません。**敵意シグナルが一定以上あるときだけ倍率として掛ける**ので、「すごい！！！！最高！！！！」のようなポジティブな叫びは誤爆しません（実測 0.35）。
-- 記号・繰り返し・絵文字は**言語非依存**、二人称・命令・皮肉の型は言語別（ja / en を収録）。
+Separately from the Chrome extension, a **userscript that runs in Safari** (`outrage-mute.user.js`) is included in Releases. The scoring engine is identical to the extension; it adds a shim that replaces `chrome.*` with localStorage and an in-page ⚙ settings panel.
 
-### カテゴリ
+1. Install **Userscripts** (https://apps.apple.com/jp/app/userscripts/id1463298887) from the App Store
+2. In Safari's "Settings → Extensions", enable Userscripts and grant it a save folder
+3. Opening the **raw direct link** is the reliable route: `https://raw.githubusercontent.com/yomiplush/outrage-mute/main/outrage-mute.user.js` (Tampermonkey/Userscripts will show an install screen)
+4. Load it into Userscripts; the targets are `https://x.com/*` / `https://twitter.com/*`
+5. When you open x.com, a **⚙ button** appears in the bottom left. Click it to configure (threshold, presets, categories, language, notification muting, etc.)
 
-| id | ラベル | 例 |
+Notes:
+- Userscripts has no popup, so settings are made in the in-page panel and saved to **localStorage** (managed separately from the extension's `chrome.storage`)
+- The UI language can be chosen from the bundled locales (Japanese, English, Chinese Simplified/Traditional, Korean, Russian, Ukrainian)
+- Features are equivalent to the extension version (blur/complete hiding, re-mute, excluding your own posts, hiding notification badges, etc.)
+- Build: `npm run build:userscript`
+
+## Using it on Android (Tampermonkey version)
+
+Android has no Safari, so combine **a browser that runs Tampermonkey** (Firefox for Android / Cromite / Mises, etc. Chrome for Android cannot run extensions). A dedicated script adjusted for Android with a **tap-friendly UI** is provided.
+
+1. Add **Tampermonkey** (Play Store) to your browser
+2. Opening the following **raw direct links** shows an install screen
+   - Android/Tampermonkey version: `https://raw.githubusercontent.com/yomiplush/outrage-mute/main/outrage-mute.tampermonkey.user.js`
+   - Generic version: `https://raw.githubusercontent.com/yomiplush/outrage-mute/main/outrage-mute.user.js`
+3. When you open x.com, a **⚙** appears in the bottom left (larger for mobile). Tap it to configure
+
+Notes:
+- Because `@downloadURL/@updateURL` point at raw, **Tampermonkey's automatic updates** work
+- The scoring engine, storage (localStorage), and settings are equivalent to the extension version
+- Since it uses `@grant none` (no GM APIs), it works with either Tampermonkey or Violentmonkey
+
+## Usage
+
+- The lower the **threshold** in the popup (default 0.50), the more is hidden.
+- Choosing one language under **Language mute** completely hides posts in that language regardless of other conditions ("None" clears it. For details, see [Multilingual support](#language-mute-hiding-an-entire-selected-language)).
+- Choose the **hiding style** from "Blur" or "Hide completely".
+- Under **Detected categories**, turn attack words / discriminatory terms / hatred / incitement… on or off individually.
+- Entering a sentence in "Try the score" shows the judgment and reason right there.
+
+---
+
+## How the outrage score works
+
+`src/lib/scoring.js` is the core. It accumulates the score in five stages and saturates it into 0..1 via `1 - exp(-raw/2.4)`.
+
+1. **Longest-match dictionary** — Japanese has no word spacing, so instead of using a morphological analyzer, it matches by substring starting from the longest surface form (`クソ野郎` takes priority over `アホ`).
+2. **Negation correction** — Attenuated by an immediately following `〜ない / 〜ではない / 〜じゃねえ`, etc. However, **words that are themselves outrage** such as `許さない` or `あり得ない` are protected by `noNeg`.
+3. **Quotation / hearsay correction** — Attenuated inside `「」` or after `〜という / 〜らしい` (so that news reporting and victim reports are not wrongly punished).
+4. **Sentence-pattern** — Adds points via regex for `〜すべき / 〜しろ / 〜するな`, etc.
+5. **Formatting exaggeration** — Adds points for runs of `！！！` `？？？` `wwww`.
+
+### Style / tone layer (`tone`)
+
+`src/lib/lang/style.js` evaluates "ways of speaking" that the vocabulary dictionary cannot catch (**default ON**).
+
+- **Arousal**: runs of exclamation/question marks, prolonged sounds/repetition (`ぅぅぅ`), all-caps, rapid-fire short messages, `www`
+- **Hostility patterns**: second person (お前 / you), commands and prohibitions (しろ / やめろ / shut up), interrogation (ふざけんな / 何言ってんの), sarcasm (はいはい / （笑）), interjections (うわ / はい？), angry or contemptuous emoji (😡🤬🙄😒)
+- **Important**: arousal alone does not add points. **It is only applied as a multiplier when hostility signals exceed a certain level**, so positive exclamations like "Amazing!!!! Great!!!!" do not trigger a false positive (measured 0.35).
+- Symbols, repetition, and emoji are **language-independent**, while second-person, command, and sarcasm patterns are per-language (ja / en are included).
+
+### Categories
+
+| id | Label | Examples |
 |---|---|---|
-| `attack` | 攻撃・侮蔑 | 無能 / クズ / 消えろ |
-| `profanity` | 差別・侮蔑語 | スラング辞書（下記 OSS 由来） |
-| `hostility` | 憎悪・敵意 | 許さない / 激怒 / 言語道断 |
-| `incitement` | 煽り・呼びかけ | 晒せ / 抗議しろ / すべき |
-| `othering` | 二項対立・レッテル | 非国民 / 信者 / 工作員 |
-| `absolute` | 断定・絶対化 | 絶対 / ありえない / 論外 |
-| `urgency` | 危機煽り | 日本が終わる / 取り返しのつかない |
-| `cynicism` | 冷笑・皮肉 | ざまあみろ / どうせ |
-| `tone` | 文体・口調 | は？ふざけんな / お前…しろよ / 😡 / はいはい |
-| `selfmock` | 自虐・自己卑下 | 死にたい / 自分なんて / どうせ俺 / 俺はクズ |
-| `amplifier` | 感情誇張 | `!!!` `????` `wwww` |
-| `politics` | 政治（任意） | 首相 / 選挙 / 増税 / 政府 |
-| `conspiracy` | 陰謀論（任意） | ケミカルトレイル / グレートリセット |
-| `ai_dispute` | AI論争（任意） | AI脅威 / AI失業 / AI規制 / AI暴走 |
-| `ai_topic` | AI技術・界隈（任意） | LLM / プロンプト / ファインチューニング / ChatGPT |
-| `world_affairs` | 世界情勢・戦争（任意） | 侵攻 / 空爆 / テロ / クーデター |
-| `disaster` | 災害・緊急情報（任意） | 緊急地震速報 / 津波警報 / 大津波 / 避難指示 |
-| `nsfw` | NSFW・性的表現（任意） | 性的表現・露骨な語（`badwords` の性的語を分離） |
-| `badwords` | 下品・罵倒語（任意） | LDNOOBW の罵倒語（24言語） |
+| `attack` | Attack / contempt | 無能 (incompetent) / クズ (scum) / 消えろ (disappear) |
+| `profanity` | Discrimination / slurs | Slang dictionary (from the OSS below) |
+| `hostility` | Hatred / hostility | 許さない (won't forgive) / 激怒 (furious) / 言語道断 (outrageous) |
+| `incitement` | Incitement / calls to action | 晒せ (expose them) / 抗議しろ (protest) / すべき (should) |
+| `othering` | Binary opposition / labeling | 非国民 (unpatriotic) / 信者 (believer) / 工作員 (agent) |
+| `absolute` | Assertion / absolutization | 絶対 (absolutely) / ありえない (impossible) / 論外 (out of the question) |
+| `urgency` | Crisis-mongering | 日本が終わる (Japan is finished) / 取り返しのつかない (irreversible) |
+| `cynicism` | Cynicism / sarcasm | ざまあみろ (serves you right) / どうせ (anyway) |
+| `tone` | Style / tone | は？ふざけんな / お前…しろよ / 😡 / はいはい |
+| `selfmock` | Self-mockery / self-deprecation | 死にたい (I want to die) / 自分なんて / どうせ俺 / 俺はクズ |
+| `amplifier` | Emotional exaggeration | `!!!` `????` `wwww` |
+| `politics` | Politics (optional) | 首相 (prime minister) / 選挙 (election) / 増税 (tax hike) / 政府 (government) |
+| `conspiracy` | Conspiracy theories (optional) | ケミカルトレイル (chemtrails) / グレートリセット (Great Reset) |
+| `ai_dispute` | AI disputes (optional) | AI脅威 (AI threat) / AI失業 (AI unemployment) / AI規制 (AI regulation) / AI暴走 (AI runaway) |
+| `ai_topic` | AI technology / community (optional) | LLM / プロンプト (prompt) / ファインチューニング (fine-tuning) / ChatGPT |
+| `world_affairs` | World affairs / war (optional) | 侵攻 (invasion) / 空爆 (airstrike) / テロ (terrorism) / クーデター (coup) |
+| `disaster` | Disaster / emergency information (optional) | 緊急地震速報 (earthquake early warning) / 津波警報 (tsunami warning) / 大津波 (major tsunami) / 避難指示 (evacuation order) |
+| `nsfw` | NSFW / sexual expression (optional) | Sexual expression and explicit terms (sexual terms split out of `badwords`) |
+| `badwords` | Vulgar / abusive language (optional) | LDNOOBW profanity (24 languages) |
 
-> **（任意）** の8カテゴリは**既定でOFF**です。ポップアップのトグルで有効化すると働きます。
-> 上の10（`tone`・`selfmock` 含む）が「言い方」を見るのに対し、下の7つは**話題・語そのもの**を検出するため、
-> 1語ヒットでしきい値を超える重み（`1 - exp(-2.2/2.4) ≒ 0.60`）にしてあります。
-> 好みが分かれる話題・見たくない題材なので、押し付けにならないよう opt-in にしています。
-> `badwords` は LDNOOBW（CC-BY-4.0）の罵倒語です。性的表現は `nsfw` に分離してあり、罵倒語とは独立に切り替えられます。
-> `disaster` は**安全に関わる情報**なので既定OFF（＝見る）です。地震速報などを隠したいときだけONにしてください。世界情勢（`world_affairs`）を隠しても、災害情報は独立して残ります。
+> The eight **(optional)** categories are **OFF by default**. They activate when enabled with the popup toggles.
+> While the ten above (including `tone` and `selfmock`) look at "ways of speaking", the seven below detect **topics and the words themselves**,
+> so they are given a weight that exceeds the threshold with a single word hit (`1 - exp(-2.2/2.4) ≒ 0.60`).
+> Because these are divisive topics and subject matter some people do not want to see, they are opt-in so as not to be imposed on anyone.
+> `badwords` is the profanity from LDNOOBW (CC-BY-4.0). Sexual expression has been split into `nsfw` and can be toggled independently of profanity.
+> `disaster` is **safety-related information**, so it is OFF by default (= show). Only turn it ON if you want to hide earthquake warnings and the like. Even if you hide world affairs (`world_affairs`), disaster information remains independently.
 
-### 部分一致の誤検知対策
+### Substring false-positive countermeasures
 
-`lexicon.js` の `EXCLUDE_AFTER` で、直後が別の無害な語になる場合は無視します。
+`EXCLUDE_AFTER` in `lexicon.js` ignores a match when what immediately follows is another harmless word.
 
-例: `カス`+`タ`=`カスタム`、`糖質`+`制限`=`糖質制限`、`アスペ`+`クト`=`アスペクト`、`バカ`+`ンス`=`バカンス`、`ハゲ`+`タカ`=`ハゲタカ`。
+Examples: `カス` + `タ` = `カスタム`, `糖質` + `制限` = `糖質制限`, `アスペ` + `クト` = `アスペクト`, `バカ` + `ンス` = `バカンス`, `ハゲ` + `タカ` = `ハゲタカ`.
 
 ---
 
-## 多言語対応
+## Multilingual support
 
-| 言語 | 照合方式 | 否定 | 辞書 |
+| Language | Matching | Negation | Dictionary |
 |---|---|---|---|
-| 日本語 `ja` | 部分一致 | 語尾（〜ない） | 自作 ＋ MosasoM(MIT) ＋ 話題語 |
-| 英語 `en` | 単語境界 | 前置（not / don't） | 自作 ＋ LDNOOBW(CC-BY-4.0) |
-| 中国語(簡体) `zh` | 部分一致 | 前置（不 / 没） | 自作 ＋ LDNOOBW |
-| 中国語(繁体) `zh_hant` | 部分一致 | 前置（不 / 沒） | 自作 |
-| 韓国語 `ko` | 部分一致 | 前置（못 / 아니） | 自作 ＋ LDNOOBW |
-| ロシア語 `ru` | 単語境界 | 前置（не / ни） | 自作 ＋ LDNOOBW |
-| ウクライナ語 `uk` | 単語境界 | 前置（не / ні） | 自作 |
-| `de` `fr` `es` `it` `pt` `nl` `pl` `cs` `hu` `fi` `sv` `da` `no` `tr` `ar` `fa` `hi` `th` `fil` | 単語境界/部分一致 | 前置 | 自作 ＋ LDNOOBW |
-| `vi` `id` `ms` `bn` `ur` `ta` `te` `he` `el` `ro` `bg` `sr` `hr` `sk` `lt` `lv` `et` `ca` `sw` `mk` `mn` `ne` `si` | 単語境界/部分一致 | 前置 | 自作 |
-| 統合 `latin` / `cyrillic` / `arabic` | 単語境界 | 前置 | 上記の合算 |
-| その他（LDNOOBW のみ） | － | － | `badwords` のみ |
+| Japanese `ja` | Substring | Suffix (〜ない) | Custom + MosasoM(MIT) + topic words |
+| English `en` | Word boundary | Prefix (not / don't) | Custom + LDNOOBW(CC-BY-4.0) |
+| Chinese (Simplified) `zh` | Substring | Prefix (不 / 没) | Custom + LDNOOBW |
+| Chinese (Traditional) `zh_hant` | Substring | Prefix (不 / 沒) | Custom |
+| Korean `ko` | Substring | Prefix (못 / 아니) | Custom + LDNOOBW |
+| Russian `ru` | Word boundary | Prefix (не / ни) | Custom + LDNOOBW |
+| Ukrainian `uk` | Word boundary | Prefix (не / ні) | Custom |
+| `de` `fr` `es` `it` `pt` `nl` `pl` `cs` `hu` `fi` `sv` `da` `no` `tr` `ar` `fa` `hi` `th` `fil` | Word boundary/Substring | Prefix | Custom + LDNOOBW |
+| `vi` `id` `ms` `bn` `ur` `ta` `te` `he` `el` `ro` `bg` `sr` `hr` `sk` `lt` `lv` `et` `ca` `sw` `mk` `mn` `ne` `si` | Word boundary/Substring | Prefix | Custom |
+| Combined `latin` / `cyrillic` / `arabic` | Word boundary | Prefix | The sum of the above |
+| Others (LDNOOBW only) | － | － | `badwords` only |
 
-- 投稿ごとに**文字体系ベースで自動判定**します（かな/漢字→ja、ハングル→ko、キリル→ru/uk、ヘブライ→he、ギリシャ→el、デーヴァナーガリー→hi、タイ→th …）。同じ文字を使う言語は**統合パック**（`latin` / `cyrillic` / `arabic`）でまとめて判定するので、ドイツ語の投稿が英語辞書に誤って当たることはありません。**中国語は簡体字と繁体字を判別**します（例: `战争` vs `戰爭`）。ポップアップで言語を固定もできます。
-- 英語など分かち書きする言語は**単語境界**で照合するので、`class` の中の `ass` を拾いません。
-- 新しい言語は `src/lib/lang/curated.js` に語を足すか、`src/lib/lang/<code>.js` を1つ書くだけです（LDNOOBW にある言語はデータだけで自動登録されます）。
-- **ポップアップの「言語」を切り替えると、UIの表示言語も追従**します（`_locales/<locale>/messages.json` を実行時に読み込む方式。未訳のキーは英語→日本語の順にフォールバック）。「自動判定」を選ぶとブラウザの言語に従います。
+- **Auto-detection is based on writing system per post** (kana/kanji → ja, Hangul → ko, Cyrillic → ru/uk, Hebrew → he, Greek → el, Devanagari → hi, Thai → th …). Languages sharing a script are detected together as **combined packs** (`latin` / `cyrillic` / `arabic`), so German posts are never mistakenly matched against the English dictionary. **Chinese is distinguished between Simplified and Traditional** (e.g. `战争` vs `戰爭`). You can also pin the language in the popup.
+- Languages with word spacing, such as English, are matched by **word boundary**, so `ass` inside `class` is not picked up.
+- For a new language, just add words to `src/lib/lang/curated.js`, or write one file `src/lib/lang/<code>.js` (languages present in LDNOOBW are registered automatically from the data alone).
+- **Switching the "Language" in the popup also switches the UI display language** (it loads `_locales/<locale>/messages.json` at runtime; untranslated keys fall back to English, then Japanese). Choosing "Auto-detect" follows the browser language.
 
-### 言語ミュート（選んだ言語を丸ごと隠す）
+### Language mute (hiding an entire selected language)
 
-「言語」が**判定（スコアリング）に使う辞書**を選ぶのに対し、**「言語ミュート」は選んだ言語の投稿をスコアや他の条件に関係なく丸ごと隠します**。母国語をタイムラインから消したい、といった用途向け（既定は「なし」）。
+While "Language" selects the **dictionary used for scoring**, **"Language mute" hides posts in the chosen language entirely, regardless of score or other conditions**. It is intended for uses such as removing your native language from the timeline (default "None").
 
-- **とにかく徹底的に隠す**のが方針です。選んだ言語の投稿は、**短文（最短文字数の下限）・自分の投稿・リプライの絞り込み・スコア**といった他の条件より優先して評価され、**「隠し方（ぼかし/完全に隠す）」の設定にも関係なく常に完全非表示**（`display:none`）になります。ぼかしの理由バッジや「表示」ボタンも出ません。
-- タイムラインからのみ消え、Xの「全表示」ボタン（右下のバー）で一時的に戻せます。
+- The policy is **to hide thoroughly, no matter what**. Posts in the chosen language are evaluated with priority over other conditions such as the **minimum character count, your own posts, reply filtering, and score**, and are **always completely hidden** (`display:none`) **regardless of the "hiding style (blur / hide completely)" setting**. No blur reason badge or "Show" button appears.
+- They only disappear from the timeline and can be temporarily restored with X's "Show all" button (the bar in the bottom right).
 
-| 選べるもの | 判定に使う文字体系 | 例 |
+| Options | Writing system used for detection | Examples |
 |---|---|---|
-| 日本語 `ja` | ひらがな・カタカナ | 今日はいい天気だね |
-| 韓国語 `ko` | ハングル | 오늘 날씨 좋네요 |
-| 中国語（簡体）`zh` / （繁体）`zh_hant` | 漢字（簡体字/繁体字の判別） | 今天天气不错 / 今天天氣不錯 |
-| タイ `th` / ヘブライ `he` / ギリシャ `el` / ヒンディー `hi` / ベンガル `bn` / タミル `ta` / テルグ `te` / アラビア `ar` / モンゴル `mn` / クメール `km` / ラオ `lo` / シンハラ `si` | それぞれの文字 | สวัสดี / שלום / Γεια σου / नमस्ते |
-| ロシア語 `ru` / ウクライナ語 `uk` | キリル文字内の推定（і/ї/є/ґ でウクライナ語） | Сегодня… / Сьогодні… |
-| キリル文字（すべて）`cyrillic` | キリル文字全般 | 上記いずれも |
-| ラテン文字（すべて）`latin` | ラテン文字全般 | Hello / Bonjour / Guten Tag |
+| Japanese `ja` | Hiragana, Katakana | 今日はいい天気だね |
+| Korean `ko` | Hangul | 오늘 날씨 좋네요 |
+| Chinese (Simplified) `zh` / (Traditional) `zh_hant` | Han characters (Simplified/Traditional distinction) | 今天天气不错 / 今天天氣不錯 |
+| Thai `th` / Hebrew `he` / Greek `el` / Hindi `hi` / Bengali `bn` / Tamil `ta` / Telugu `te` / Arabic `ar` / Mongolian `mn` / Khmer `km` / Lao `lo` / Sinhala `si` | Their respective scripts | สวัสดี / שלום / Γεια σου / नमस्ते |
+| Russian `ru` / Ukrainian `uk` | Estimation within Cyrillic (і/ї/є/ґ indicates Ukrainian) | Сегодня… / Сьогодні… |
+| Cyrillic (all) `cyrillic` | Cyrillic in general | Any of the above |
+| Latin (all) `latin` | Latin in general | Hello / Bonjour / Guten Tag |
 
-- 判定は「投稿の**どの文字が使われているか**」だけを見ます。ラテン文字・キリル文字は言語を厳密に区別できないため、個別言語（`en` など）ではなく**「（すべて）」**の項目でまとめて隠します。
-- **漢字だけの日本語**（かなを含まない投稿）は中国語と判定されることがあります。逆に中国語の投稿が日本語と判定されることはありません（かな・カタカナを要求するため）。
-- 判定した言語は、ぼかし中の理由バッジに `日本語の投稿を非表示` のように出ます（言語ミュートは常に完全非表示なのでバッジは出ません）。
+- Detection looks only at **which characters are used in the post**. Because Latin and Cyrillic cannot be strictly separated by language, they are hidden together under the **"(all)"** options rather than individual languages (e.g. `en`).
+- **Japanese in kanji only** (posts without kana) may be detected as Chinese. Conversely, Chinese posts are never detected as Japanese (because kana/katakana are required).
+- The detected language appears in the reason badge during blurring, e.g. `Hiding Japanese posts` (language mute is always completely hidden, so no badge appears).
 
 ---
 
-## 辞書データとライセンス（第三者）
+## Dictionary data and third-party licenses
 
-本拡張の語彙は、ライセンスのはっきりした OSS データを土台にしています。
+This extension's vocabulary is built on OSS data with clear licensing.
 
 - **MosasoM/inappropriate-words-ja** — MIT License, Copyright (c) 2020 K Hashimoto
-  - 取り込み: `Offensive.txt`（攻撃的・差別的な表現リスト, 暫定版）
-  - 原本は `vendor/inappropriate-words-ja/` に同梱（`Offensive.txt` と `LICENSE`）
-  - 拡張が使う形（重み付き）は `src/lib/lexicon.vendor.js`
-  - 本拡張が追加した語（EXTRA）は MosasoM 由来ではなく作者判断によるもの
+  - Imported: `Offensive.txt` (list of offensive and discriminatory expressions, provisional version)
+  - The original is bundled in `vendor/inappropriate-words-ja/` (`Offensive.txt` and `LICENSE`)
+  - The form used by the extension (weighted) is `src/lib/lexicon.vendor.js`
+  - Words added by this extension (EXTRA) are not derived from MosasoM but are the author's own judgment
 - **LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words** — **CC-BY-4.0**
-  - 多言語の罵倒語リスト（24言語）。`badwords` カテゴリ（既定OFF）に使用
-  - 原本は `vendor/ldnoobw/` に同梱、拡張用は `src/lib/lang/data/ldnoobw.js`（生成）
-  - 生成: `node scripts/build-lang-data.mjs`
-- 参考にした考え方（コードは流用していない）:
-  - **thisandagain/sentiment**（MIT）: トークン→値→comparative、per-language な scoringStrategy
-  - **ikegami-yukino/oseti**（MIT）: 日本語の辞書ベース感情分析。抽出した**極性**は「肯定/否定」で本拡張の狙う「義憤」と異なるため、辞書は土台に使っていません。
+  - A multilingual profanity list (24 languages). Used for the `badwords` category (default OFF)
+  - The original is bundled in `vendor/ldnoobw/`; the extension version is `src/lib/lang/data/ldnoobw.js` (generated)
+  - Build: `node scripts/build-lang-data.mjs`
+- Reference ideas (no code was reused):
+  - **thisandagain/sentiment** (MIT): token → value → comparative, per-language scoringStrategy
+  - **ikegami-yukino/oseti** (MIT): Japanese dictionary-based sentiment analysis. Because the extracted **polarity** is "positive/negative" and differs from the "outrage" this extension targets, its dictionary was not used as a base.
 
-詳細は [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) を参照。本拡張自体は [MIT](LICENSE) です。
+See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for details. This extension itself is [MIT](LICENSE).
 
-> **注意**: `lexicon.vendor.js` / `lexicon.curated.js` には差別語・罵倒語が含まれます（フィルタ目的のため）。取り扱いにはご注意ください。
+> **Note**: `lexicon.vendor.js` / `lexicon.curated.js` contain discriminatory and abusive words (for filtering purposes). Please handle with care.
 
 ---
 
-## 構成
+## Structure
 
 ```
 outrage-mute/
-├── manifest.json                 # MV3（default_locale: ja）
-├── _locales/  # UI 多言語（計49ロケール。未訳キーは en にフォールバック）
-├── icons/                        # 16/32/48/128（生成）
+├── manifest.json                 # MV3 (default_locale: ja)
+├── _locales/  # UI localization (49 locales total; untranslated keys fall back to en)
+├── icons/                        # 16/32/48/128 (generated)
 ├── src/
-│   ├── background.js             # 既定設定・バッジ・統計
-│   ├── content.js                # X の投稿検出と CSS ミュート
-│   ├── content.css               # ぼかし/非表示のスタイル
-│   ├── popup.html/.css/.js       # 設定とスコアのライブ確認
-│   ├── dict.html/.js             # ユーザー辞書エディタ（別ウィンドウ）
+│   ├── background.js             # Default settings, badge, statistics
+│   ├── content.js                # X post detection and CSS muting
+│   ├── content.css               # Blur/hide styles
+│   ├── popup.html/.css/.js       # Settings and live score checking
+│   ├── dict.html/.js             # User dictionary editor (separate window)
 │   └── lib/
-│       ├── normalize.js          # 正規化・書式特徴
-│       ├── categories.js         # カテゴリ定義（単一の定義元）
-│       ├── config.js             # 既定値・設定の正規化
-│       ├── lexicon.*.js          # 日本語辞書（curated/vendor/topics）
+│       ├── normalize.js          # Normalization and formatting features
+│       ├── categories.js         # Category definitions (single source of truth)
+│       ├── config.js             # Defaults and settings normalization
+│       ├── lexicon.*.js          # Japanese dictionary (curated/vendor/topics)
 │       ├── lang/
-│       │   ├── build.js          # 索引ビルダー（substring / word）
-│       │   ├── term-layer.js     # 用語レイヤーの共通ファクトリ（再分類＋追加スキャン）
-│       │   ├── ja.js en.js zh.js zh_hant.js ko.js ru.js uk.js  # 言語パック
-│       │   ├── curated.js        # 日本語以外の義憤・話題語（作者作成）
-│       │   ├── style.js          # 文体・口調（語彙に依存しない感情レイヤー）
-│       │   ├── disaster.js       # 災害・緊急情報（独立トグル）
-│       │   ├── selfmock.js       # 自虐・自己卑下（独立トグル）
-│       │   ├── aitopic.js        # AI技術・界隈（ai_dispute から分離）
-│       │   ├── nsfw.js           # NSFW・性的表現（badwords から分離）
-│       │   ├── index.js          # レジストリ＋言語自動判定＋言語ミュート
-│       │   ├── selfpost.js       # 自分の投稿判定（ハンドル照合）
-│       │   ├── reply.js          # リプライ判定（多言語）
-│       │   ├── userdict.js       # ユーザー辞書（自分のミュートワード）
-│       │   ├── dict-editor.js    # 辞書エディタUI（拡張/ユーザースクリプト共通）
-│       │   └── data/ldnoobw.js   # 多言語罵倒語（生成）
-│       ├── i18n.js               # UI 文言ヘルパー
-│       └── scoring.js            # スコアリング本体（多言語エンジン）
-├── vendor/                       # 原本とライセンス（MosasoM / LDNOOBW）
-├── scripts/build-icons.mjs       # アイコン生成（依存なし）
-├── scripts/build-lang-data.mjs   # LDNOOBW 取り込み・生成
-├── scripts/package.mjs           # 配布ZIP＋SHA256SUMS
-├── docs/demo.html                # 判定プレイグラウンド
+│       │   ├── build.js          # Index builder (substring / word)
+│       │   ├── term-layer.js     # Shared factory for term layers (reclassification + additional scanning)
+│       │   ├── ja.js en.js zh.js zh_hant.js ko.js ru.js uk.js  # Language packs
+│       │   ├── curated.js        # Non-Japanese outrage and topic words (author-created)
+│       │   ├── style.js          # Style/tone (an emotion layer independent of vocabulary)
+│       │   ├── disaster.js       # Disaster/emergency information (independent toggle)
+│       │   ├── selfmock.js       # Self-mockery/self-deprecation (independent toggle)
+│       │   ├── aitopic.js        # AI technology/community (split from ai_dispute)
+│       │   ├── nsfw.js           # NSFW/sexual expression (split from badwords)
+│       │   ├── index.js          # Registry + language auto-detection + language mute
+│       │   ├── selfpost.js       # Own-post detection (handle matching)
+│       │   ├── reply.js          # Reply detection (multilingual)
+│       │   ├── userdict.js       # User dictionary (your own mute words)
+│       │   ├── dict-editor.js    # Dictionary editor UI (shared by extension/userscript)
+│       │   └── data/ldnoobw.js   # Multilingual profanity (generated)
+│       ├── i18n.js               # UI string helpers
+│       └── scoring.js            # Scoring core (multilingual engine)
+├── vendor/                       # Originals and licenses (MosasoM / LDNOOBW)
+├── scripts/build-icons.mjs       # Icon generation (no dependencies)
+├── scripts/build-lang-data.mjs   # LDNOOBW import and generation
+├── scripts/package.mjs           # Distribution ZIP + SHA256SUMS
+├── docs/demo.html                # Scoring playground
 └── test/scoring.test.mjs         # node --test
 ```
 
-## 開発
+## Development
 
 ```bash
-npm test              # スコアリングのテスト（外部依存なし）
-npm run build:icons   # アイコン再生成
-npm run package       # dist/outrage-mute-<version>.zip と SHA256SUMS を生成
+npm test              # Scoring tests (no external dependencies)
+npm run build:icons   # Regenerate icons
+npm run package       # Generate dist/outrage-mute-<version>.zip and SHA256SUMS
 ```
 
-### 配布（Release）
+### Distribution (Release)
 
-`npm run package` で `manifest.json` をルートに持つ ZIP を作れます。そのまま
-「パッケージ化されていない拡張機能を読み込む」で使えます。GitHub Releases には
-ZIP と `SHA256SUMS` を添付しています。
+`npm run package` creates a ZIP with `manifest.json` at its root. It can be used directly
+with "Load unpacked". The GitHub Releases attach the ZIP and `SHA256SUMS`.
 
-辞書を足す: `lexicon.curated.js` に `['語', 重み, 'カテゴリ', 'noNeg'?]` を1行追加 → `npm test`。
+Adding a dictionary entry: add one line `['語', 重み, 'カテゴリ', 'noNeg'?]` to `lexicon.curated.js` → `npm test`.
 
-## プライバシー
+## Privacy
 
-- 投稿本文・アカウント情報を**外部に送信しません**（`host_permissions` は X のドメインのみ、通信コードなし）。
-- 設定と統計だけを `chrome.storage.local` に保存します。
-- 詳細は [`PRIVACY.md`](PRIVACY.md) を参照。
+- Post bodies and account information are **never sent externally** (`host_permissions` covers only X domains; there is no networking code).
+- Only settings and statistics are stored in `chrome.storage.local`.
+- See [`PRIVACY.md`](PRIVACY.md) for details.
 
-## 既知の制限
+## Known limitations
 
-- 辞書ベースのため、語彙に無い婉曲表現や皮肉は拾えないことがあります。
-- 「主義主張が気に入らない」だけの投稿は、攻撃語が無ければ原則スコアが上がりません（それでも断定・誇張で誤判定し得ます）。
-- X の DOM 構造変更で検出セレクタがずれる場合があります（`content.js` の `TWEET_SEL` / `CELL_SEL`）。
-- **言語ミュート**は文字体系ベースのため、漢字だけの日本語は中国語と判定されることがあります。またラテン文字・キリル文字の個別言語（英語とドイツ語など）は区別できません（「（すべて）」でまとめて隠します）。
-- 判定は投稿の正しさや投稿者の人格を評価するものではありません。
+- Because it is dictionary-based, euphemisms and sarcasm not in the vocabulary may be missed.
+- Posts that are merely "opinions you dislike" will in principle not raise the score unless they contain attack words (they can still be misjudged due to assertions and exaggeration).
+- Changes to X's DOM structure may shift the detection selectors (`TWEET_SEL` / `CELL_SEL` in `content.js`).
+- **Language mute** is writing-system-based, so kanji-only Japanese may be detected as Chinese. It also cannot distinguish individual Latin and Cyrillic languages (such as English and German) (they are hidden together under "(all)").
+- The scoring does not judge the correctness of a post or the character of its author.
