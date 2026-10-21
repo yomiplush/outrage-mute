@@ -10,7 +10,7 @@
  */
 import { deflateRawSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, rmSync } from 'node:fs';
 import { dirname, join, relative, posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -130,6 +130,10 @@ const zip = makeZip(entries);
 const zipName = `outrage-mute-${version}.zip`;
 
 mkdirSync(distDir, { recursive: true });
+// 旧バージョンの ZIP が残っているとリリースで取り違えるので消しておく
+for (const name of readdirSync(distDir)) {
+  if (/^outrage-mute-.*\.zip$/.test(name) && name !== zipName) rmSync(join(distDir, name));
+}
 writeFileSync(join(distDir, zipName), zip);
 
 const sha = createHash('sha256').update(zip).digest('hex');
