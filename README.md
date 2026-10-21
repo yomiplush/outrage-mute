@@ -263,6 +263,36 @@ npm run build:icons   # Regenerate icons
 npm run package       # Generate dist/outrage-mute-<version>.zip and SHA256SUMS
 ```
 
+### Performance notes
+
+The content script lives inside X's timeline, which rewrites its DOM constantly, so the
+cost model is "do almost nothing per DOM change":
+
+- **Only changed cells are re-checked.** A `MutationObserver` maps mutations to the
+  affected `cellInnerDiv`s; full scans happen only on startup and on settings changes.
+  (Previously every DOM change triggered a whole-timeline scan.)
+- **The work is chunked.** The queue is drained with a ~6 ms budget per turn, so a busy
+  timeline never produces one long blocking task.
+- **No forced layout.** Post text is read with `textContent` instead of `innerText`
+  (which forces a layout), and results are cached per cell in a `WeakMap` keyed by a
+  content hash, so re-renders and scroll-backs are not re-scored.
+- **Counters instead of queries.** The floating bar keeps a masked-cell count rather
+  than querying `.jof-masked` on every mask, and the count follows cells that X removes.
+- **Batched statistics.** `jof:masked` messages are aggregated for 2 s so the MV3
+  service worker is not woken for every masked post.
+- **Language packs are built lazily.** Only the packs the timeline actually needs get an
+  index (all 52 at load cost ~40 ms; Japanese-only pages now skip the other 51).
+
+Reference numbers from a synthetic 300–420 post timeline (headless Chrome, same
+machine, median of 3–4 runs):
+
+| | before | after |
+| --- | --- | --- |
+| long tasks during initial load | 1 × ~110 ms | 0 |
+| scans/queries during 5 s of unrelated DOM churn | 7,176 `querySelectorAll` + 7,140 `innerText` reads, 53 ms script | 2 queries, 0 reads, 2 ms script |
+| 6 s of appending + re-rendering posts | 9,012 queries, 8,776 `innerText` reads, 133 ms script | 393 queries, 0 reads, 44 ms script |
+| messages to the service worker | one per masked post (57 / 6 s) | 3 per 2 s |
+
 ### Distribution (Release)
 
 `npm run package` creates a ZIP with `manifest.json` at its root. It can be used directly

@@ -42,14 +42,16 @@ chrome.runtime.onStartup.addListener(initStorage);
 
 chrome.runtime.onMessage.addListener((msg) => {
   if (!msg || msg.type !== 'jof:masked') return;
+  // content script は一定時間ぶんをまとめて送る（count）。単発なら 1 件。
+  const n = Math.max(1, Number(msg.count) || 1);
   chrome.storage.local.get([CONFIG.STATS_KEY], (res) => {
     const stats = res[CONFIG.STATS_KEY] || { masked: 0, today: 0, date: todayStr() };
     if (stats.date !== todayStr()) {
       stats.date = todayStr();
       stats.today = 0;
     }
-    stats.masked = (stats.masked || 0) + 1;
-    stats.today = (stats.today || 0) + 1;
+    stats.masked = (stats.masked || 0) + n;
+    stats.today = (stats.today || 0) + n;
     chrome.storage.local.set({ [CONFIG.STATS_KEY]: stats }, refreshBadge);
   });
 });

@@ -30,7 +30,17 @@
   var settings = Object.assign({}, config.DEFAULTS);
   var observer = null;
   var bar = null;
-  var scanTimer = null;
+
+  // ---------------------------------------------------------------- 判定キュー
+  // X は DOM を常時書き換える（タイマー・動画・仮想リスト）。全部を毎回走査すると
+  // 投稿1件あたりの DOM 読み取りが積み上がるので、変更のあったセルだけを
+  // 「小分け」で判定する。全件スキャンは初期化と設定変更のときだけ。
+  var FLUSH_DELAY = 120; // 変更が落ち着くまで待つ（スクロール中の連続変更をまとめる）
+  var CHUNK_MS = 6; // 1回あたりの判定予算。超えたら次のタイマーへ回して描画を妨げない
+  var pendingArticles = new Set();
+  var flushTimer = null;
+  var cellCache = new WeakMap(); // cell -> { sig, state, result }（同じ内容の再判定を防ぐ）
+  var maskedCount = 0; // いま隠しているセル数（バーの表示用。全件クエリをしない）
 
   function catLabel(id) {
     return i18n.t('cat_' + id) || cats.CATEGORY_LABELS[id] || id;
@@ -66,14 +76,19 @@
 
   // ---------------------------------------------------------------- 静音（通知/DMバッジ）
   var QUIET_ROOT = '[data-testid="AppTabBar_Notifications_Link"],[data-testid="AppTabBar_DirectMessage_Link"],[data-testid="DMDrawer"]';
+  var lastQuietAt = 0;
+  var quietHidden = 0;
 
   function hideQuiet(el) {
     if (!el || el.dataset.jofQuiet === '1') return;
     el.dataset.jofQuiet = '1';
+    quietHidden++;
     el.style.setProperty('display', 'none', 'important');
   }
 
   function restoreQuiet() {
+    if (!quietHidden) return; // 隠したものが無ければ DOM を探さない
+    quietHidden = 0;
     var hidden = document.querySelectorAll('[data-jof-quiet]');
     for (var i = 0; i < hidden.length; i++) {
       hidden[i].style.removeProperty('display');
@@ -81,12 +96,18 @@
     }
   }
 
-  function applyQuiet() {
+  function applyQuiet(force) {
     // 全体OFFでは通知静音（バッジ／タブ非表示）も効かせない（値は保持したまま無効化）
     if (!settings.enabled || (!settings.hideNotifications && !settings.hideDm && !settings.hideNotificationTab)) {
       restoreQuiet();
       return;
     }
+    // 変更のたびに通知タブ内を全探索すると重いので、間引いて実行する
+    var now = Date.now();
+    if (!force && now - lastQuietAt < 1500) return;
+    // 通知タブ／DM がまだ描画されていなければ何もしない（1回のクエリで済ませる）
+    if (!document.querySelector(QUIET_ROOT)) return;
+    lastQuietAt = now;
     // 通知タブごと隠す
     if (settings.hideNotificationTab) {
       var tabs = document.querySelectorAll('[data-testid="AppTabBar_Notifications_Link"]');
@@ -146,7 +167,7 @@
         bar.remove();
         bar = null;
       }
-      scheduleScan();
+      scan();
       updateBar();
     };
     // 言語が変わったらUI文言も読み直す（オーバーレイ/バーの表示を更新）
@@ -155,8 +176,13 @@
   });
 
   // ---------------------------------------------------------------- helpers
+  /**
+   * 投稿の表示テキストを取り出す。
+   * innerText はレイアウトを確定させる（= 強制リフロー）ので使わない。
+   * 判定側は空白を潰して正規化するため textContent で十分。
+   */
   function textOf(el) {
-    var s = el.innerText || el.textContent || '';
+    var s = el.textContent || '';
     return s.replace(/\s+/g, ' ').trim();
   }
 
@@ -180,12 +206,44 @@
   }
 
   // ---------------------------------------------------------------- masking
+  /** セルの判定結果をキャッシュする（同じ内容なら再判定しない）。 */
+  function remember(cell, sig, state, result) {
+    cell.dataset.jofState = state;
+    cellCache.set(cell, { sig: sig, state: state, result: result || null });
+  }
+
+  /** 判定結果（スコア等）を残したまま表示状態だけ切り替える。 */
+  function setState(cell, state, result) {
+    cell.dataset.jofState = state;
+    var st = cellCache.get(cell);
+    if (st) {
+      st.state = state;
+      if (result !== undefined) st.result = result;
+    } else {
+      cellCache.set(cell, { sig: null, state: state, result: result === undefined ? null : result });
+    }
+  }
+
   function clearMask(cell) {
+    if (cell.classList.contains('jof-masked')) {
+      maskedCount = Math.max(0, maskedCount - 1);
+      scheduleBar();
+    }
     cell.classList.remove('jof-masked', 'jof-blur', 'jof-gone', 'jof-relative');
     var ov = cell.querySelector(':scope > .jof-overlay');
     if (ov) ov.remove();
     var rb = cell.querySelector(':scope > .jof-remute');
     if (rb) rb.remove();
+  }
+
+  /** x.com から外れた（仮想リストで消えた）セルのミュート数を差し引く。 */
+  function dropRemovedMasks(node) {
+    if (!maskedCount || node.nodeType !== 1) return;
+    if (node.classList && node.classList.contains('jof-masked')) clearMask(node);
+    var inner = node.querySelectorAll ? node.querySelectorAll('.jof-masked') : null;
+    if (inner && inner.length) {
+      for (var i = 0; i < inner.length; i++) clearMask(inner[i]);
+    }
   }
 
   /** 表示した投稿の右上に「再度ミュート」ボタンを付ける */
@@ -203,16 +261,26 @@
       e.stopPropagation();
       b.remove();
       cell.classList.remove('jof-relative');
+      var st = cellCache.get(cell) || { sig: null };
+      clearMask(cell);
       mask(cell, result);
+      remember(cell, st.sig, 'masked', result);
     });
     cell.appendChild(b);
   }
 
   // ---- 自分のハンドル検出（自分の投稿は除外できるように）----
   var ownHandle = null;
+  var ownHandleAt = 0;
+  var OWN_HANDLE_RETRY_MS = 5000;
   function detectOwnHandle() {
     if (ownHandle) return ownHandle;
     if (!selfpost) return null;
+    // サイドバーがまだ描画されていない間は毎回失敗する。投稿ごとに
+    // document 全体を探し直すと重いので、一定間隔でのみ再試行する。
+    var now = Date.now();
+    if (ownHandleAt && now - ownHandleAt < OWN_HANDLE_RETRY_MS) return null;
+    ownHandleAt = now;
     var btn = document.querySelector('[data-testid="SideNav_AccountSwitcher_Button"]');
     if (btn) ownHandle = selfpost.parseHandle(btn.textContent || '');
     if (!ownHandle) {
@@ -259,15 +327,17 @@
   }
 
   function mask(cell, result, forceHide) {
-    cell.classList.add('jof-masked');
-    cell.dataset.jofState = 'masked';
+    if (!cell.classList.contains('jof-masked')) {
+      cell.classList.add('jof-masked');
+      maskedCount++;
+      scheduleBar();
+    }
     if (forceHide || settings.mode === 'hide') {
       cell.classList.add('jof-gone');
-    } else {
+    } else if (!cell.classList.contains('jof-blur')) {
       cell.classList.add('jof-blur');
       if (settings.showOverlay !== false) cell.appendChild(buildOverlay(result, cell));
     }
-    updateBar();
     report(result);
   }
 
@@ -300,9 +370,8 @@
       e.preventDefault();
       e.stopPropagation();
       clearMask(cell);
-      cell.dataset.jofState = 'shown';
+      setState(cell, 'shown', result);
       addRemuteButton(cell, result);
-      updateBar();
     });
 
     el.append(badge, catEl, btn);
@@ -311,38 +380,33 @@
 
   // ---------------------------------------------------------------- evaluate
   function evaluateArticle(article) {
+    // 判定待ちの間に仮想リストから外れた投稿は触らない（数え上げがずれる）
+    if (!article.isConnected) return;
+    if (!settings.enabled) return;
+
     var cell = cellOf(article);
     var tw = getTweetContent(article);
     if (!tw) return;
 
     var sig = hash(tw.text + '\u0000' + tw.quote);
-    var state = cell.dataset.jofState || '';
+    var cache = cellCache.get(cell);
 
-    if (cell.dataset.jofSig === sig && state) {
+    // 同じ内容のセルは再判定しない（X の再描画・スクロールでの再走査が主因）
+    if (cache && cache.sig === sig) {
       if (
-        state === 'masked' &&
+        cache.state === 'masked' &&
         !cell.classList.contains('jof-gone') &&
         settings.showOverlay !== false &&
+        cache.result &&
+        cache.result.reason !== 'lang' && // 言語ミュートは常に完全非表示（理由バッジは出さない）
         !cell.querySelector(':scope > .jof-overlay')
       ) {
-        try {
-          var prevResult = JSON.parse(cell.dataset.jofResult || '{}');
-          // 言語ミュートは常に完全非表示（理由バッジは出さない）
-          if (prevResult.reason !== 'lang') cell.appendChild(buildOverlay(prevResult, cell));
-        } catch (e) {
-          /* noop */
-        }
+        cell.appendChild(buildOverlay(cache.result, cell));
       }
       return;
     }
 
     clearMask(cell);
-    cell.dataset.jofSig = sig;
-
-    if (!settings.enabled) {
-      cell.dataset.jofState = 'off';
-      return;
-    }
 
     var combined = tw.quote ? tw.text + '\n' + tw.quote : tw.text;
 
@@ -358,26 +422,25 @@
         reason: 'lang',
         langName: lang.muteName(settings.muteLang)
       };
-      cell.dataset.jofResult = JSON.stringify(langResult);
-      cell.dataset.jofScore = '1';
       mask(cell, langResult, true);
+      remember(cell, sig, 'masked', langResult);
       return;
     }
 
     // 自分の投稿は除外（トグル）
     if (isOwnArticle(article)) {
-      cell.dataset.jofState = 'self';
+      remember(cell, sig, 'self', null);
       return;
     }
 
     // リプライはフィルターしない（トグル・既定OFF）
     if (settings.excludeReplies && isReplyArticle(article)) {
-      cell.dataset.jofState = 'reply-skip';
+      remember(cell, sig, 'reply-skip', null);
       return;
     }
 
     if (!combined || combined.length < (settings.minLength || 0)) {
-      cell.dataset.jofState = 'short';
+      remember(cell, sig, 'short', null);
       return;
     }
 
@@ -393,18 +456,16 @@
         reason: 'long',
         length: combined.length
       };
-      cell.dataset.jofResult = JSON.stringify(longResult);
-      cell.dataset.jofScore = '1';
       mask(cell, longResult);
+      remember(cell, sig, 'masked', longResult);
       return;
     }
 
     // 集中モードではリプライ投稿も避ける
     if (config.effectiveReplyHide(settings.preset, settings.focusHideReplies) && isReplyArticle(article)) {
       var replyResult = { score: 1, raw: 0, categories: [], byCat: {}, terms: [], reason: 'reply' };
-      cell.dataset.jofResult = JSON.stringify(replyResult);
-      cell.dataset.jofScore = '1';
       mask(cell, replyResult);
+      remember(cell, sig, 'masked', replyResult);
       return;
     }
 
@@ -421,9 +482,8 @@
           reason: 'user',
           word: uw
         };
-        cell.dataset.jofResult = JSON.stringify(userResult);
-        cell.dataset.jofScore = '1';
         mask(cell, userResult);
+        remember(cell, sig, 'masked', userResult);
         return;
       }
     }
@@ -432,55 +492,150 @@
       lang: settings.language,
       categories: effectiveCategories()
     });
-    cell.dataset.jofResult = JSON.stringify({
-      score: result.score,
-      categories: result.categories,
-      byCat: result.byCat,
-      terms: result.terms.slice(0, 8)
-    });
-    cell.dataset.jofScore = result.score.toFixed(3);
 
     if (result.score >= effectiveThreshold()) {
       mask(cell, result);
+      remember(cell, sig, 'masked', result);
     } else {
-      cell.dataset.jofState = 'clear';
+      remember(cell, sig, 'clear', null);
     }
   }
 
   // ---------------------------------------------------------------- scanning
+  /** 既知の投稿をすべて判定キューへ入れる（初期化・設定変更時のみ）。 */
   function scan() {
-    applyQuiet();
-    var articles = document.querySelectorAll(TWEET_SEL);
-    for (var i = 0; i < articles.length; i++) {
-      if (articles[i].parentElement && articles[i].parentElement.closest(TWEET_SEL)) continue;
+    applyQuiet(true);
+    if (settings.enabled) {
+      var articles = document.querySelectorAll(TWEET_SEL);
+      for (var i = 0; i < articles.length; i++) {
+        // 引用RT等で入れ子になった article は外側だけ見る
+        if (articles[i].parentElement && articles[i].parentElement.closest(TWEET_SEL)) continue;
+        pendingArticles.add(articles[i]);
+      }
+    }
+    requestFlush(0);
+  }
+
+  function requestFlush(delay) {
+    if (flushTimer !== null) return;
+    flushTimer = setTimeout(function () {
+      flushTimer = null;
+      flushPending();
+    }, delay);
+  }
+
+  /** キューを時間予算つきで処理する（1回で詰まらせず、残りは次のタイマーへ）。 */
+  function flushPending() {
+    if (!settings.enabled) {
+      pendingArticles.clear();
+      return;
+    }
+    var start = now();
+    while (pendingArticles.size) {
+      var next = pendingArticles.values().next();
+      pendingArticles.delete(next.value);
       try {
-        evaluateArticle(articles[i]);
+        evaluateArticle(next.value);
       } catch (e) {
         if (settings && settings.debug) console.debug('[outrage-mute]', e);
       }
+      if (now() - start > CHUNK_MS) break;
     }
+    if (pendingArticles.size) requestFlush(16);
   }
 
-  function scheduleScan() {
-    if (scanTimer) return;
-    scanTimer = setTimeout(function () {
-      scanTimer = null;
-      scan();
-    }, 250);
+  function now() {
+    return typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
+  }
+
+  // ---- DOM 変更の拾い上げ（変更のあったセルだけをキューへ）----
+  function isOwnNode(node) {
+    if (!node || node.nodeType !== 1 || !node.classList) return false;
+    return (
+      node.classList.contains('jof-overlay') ||
+      node.classList.contains('jof-remute') ||
+      node.classList.contains('jof-bar') ||
+      node.classList.contains('jof-toast')
+    );
+  }
+
+  function onMutations(records) {
+    for (var i = 0; i < records.length; i++) {
+      var rec = records[i];
+      var target = rec.target;
+
+      // 自分の UI（オーバーレイ等）の中の変更は無視
+      if (target.nodeType === 1 ? isOwnNode(target) : false) continue;
+      if (target.nodeType === 1 && target.closest && target.closest('.jof-overlay,.jof-remute,.jof-bar,.jof-toast')) continue;
+
+      if (rec.type === 'characterData') {
+        var p = target.parentElement;
+        var art = p && p.closest ? p.closest(TWEET_SEL) : null;
+        if (art) pendingArticles.add(art);
+        continue;
+      }
+
+      // 追加された要素が自分の UI だけなら、このレコードは無視してよい
+      // （削除だけのレコードは、消えたセルの数え上げのために処理する）
+      var onlyOwn = rec.addedNodes.length > 0;
+      var n;
+      for (n = 0; n < rec.addedNodes.length; n++) {
+        if (!isOwnNode(rec.addedNodes[n])) {
+          onlyOwn = false;
+          break;
+        }
+      }
+      if (onlyOwn) continue;
+
+      // 変更された場所を含む投稿（本文の書き換えなど）
+      var host = target.nodeType === 1 ? target : target.parentElement;
+      var hostArt = host && host.closest ? host.closest(TWEET_SEL) : null;
+      if (hostArt) pendingArticles.add(hostArt);
+
+      // 追加された部分に投稿が含まれる（新しいセル／再描画）
+      for (n = 0; n < rec.addedNodes.length; n++) {
+        var node = rec.addedNodes[n];
+        if (node.nodeType !== 1 || isOwnNode(node)) continue;
+        if (node.matches && node.matches(TWEET_SEL)) {
+          pendingArticles.add(node);
+          continue;
+        }
+        if (node.querySelector) {
+          var inner = node.querySelector(TWEET_SEL);
+          if (inner) pendingArticles.add(inner);
+        }
+      }
+
+      // 消えたセルはミュート数から差し引く
+      for (n = 0; n < rec.removedNodes.length; n++) dropRemovedMasks(rec.removedNodes[n]);
+    }
+    if (pendingArticles.size) requestFlush(FLUSH_DELAY);
+    // 通知バッジは後から描画されることがあるので、間引きつつ追従する
+    applyQuiet();
   }
 
   function resetAll() {
+    pendingArticles.clear();
+    maskedCount = 0;
     var cells = document.querySelectorAll(CELL_SEL + '[data-jof-state]');
     for (var i = 0; i < cells.length; i++) {
       clearMask(cells[i]);
       delete cells[i].dataset.jofState;
     }
+    // 言語・しきい値などの変更を反映させるため、判定キャッシュは捨てる
+    cellCache = new WeakMap();
     restoreQuiet();
   }
 
   // ---------------------------------------------------------------- floating bar
-  function hiddenCount() {
-    return document.querySelectorAll('.jof-masked').length;
+  var barTimer = null;
+  /** バー表示はまとめて更新する（ミュートのたびに全件クエリしない）。 */
+  function scheduleBar() {
+    if (barTimer) return;
+    barTimer = setTimeout(function () {
+      barTimer = null;
+      updateBar();
+    }, 80);
   }
 
   function ensureBar() {
@@ -514,7 +669,7 @@
   }
 
   function updateBar() {
-    var count = hiddenCount();
+    var count = maskedCount;
     var revealAll = document.body.classList.contains('jof-reveal-all');
     if (!count && !revealAll && !bar) return;
     if (!count && !revealAll) {
@@ -569,15 +724,33 @@
   }
 
   // ---------------------------------------------------------------- stats
-  function report(result) {
+  // service worker を1件ごとに起こすと重い（MV3 は毎回起動コストがかかる）ため、
+  // 一定時間ぶんをまとめて1回で送る。
+  var pendingReports = 0;
+  var reportTimer = null;
+
+  function flushReports() {
+    reportTimer = null;
+    if (!pendingReports) return;
+    var count = pendingReports;
+    pendingReports = 0;
     try {
-      chrome.runtime.sendMessage({ type: 'jof:masked', score: result.score }, function () {
+      chrome.runtime.sendMessage({ type: 'jof:masked', count: count }, function () {
         void chrome.runtime.lastError;
       });
     } catch (e) {
       /* noop */
     }
   }
+
+  function report(result) {
+    if (!result) return;
+    pendingReports++;
+    if (!reportTimer) reportTimer = setTimeout(flushReports, 2000);
+  }
+
+  // ページを離れるときに未送信ぶんを流す（統計の取りこぼしを防ぐ）
+  window.addEventListener('pagehide', flushReports, true);
 
   // ---------------------------------------------------------------- init
   function init() {
@@ -588,10 +761,8 @@
       .then(function () {
         document.body.classList.toggle('jof-reveal-all', !settings.enabled);
         scan();
-        observer = new MutationObserver(function () {
-          scheduleScan();
-        });
-        observer.observe(document.body, { childList: true, subtree: true });
+        observer = new MutationObserver(onMutations);
+        observer.observe(document.body, { childList: true, subtree: true, characterData: true });
         updateBar();
         // タッチ端末（iOS/Android）ではショートカットを登録しない（タッチ優先）
         if (!(JOF.platform && JOF.platform.detect())) {

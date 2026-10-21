@@ -613,3 +613,33 @@ test('言語ミュートの選択肢と表示名', () => {
   assert.equal(lang.muteName('cyrillic'), 'Cyrillic (all)');
   assert.equal(lang.muteName('zzz'), 'zzz');
 });
+
+// ---------------------------------------------------------------- 起動コスト
+
+test('言語パックは必要になるまで構築しない（起動を軽くする）', async () => {
+  // 別プロセスで読み込み、list() だけでは索引を作らないことを確認する
+  const { execFileSync } = await import('node:child_process');
+  const script = `
+    const lang = require(${JSON.stringify(require.resolve('../src/lib/lang/index.js'))});
+    const out = {};
+    out.jaBefore = !!lang.PACKS.ja;        // 専用パックは参照だけ（lexicon 共有）
+    out.viBefore = !!lang.PACKS.vi;        // 汎用パックは未構築
+    const list = lang.list().map((p) => p.id);
+    out.listHasVi = list.includes('vi');
+    out.viAfterList = !!lang.PACKS.vi;     // list() では構築しない
+    out.latinAfterList = !!lang.PACKS.latin;
+    const p = lang.get('vi');
+    out.viAfterGet = !!p && p.TERMS.length > 0;
+    const merged = lang.get('latin');
+    out.latinTerms = merged.TERMS.length;
+    lang.warm(['vi']);
+    console.log(JSON.stringify(out));
+  `;
+  const res = JSON.parse(execFileSync(process.execPath, ['-e', script], { encoding: 'utf8' }));
+  assert.equal(res.viBefore, false, '汎用パックは遅延構築');
+  assert.equal(res.listHasVi, true, 'list() には出る');
+  assert.equal(res.viAfterList, false, 'list() だけでは構築しない');
+  assert.equal(res.latinAfterList, false, '統合パックも list() では構築しない');
+  assert.equal(res.viAfterGet, true, 'get() で構築される');
+  assert.ok(res.latinTerms > 1000, `latin terms=${res.latinTerms}`);
+});

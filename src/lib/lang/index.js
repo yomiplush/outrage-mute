@@ -138,8 +138,13 @@
     RAW[code] = (RAW[code] || []).concat(curated[code] || []);
   });
 
+  // ---- パックの遅延構築 ------------------------------------------------
+  // 起動時に全言語ぶんの索引（数千語）を組むと content script の評価が重くなるため、
+  // 実際に判定で使う言語だけをその場で作る。専用パックは lexicon を共有するので
+  // 参照を置くだけでよい。
   var PACKS = {};
   var DEDICATED = { ja: ja, en: en, zh: zh, zh_hant: zhHant, ko: ko, ru: ru, uk: uk };
+  var MERGED = ['latin', 'cyrillic', 'arabic'];
 
   // 専用パックを先に登録（zh_hant は LDNOOBW に無いので必須）
   Object.keys(DEDICATED).forEach(function (code) {
@@ -169,11 +174,6 @@
       emphasis: { caps: script === 'latin' || script === 'cyrillic' }
     };
   }
-
-  Object.keys(RAW).forEach(function (code) {
-    var p = makePack(code);
-    if (p) PACKS[code] = p;
-  });
 
   // ---- 統合パック（同系統の言語をまとめて判定）----
   function reindex(terms, match) {
@@ -207,18 +207,18 @@
     return { TERMS: TERMS, BY_FIRST: BY_FIRST, BY_WORD: BY_WORD };
   }
 
-  function buildMerged(id, codes) {
+  function buildMerged(script) {
     var terms = [];
-    codes.forEach(function (c) {
-      var p = PACKS[c];
+    SCRIPT[script].forEach(function (c) {
+      var p = ensurePack(c);
       if (p) terms = terms.concat(p.TERMS);
     });
     if (!terms.length) return null;
     var match = 'word';
     var idx = reindex(terms, match);
     return {
-      id: id,
-      name: LANG_NAMES[id] || id,
+      id: script,
+      name: LANG_NAMES[script] || script,
       match: match,
       merged: true,
       TERMS: idx.TERMS,
@@ -229,17 +229,46 @@
       negation: { position: 'before', unit: 'token', markers: ['not', 'no', 'не', 'nicht', 'no', 'não', 'non', 'لا', 'не'] },
       report: [],
       quoteChars: QUOTES,
-      emphasis: { caps: id !== 'arabic' }
+      emphasis: { caps: script !== 'arabic' }
     };
   }
 
-  ['latin', 'cyrillic', 'arabic'].forEach(function (script) {
-    var codes = SCRIPT[script].filter(function (c) {
-      return PACKS[c];
+  function hasAnyPack(codes) {
+    for (var i = 0; i < codes.length; i++) {
+      if (DEDICATED[codes[i]] || RAW[codes[i]]) return true;
+    }
+    return false;
+  }
+
+  /** パックを取り出す（無ければ作る）。未知の id は null。 */
+  function ensurePack(id) {
+    if (!id) return null;
+    var p = PACKS[id];
+    if (p) return p;
+    if (DEDICATED[id]) return (PACKS[id] = DEDICATED[id]);
+    if (MERGED.indexOf(id) >= 0) {
+      p = hasAnyPack(SCRIPT[id]) ? buildMerged(id) : null;
+      if (p) PACKS[id] = p;
+      return p;
+    }
+    if (RAW[id]) {
+      p = makePack(id);
+      if (p) PACKS[id] = p;
+      return p;
+    }
+    return null;
+  }
+
+  // 使うかもしれないパックを裏で温める（初回の英語投稿などで一気に作らないため）
+  function warm(ids) {
+    (ids || Object.keys(DEDICATED).concat(Object.keys(RAW), MERGED)).forEach(function (id) {
+      try {
+        ensurePack(id);
+      } catch (e) {
+        /* noop */
+      }
     });
-    var p = buildMerged(script, codes);
-    if (p) PACKS[script] = p;
-  });
+  }
 
   // ---- 判定 ----
   var HANS_CHARS =
@@ -332,23 +361,57 @@
   };
 
   function resolve(requested, text) {
-    if (requested && requested !== 'auto' && PACKS[requested]) return PACKS[requested];
+    if (requested && requested !== 'auto') {
+      var p = ensurePack(requested);
+      if (p) return p;
+    }
     var tag = detect(text);
     var chain = TAG_CHAIN[tag] || [];
     for (var i = 0; i < chain.length; i++) {
-      if (PACKS[chain[i]]) return PACKS[chain[i]];
+      var pack = ensurePack(chain[i]);
+      if (pack) return pack;
     }
-    return PACKS[DEFAULT_LANG] || PACKS.en;
+    return ensurePack(DEFAULT_LANG) || ensurePack('en');
   }
 
   function get(id) {
-    return PACKS[id] || null;
+    return ensurePack(id);
   }
 
+  function packName(id) {
+    var p = PACKS[id];
+    if (p) return p.name;
+    if (DEDICATED[id]) return DEDICATED[id].name;
+    return LANG_NAMES[id] || id;
+  }
+
+  function packGeneric(id) {
+    var p = PACKS[id];
+    if (p) return !!p.generic;
+    if (DEDICATED[id] || MERGED.indexOf(id) >= 0) return false;
+    return !(curated && curated[id]);
+  }
+
+  /** 利用可能な言語パックの一覧（パックはまだ作らない）。 */
   function list() {
-    return Object.keys(PACKS)
+    var ids = {};
+    Object.keys(DEDICATED).forEach(function (id) {
+      if (DEDICATED[id]) ids[id] = 1;
+    });
+    Object.keys(RAW).forEach(function (id) {
+      ids[id] = 1;
+    });
+    MERGED.forEach(function (id) {
+      if (hasAnyPack(SCRIPT[id])) ids[id] = 1;
+    });
+    return Object.keys(ids)
       .map(function (id) {
-        return { id: id, name: PACKS[id].name, generic: !!PACKS[id].generic, merged: !!PACKS[id].merged };
+        return {
+          id: id,
+          name: packName(id),
+          generic: packGeneric(id),
+          merged: MERGED.indexOf(id) >= 0
+        };
       })
       .sort(function (a, b) {
         return a.id < b.id ? -1 : 1;
@@ -414,6 +477,7 @@
     detect: detect,
     resolve: resolve,
     get: get,
+    warm: warm,
     list: list,
     muteList: muteList,
     muteName: muteName,

@@ -73,15 +73,26 @@
     ['лайно', 2.0, 'badwords'], ['срака', 2.0, 'badwords'], ['пиздець', 2.6, 'badwords']
   ];
 
-  var lex = build.build(CURATED.concat(BAD), { match: 'word' });
+  // 索引はこの言語が実際に判定で使われるまで作らない（起動時の評価を軽くする）
+  var lex = null;
+  function index() {
+    if (!lex) lex = build.build(CURATED.concat(BAD), { match: 'word' });
+    return lex;
+  }
 
   return {
     id: 'uk',
     name: 'Українська',
     match: 'word',
-    TERMS: lex.TERMS,
-    BY_FIRST: lex.BY_FIRST,
-    BY_WORD: lex.BY_WORD,
+    get TERMS() {
+      return index().TERMS;
+    },
+    get BY_FIRST() {
+      return index().BY_FIRST;
+    },
+    get BY_WORD() {
+      return index().BY_WORD;
+    },
     EXCLUDE_AFTER: {},
     patterns: [],
     negation: {
