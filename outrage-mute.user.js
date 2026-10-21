@@ -2,7 +2,7 @@
 // @name         義憤ミュート (Outrage Mute)
 // @name:en      Outrage Mute
 // @namespace    https://github.com/yomiplush/outrage-mute
-// @version      0.25.0
+// @version      0.26.0
 // @description  X の投稿を義憤スコアで判定し、CSS でぼかし/非表示にします（ローカル完結・外部送信なし・多言語対応）
 // @description:en  Score X posts for outrage and blur/hide them with CSS. Fully local (no external requests), multilingual.
 // @author       yomiplush
