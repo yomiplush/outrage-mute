@@ -99,6 +99,15 @@ if (!yes) {
   process.exit(0);
 }
 
+// ---------------------------------------------------------------- 認証の確認
+try {
+  run('gh', ['auth', 'status'], { capture: true });
+} catch (e) {
+  console.error('\ngh が GitHub にログインしていません。先に次を実行してください:');
+  console.error('  gh auth login -h github.com');
+  process.exit(1);
+}
+
 // ---------------------------------------------------------------- 検証とビルド
 if (!skipCheck) run('npm', ['run', 'check']);
 
