@@ -250,8 +250,10 @@ outrage-mute/
 ├── vendor/                       # Originals and licenses (MosasoM / LDNOOBW)
 ├── scripts/build-icons.mjs       # Icon generation (no dependencies)
 ├── scripts/build-lang-data.mjs   # LDNOOBW import and generation
+├── scripts/check-store.mjs       # Chrome Web Store pre-submission checks
 ├── scripts/package.mjs           # Distribution ZIP + SHA256SUMS
 ├── docs/demo.html                # Scoring playground
+├── docs/store-listing.md         # Store listing / review notes (permissions, privacy answers)
 └── test/scoring.test.mjs         # node --test
 ```
 
@@ -259,8 +261,10 @@ outrage-mute/
 
 ```bash
 npm test              # Scoring tests (no external dependencies)
+npm run lint:store    # Chrome Web Store pre-submission checks (manifest/permissions/CSP/locales)
 npm run build:icons   # Regenerate icons
 npm run package       # Generate dist/outrage-mute-<version>.zip and SHA256SUMS
+npm run check         # test + lint:store + package
 ```
 
 ### Performance notes
@@ -300,11 +304,27 @@ with "Load unpacked". The GitHub Releases attach the ZIP and `SHA256SUMS`.
 
 Adding a dictionary entry: add one line `['語', 重み, 'カテゴリ', 'noNeg'?]` to `lexicon.curated.js` → `npm test`.
 
-## Privacy
+## Permissions and privacy (Chrome Web Store)
 
-- Post bodies and account information are **never sent externally** (`host_permissions` covers only X domains; there is no networking code).
-- Only settings and statistics are stored in `chrome.storage.local`.
-- See [`PRIVACY.md`](PRIVACY.md) for details.
+The extension runs on Manifest V3 and asks for the minimum:
+
+| Declared | Why |
+| --- | --- |
+| `permissions: ["storage"]` | Save settings and the local "hidden posts" counter in `chrome.storage.local` (never `storage.sync`). |
+| `content_scripts.matches: https://x.com/*, https://twitter.com/*` | Inject the local scoring/masking code on X only. |
+
+Deliberately **not** declared: `host_permissions` (no cross-origin requests are made),
+`web_accessible_resources` (the UI locale tables are served by the service worker instead,
+so no extension asset is readable from the page), `tabs`, `scripting`, `webRequest`.
+The extension page CSP is pinned to `script-src 'self'; object-src 'self'` and there is no
+remote code (`eval`/`new Function`/remote scripts).
+
+- Post bodies and account information are **never sent externally** — there is no
+  networking code at all.
+- Only settings and statistics are stored locally; removing the extension deletes them.
+- See [`PRIVACY.md`](PRIVACY.md) for the policy and [`docs/store-listing.md`](docs/store-listing.md)
+  for the store-listing answers (single purpose, permission justification, review notes).
+- `npm run lint:store` verifies these properties mechanically before every release.
 
 ## Known limitations
 

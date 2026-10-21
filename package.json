@@ -6,10 +6,11 @@
   "type": "commonjs",
   "scripts": {
     "test": "node --test test/",
+    "lint:store": "node scripts/check-store.mjs",
     "build:icons": "node scripts/build-icons.mjs",
     "build:userscript": "node scripts/build-userscript.mjs",
     "package": "node scripts/package.mjs && node scripts/build-userscript.mjs",
-    "check": "npm test && npm run package"
+    "check": "npm test && npm run lint:store && npm run package"
   },
   "license": "MIT"
 }

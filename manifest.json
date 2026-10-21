@@ -5,15 +5,11 @@
   "default_locale": "en",
   "description": "__MSG_extDesc__",
   "permissions": ["storage"],
-  "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
-  "web_accessible_resources": [
-    {
-      "resources": ["_locales/*/messages.json"],
-      "matches": ["https://x.com/*", "https://twitter.com/*"]
-    }
-  ],
   "background": {
     "service_worker": "src/background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
   },
   "action": {
     "default_popup": "src/popup.html",

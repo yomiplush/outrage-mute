@@ -115,6 +115,7 @@
       sendMessage: function (msg, cb) {
         // background.js 相当（統計の加算）
         if (msg && msg.type === 'jof:masked') {
+          var n = Math.max(1, Number(msg.count) || 1);
           var store = readAll();
           var s = store.jofStats || { masked: 0, today: 0, date: '' };
           var today = new Date().toISOString().slice(0, 10);
@@ -122,8 +123,8 @@
             s.date = today;
             s.today = 0;
           }
-          s.masked = (s.masked || 0) + 1;
-          s.today = (s.today || 0) + 1;
+          s.masked = (s.masked || 0) + n;
+          s.today = (s.today || 0) + n;
           var patch = {};
           patch.jofStats = s;
           set(patch, null);
@@ -4933,7 +4934,7 @@ window.JOF.mobile = true;
   };
 
   var tables = {}; // locale -> {key: message}
-  var loading = {};
+  var pending = {}; // locale -> Promise（取得中）
   var uiLang = null; // ユーザーが選んだUIロケール（null=ブラウザに従う）
 
   /** 判定言語からUIロケールを求める（'auto'・統合パックは null＝ブラウザ任せ） */
@@ -4944,6 +4945,10 @@ window.JOF.mobile = true;
 
   function setUILanguage(locale) {
     uiLang = locale || null;
+  }
+
+  function has(obj, key) {
+    return Object.prototype.hasOwnProperty.call(obj, key);
   }
 
   function getURL(path) {
@@ -4957,61 +4962,132 @@ window.JOF.mobile = true;
     return null;
   }
 
-  function fetchTable(locale) {
-    if (Object.prototype.hasOwnProperty.call(tables, locale)) return Promise.resolve(tables[locale]);
-    if (loading[locale]) return loading[locale];
-    // 同梱ロケール（ユーザースクリプト等、fetch できない環境向け）
-    var inline = null;
+  function toTable(json) {
+    var out = {};
+    if (json) {
+      Object.keys(json).forEach(function (k) {
+        var v = json[k];
+        if (v && typeof v.message === 'string') out[k] = v.message;
+        else if (typeof v === 'string') out[k] = v;
+      });
+    }
+    return out;
+  }
+
+  /** 同梱ロケール（ユーザースクリプト等、拡張 API が無い環境向け）。 */
+  function inlineTable(locale) {
     try {
       if (typeof globalThis !== 'undefined' && globalThis.JOF && globalThis.JOF.locales) {
-        inline = globalThis.JOF.locales[locale];
+        return globalThis.JOF.locales[locale] ? toTable(globalThis.JOF.locales[locale]) : null;
       }
     } catch (e) {
       /* noop */
     }
-    if (inline) {
-      var t0 = {};
-      Object.keys(inline).forEach(function (k) {
-        var v = inline[k];
-        if (typeof v === 'string') t0[k] = v;
-        else if (v && v.message) t0[k] = v.message;
-      });
-      tables[locale] = t0;
-      return Promise.resolve(t0);
+    return null;
+  }
+
+  function isExtensionPage() {
+    try {
+      return typeof location !== 'undefined' && /^(chrome|moz|safari-web)-extension:$/.test(location.protocol);
+    } catch (e) {
+      return false;
     }
+  }
+
+  /** 拡張ページ（popup / dict）は自分のリソースをそのまま読める。 */
+  function directFetch(locale) {
     var url = getURL('_locales/' + locale + '/messages.json');
-    if (!url || typeof fetch !== 'function') {
-      tables[locale] = {};
-      return Promise.resolve(tables[locale]);
-    }
-    loading[locale] = fetch(url)
+    if (!url || typeof fetch !== 'function') return Promise.resolve(null);
+    return fetch(url)
       .then(function (r) {
         return r.ok ? r.json() : null;
       })
-      .then(function (json) {
-        var out = {};
-        if (json) {
-          Object.keys(json).forEach(function (k) {
-            if (json[k] && json[k].message) out[k] = json[k].message;
-          });
-        }
-        tables[locale] = out;
-        return out;
-      })
+      .then(toTable)
       .catch(function () {
-        tables[locale] = {};
-        return {};
+        return null;
       });
-    return loading[locale];
+  }
+
+  /**
+   * ロケール表をまとめて取得する。
+   * content script からは拡張リソースを直接読めない（読むには
+   * web_accessible_resources で公開する必要がある）ため、service worker に
+   * 頼む。公開資産を増やさずに済む。
+   */
+  function requestTables(locales) {
+    if (isExtensionPage()) {
+      return Promise.all(locales.map(directFetch)).then(function (list) {
+        var map = {};
+        locales.forEach(function (l, i) {
+          map[l] = list[i] || {};
+        });
+        return map;
+      });
+    }
+    try {
+      if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+        return new Promise(function (resolve) {
+          var done = false;
+          var finish = function (tables) {
+            if (done) return;
+            done = true;
+            resolve(tables || {});
+          };
+          // service worker が応答しない場合でも初期化を止めない
+          setTimeout(function () {
+            finish({});
+          }, 3000);
+          try {
+            chrome.runtime.sendMessage({ type: 'jof:i18n', locales: locales }, function (res) {
+              void chrome.runtime.lastError;
+              finish(res && res.tables ? res.tables : {});
+            });
+          } catch (e) {
+            finish({});
+          }
+        });
+      }
+    } catch (e) {
+      /* noop */
+    }
+    return Promise.resolve({});
+  }
+
+  function fetchTables(locales) {
+    var missing = [];
+    locales.forEach(function (locale) {
+      if (!locale || has(tables, locale) || has(pending, locale)) return;
+      var inline = inlineTable(locale);
+      if (inline) {
+        tables[locale] = inline;
+        return;
+      }
+      missing.push(locale);
+    });
+
+    if (missing.length) {
+      var batch = requestTables(missing);
+      missing.forEach(function (locale) {
+        pending[locale] = batch.then(function (map) {
+          tables[locale] = toTable((map && map[locale]) || null);
+          delete pending[locale];
+        });
+      });
+    }
+
+    var jobs = [];
+    locales.forEach(function (locale) {
+      if (!has(tables, locale) && pending[locale]) jobs.push(pending[locale]);
+    });
+    return Promise.all(jobs);
   }
 
   /** 選択言語にUIを追従させる。locale=null ならブラウザのロケールを使う。 */
   function load(locale) {
     uiLang = locale || null;
     if (!uiLang) return Promise.resolve();
-    var jobs = [fetchTable(uiLang)];
-    if (uiLang !== DEFAULT_LOCALE) jobs.push(fetchTable(DEFAULT_LOCALE));
-    return Promise.all(jobs);
+    // 既定(en)も読む（未翻訳キーのフォールバック）
+    return fetchTables(uiLang === DEFAULT_LOCALE ? [uiLang] : [uiLang, DEFAULT_LOCALE]);
   }
 
   function t(key, subs) {

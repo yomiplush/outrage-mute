@@ -91,6 +91,7 @@
       sendMessage: function (msg, cb) {
         // background.js 相当（統計の加算）
         if (msg && msg.type === 'jof:masked') {
+          var n = Math.max(1, Number(msg.count) || 1);
           var store = readAll();
           var s = store.jofStats || { masked: 0, today: 0, date: '' };
           var today = new Date().toISOString().slice(0, 10);
@@ -98,8 +99,8 @@
             s.date = today;
             s.today = 0;
           }
-          s.masked = (s.masked || 0) + 1;
-          s.today = (s.today || 0) + 1;
+          s.masked = (s.masked || 0) + n;
+          s.today = (s.today || 0) + n;
           var patch = {};
           patch.jofStats = s;
           set(patch, null);
