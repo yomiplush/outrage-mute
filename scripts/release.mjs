@@ -64,6 +64,8 @@ const notes = readFileSync(notesPath, 'utf8');
 const titleLine = notes.match(/<!--\s*release-title:\s*(.+?)\s*-->/);
 if (!titleLine) die(`docs/releases/${tag}.md の先頭に <!-- release-title: ... --> が無い`);
 const title = titleLine[1];
+// タイトル行は本文には出さない（Release ページにメタ情報を残さない）
+const body = notes.replace(/<!--\s*release-title:[\s\S]*?-->\s*/, '');
 
 const assets = [
   join('dist', `outrage-mute-${version}.zip`),
@@ -122,7 +124,7 @@ if (!noPush) {
 }
 
 // ---------------------------------------------------------------- Release
-const createArgs = ['release', 'create', tag, '--title', title, '--notes-file', 'docs/releases/' + tag + '.md'];
+const createArgs = ['release', 'create', tag, '--title', title, '--notes', body];
 createArgs.push(...assets.map((a) => join(root, a)));
 run('gh', createArgs);
 
