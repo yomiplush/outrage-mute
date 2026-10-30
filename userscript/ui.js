@@ -8,13 +8,13 @@
 (function () {
   'use strict';
   var JOF = globalThis.JOF;
-  if (!JOF || !JOF.config || !JOF.categories || !JOF.i18n || !JOF.scoring) return;
+  if (!JOF || !JOF.config || !JOF.categories || !JOF.i18n || !JOF.filter) return;
 
   var config = JOF.config;
   var cats = JOF.categories;
   var lang = JOF.lang;
   var i18n = JOF.i18n;
-  var scoring = JOF.scoring;
+  var filter = JOF.filter;
   var t = i18n.t;
 
   var settings = config.normalizeSettings({});
@@ -83,12 +83,6 @@
     return cats.CATEGORY_ORDER.filter(function (id) {
       return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
     });
-  }
-
-  function effectiveCategories() {
-    var p = config.presetCategories(settings.preset, cats.CATEGORY_ORDER, config.OPTIONAL_CATEGORIES);
-    if (p) return p;
-    return Array.isArray(settings.categories) ? settings.categories : coreCats();
   }
 
   function injectCSS() {
@@ -386,10 +380,10 @@
       res.textContent = '—';
       return;
     }
-    var r = scoring.analyze(text, { lang: settings.language, categories: effectiveCategories() });
-    var threshold = config.presetThreshold(settings.preset, settings.threshold);
+    var scored = filter.score(text, settings);
+    var r = scored.result;
     var names = (r.categories || []).map(catLabel).join(' / ');
-    res.textContent = r.score.toFixed(2) + '  ' + (r.score >= threshold ? '→ ' + t('hide') : '→ ' + t('show')) + '  [' + r.lang + ']' + (names ? '\n' + names : '');
+    res.textContent = r.score.toFixed(2) + '  ' + (scored.muted ? '→ ' + t('hide') : '→ ' + t('show')) + '  [' + r.lang + ']' + (names ? '\n' + names : '');
   }
 
   function load() {

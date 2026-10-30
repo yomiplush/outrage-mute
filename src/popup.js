@@ -39,7 +39,7 @@
 
   var JOF = globalThis.JOF;
   var config = JOF.config;
-  var scoring = JOF.scoring;
+  var filter = JOF.filter;
   var cats = JOF.categories;
   var lang = JOF.lang;
   var i18n = JOF.i18n;
@@ -51,12 +51,6 @@
 
   var settings = config.normalizeSettings({});
 
-  function effectiveCategories() {
-    if (Array.isArray(settings.categories)) return settings.categories;
-    return cats.CATEGORY_ORDER.filter(function (id) {
-      return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
-    });
-  }
 
   function catLabel(id) {
     return t('cat_' + id) || cats.CATEGORY_LABELS[id] || id;
@@ -282,8 +276,9 @@
       out.textContent = '—';
       return;
     }
-    var r = scoring.analyze(text, { lang: settings.language, categories: effectiveCategories() });
-    var muted = r.score >= settings.threshold;
+    var scored = filter.score(text, settings);
+    var r = scored.result;
+    var muted = scored.muted;
     var detected = r.lang;
 
     out.textContent = '';

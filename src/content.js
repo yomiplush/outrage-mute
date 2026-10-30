@@ -13,16 +13,14 @@
   'use strict';
 
   var JOF = globalThis.JOF;
-  if (!JOF || !JOF.scoring || !JOF.config || !JOF.categories || !JOF.i18n) return;
+  if (!JOF || !JOF.filter || !JOF.config || !JOF.categories || !JOF.i18n) return;
 
-  var scoring = JOF.scoring;
+  var filter = JOF.filter;
   var config = JOF.config;
   var cats = JOF.categories;
   var i18n = JOF.i18n;
-  var lang = JOF.lang;
   var selfpost = JOF.selfpost;
   var reply = JOF.reply;
-  var userdict = JOF.userdict;
 
   var TWEET_SEL = 'article[data-testid="tweet"]';
   var CELL_SEL = '[data-testid="cellInnerDiv"]';
@@ -44,34 +42,6 @@
 
   function catLabel(id) {
     return i18n.t('cat_' + id) || cats.CATEGORY_LABELS[id] || id;
-  }
-
-  /**
-   * 有効カテゴリを解決する。
-   * 設定が未指定(null)なら「トピック系(任意)を除く全部」を使う。
-   */
-  function coreCategories() {
-    return cats.CATEGORY_ORDER.filter(function (id) {
-      return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
-    });
-  }
-
-  /**
-   * 集中プリセット。
-   *   soft(やさしめ)  … 義憤系のみ・しきい値0.6（誤爆少なめ）
-   *   normal(ふつう)  … ざわつく話題も隠す・災害情報は残す・0.5
-   *   hard(きびしめ)  … 災害も含め全部隠す・0.4
-   *   off             … ユーザーの個別設定
-   */
-  function effectiveCategories() {
-    var p = config.presetCategories(settings.preset, cats.CATEGORY_ORDER, config.OPTIONAL_CATEGORIES);
-    if (p) return p;
-    if (Array.isArray(settings.categories)) return settings.categories;
-    return coreCategories();
-  }
-
-  function effectiveThreshold() {
-    return config.presetThreshold(settings.preset, settings.threshold);
   }
 
   // ---------------------------------------------------------------- 静音（通知/DMバッジ）
@@ -410,95 +380,12 @@
 
     var combined = tw.quote ? tw.text + '\n' + tw.quote : tw.text;
 
-    // 言語ミュート: 選んだ言語の投稿は他の条件（短文・自分の投稿・リプライ・スコア）に
-    //               関わらず丸ごと隠す。隠し方の設定に関係なく完全非表示にする。
-    if (lang && lang.isMutedLang(settings.muteLang, combined)) {
-      var langResult = {
-        score: 1,
-        raw: 0,
-        categories: [],
-        byCat: {},
-        terms: [],
-        reason: 'lang',
-        langName: lang.muteName(settings.muteLang)
-      };
-      mask(cell, langResult, true);
-      remember(cell, sig, 'masked', langResult);
-      return;
-    }
-
-    // 自分の投稿は除外（トグル）
-    if (isOwnArticle(article)) {
-      remember(cell, sig, 'self', null);
-      return;
-    }
-
-    // リプライはフィルターしない（トグル・既定OFF）
-    if (settings.excludeReplies && isReplyArticle(article)) {
-      remember(cell, sig, 'reply-skip', null);
-      return;
-    }
-
-    if (!combined || combined.length < (settings.minLength || 0)) {
-      remember(cell, sig, 'short', null);
-      return;
-    }
-
-    // 集中モードでは長文を避ける（アート中心のタイムラインに）
-    var maxLen = config.effectiveMaxLength(settings.preset, settings.focusMaxLength);
-    if (maxLen > 0 && combined.length > maxLen) {
-      var longResult = {
-        score: 1,
-        raw: 0,
-        categories: [],
-        byCat: {},
-        terms: [],
-        reason: 'long',
-        length: combined.length
-      };
-      mask(cell, longResult);
-      remember(cell, sig, 'masked', longResult);
-      return;
-    }
-
-    // 集中モードではリプライ投稿も避ける
-    if (config.effectiveReplyHide(settings.preset, settings.focusHideReplies) && isReplyArticle(article)) {
-      var replyResult = { score: 1, raw: 0, categories: [], byCat: {}, terms: [], reason: 'reply' };
-      mask(cell, replyResult);
-      remember(cell, sig, 'masked', replyResult);
-      return;
-    }
-
-    // ユーザー辞書（自分で登録したミュートワード）
-    if (settings.userWordsEnabled !== false && userdict && settings.userWords && settings.userWords.length) {
-      var uw = userdict.find(combined, settings.userWords);
-      if (uw) {
-        var userResult = {
-          score: 1,
-          raw: 0,
-          categories: [],
-          byCat: {},
-          terms: [],
-          reason: 'user',
-          word: uw
-        };
-        mask(cell, userResult);
-        remember(cell, sig, 'masked', userResult);
-        return;
-      }
-    }
-
-    var result = scoring.analyze(combined, {
-      lang: settings.language,
-      categories: effectiveCategories()
+    var decision = filter.evaluate(combined, settings, {
+      isOwn: function () { return isOwnArticle(article); },
+      isReply: function () { return isReplyArticle(article); }
     });
-
-    if (result.score >= effectiveThreshold()) {
-      mask(cell, result);
-      remember(cell, sig, 'masked', result);
-    } else {
-      remember(cell, sig, 'clear', null);
-    }
+    if (decision.state === 'masked') mask(cell, decision.result, decision.forceHide);
+    remember(cell, sig, decision.state, decision.result);
   }
 
   // ---------------------------------------------------------------- scanning

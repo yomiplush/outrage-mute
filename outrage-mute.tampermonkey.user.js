@@ -2,7 +2,7 @@
 // @name         義憤ミュート (Outrage Mute) - Tampermonkey/Android
 // @name:en      Outrage Mute (Tampermonkey/Android)
 // @namespace    https://github.com/yomiplush/outrage-mute#tampermonkey
-// @version      0.26.0
+// @version      0.26.1
 // @description  X の投稿を義憤スコアで判定し、CSS でぼかし/非表示にします（ローカル完結・外部送信なし・多言語対応）
 // @description:en  Score X posts for outrage and blur/hide them with CSS. Fully local (no external requests), multilingual.
 // @author       yomiplush
@@ -5556,6 +5556,83 @@ window.JOF.mobile = true;
 });
 
 
+/* ===== src/lib/filter.js ===== */
+
+/**
+ * 投稿の判定ルール。DOM や表示操作に依存せず、正規化済み設定を受け取る。
+ * score() は UI のスコア確認にも使用する（投稿の除外ルールは適用しない）。
+ */
+(function (root, factory) {
+  'use strict';
+  if (typeof module === 'object' && module.exports) {
+    module.exports = factory(require('./config.js'), require('./categories.js'), require('./scoring.js'), require('./lang/index.js'), require('./userdict.js'));
+  } else {
+    var JOF = root.JOF = root.JOF || {};
+    JOF.filter = factory(JOF.config, JOF.categories, JOF.scoring, JOF.lang, JOF.userdict);
+  }
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (config, categories, scoring, lang, userdict) {
+  'use strict';
+
+  function score(text, settings) {
+    var selected = config.presetCategories(settings.preset, categories.CATEGORY_ORDER, config.OPTIONAL_CATEGORIES);
+    if (!selected) {
+      selected = Array.isArray(settings.categories) ? settings.categories : categories.CATEGORY_ORDER.filter(function (id) {
+        return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
+      });
+    }
+    var result = scoring.analyze(text, { lang: settings.language, categories: selected });
+    return { result: result, muted: result.score >= config.presetThreshold(settings.preset, settings.threshold) };
+  }
+
+  function skip(state) {
+    return { state: state, result: null, forceHide: false };
+  }
+
+  function matched(reason, details, forceHide) {
+    return {
+      state: 'masked',
+      result: Object.assign({ score: 1, raw: 0, categories: [], byCat: {}, terms: [], reason: reason }, details),
+      forceHide: forceHide === true
+    };
+  }
+
+  /**
+   * context.isOwn / isReply は必要になるまで呼ばない DOM メタデータの取得関数。
+   * 言語ミュートを最優先にし、除外→短文→集中→辞書→スコアの順を維持する。
+   */
+  function evaluate(text, settings, context) {
+    context = context || {};
+    if (!settings.enabled) return skip('clear');
+    if (lang && lang.isMutedLang(settings.muteLang, text)) {
+      return matched('lang', { langName: lang.muteName(settings.muteLang) }, true);
+    }
+    if (settings.excludeSelf && context.isOwn && context.isOwn()) return skip('self');
+    var replyChecked = false;
+    var replyValue = false;
+    function isReply() {
+      if (!replyChecked) {
+        replyValue = !!(context.isReply && context.isReply());
+        replyChecked = true;
+      }
+      return replyValue;
+    }
+    if (settings.excludeReplies && isReply()) return skip('reply-skip');
+    if (!text || text.length < (settings.minLength || 0)) return skip('short');
+    var maxLength = config.effectiveMaxLength(settings.preset, settings.focusMaxLength);
+    if (maxLength > 0 && text.length > maxLength) return matched('long', { length: text.length });
+    if (config.effectiveReplyHide(settings.preset, settings.focusHideReplies) && isReply()) return matched('reply');
+    if (settings.userWordsEnabled !== false && userdict && settings.userWords && settings.userWords.length) {
+      var word = userdict.find(text, settings.userWords);
+      if (word) return matched('user', { word: word });
+    }
+    var scored = score(text, settings);
+    return scored.muted ? { state: 'masked', result: scored.result, forceHide: false } : skip('clear');
+  }
+
+  return { score: score, evaluate: evaluate };
+});
+
+
 /* ===== src/content.js ===== */
 
 /**
@@ -5573,16 +5650,14 @@ window.JOF.mobile = true;
   'use strict';
 
   var JOF = globalThis.JOF;
-  if (!JOF || !JOF.scoring || !JOF.config || !JOF.categories || !JOF.i18n) return;
+  if (!JOF || !JOF.filter || !JOF.config || !JOF.categories || !JOF.i18n) return;
 
-  var scoring = JOF.scoring;
+  var filter = JOF.filter;
   var config = JOF.config;
   var cats = JOF.categories;
   var i18n = JOF.i18n;
-  var lang = JOF.lang;
   var selfpost = JOF.selfpost;
   var reply = JOF.reply;
-  var userdict = JOF.userdict;
 
   var TWEET_SEL = 'article[data-testid="tweet"]';
   var CELL_SEL = '[data-testid="cellInnerDiv"]';
@@ -5604,34 +5679,6 @@ window.JOF.mobile = true;
 
   function catLabel(id) {
     return i18n.t('cat_' + id) || cats.CATEGORY_LABELS[id] || id;
-  }
-
-  /**
-   * 有効カテゴリを解決する。
-   * 設定が未指定(null)なら「トピック系(任意)を除く全部」を使う。
-   */
-  function coreCategories() {
-    return cats.CATEGORY_ORDER.filter(function (id) {
-      return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
-    });
-  }
-
-  /**
-   * 集中プリセット。
-   *   soft(やさしめ)  … 義憤系のみ・しきい値0.6（誤爆少なめ）
-   *   normal(ふつう)  … ざわつく話題も隠す・災害情報は残す・0.5
-   *   hard(きびしめ)  … 災害も含め全部隠す・0.4
-   *   off             … ユーザーの個別設定
-   */
-  function effectiveCategories() {
-    var p = config.presetCategories(settings.preset, cats.CATEGORY_ORDER, config.OPTIONAL_CATEGORIES);
-    if (p) return p;
-    if (Array.isArray(settings.categories)) return settings.categories;
-    return coreCategories();
-  }
-
-  function effectiveThreshold() {
-    return config.presetThreshold(settings.preset, settings.threshold);
   }
 
   // ---------------------------------------------------------------- 静音（通知/DMバッジ）
@@ -5970,95 +6017,12 @@ window.JOF.mobile = true;
 
     var combined = tw.quote ? tw.text + '\n' + tw.quote : tw.text;
 
-    // 言語ミュート: 選んだ言語の投稿は他の条件（短文・自分の投稿・リプライ・スコア）に
-    //               関わらず丸ごと隠す。隠し方の設定に関係なく完全非表示にする。
-    if (lang && lang.isMutedLang(settings.muteLang, combined)) {
-      var langResult = {
-        score: 1,
-        raw: 0,
-        categories: [],
-        byCat: {},
-        terms: [],
-        reason: 'lang',
-        langName: lang.muteName(settings.muteLang)
-      };
-      mask(cell, langResult, true);
-      remember(cell, sig, 'masked', langResult);
-      return;
-    }
-
-    // 自分の投稿は除外（トグル）
-    if (isOwnArticle(article)) {
-      remember(cell, sig, 'self', null);
-      return;
-    }
-
-    // リプライはフィルターしない（トグル・既定OFF）
-    if (settings.excludeReplies && isReplyArticle(article)) {
-      remember(cell, sig, 'reply-skip', null);
-      return;
-    }
-
-    if (!combined || combined.length < (settings.minLength || 0)) {
-      remember(cell, sig, 'short', null);
-      return;
-    }
-
-    // 集中モードでは長文を避ける（アート中心のタイムラインに）
-    var maxLen = config.effectiveMaxLength(settings.preset, settings.focusMaxLength);
-    if (maxLen > 0 && combined.length > maxLen) {
-      var longResult = {
-        score: 1,
-        raw: 0,
-        categories: [],
-        byCat: {},
-        terms: [],
-        reason: 'long',
-        length: combined.length
-      };
-      mask(cell, longResult);
-      remember(cell, sig, 'masked', longResult);
-      return;
-    }
-
-    // 集中モードではリプライ投稿も避ける
-    if (config.effectiveReplyHide(settings.preset, settings.focusHideReplies) && isReplyArticle(article)) {
-      var replyResult = { score: 1, raw: 0, categories: [], byCat: {}, terms: [], reason: 'reply' };
-      mask(cell, replyResult);
-      remember(cell, sig, 'masked', replyResult);
-      return;
-    }
-
-    // ユーザー辞書（自分で登録したミュートワード）
-    if (settings.userWordsEnabled !== false && userdict && settings.userWords && settings.userWords.length) {
-      var uw = userdict.find(combined, settings.userWords);
-      if (uw) {
-        var userResult = {
-          score: 1,
-          raw: 0,
-          categories: [],
-          byCat: {},
-          terms: [],
-          reason: 'user',
-          word: uw
-        };
-        mask(cell, userResult);
-        remember(cell, sig, 'masked', userResult);
-        return;
-      }
-    }
-
-    var result = scoring.analyze(combined, {
-      lang: settings.language,
-      categories: effectiveCategories()
+    var decision = filter.evaluate(combined, settings, {
+      isOwn: function () { return isOwnArticle(article); },
+      isReply: function () { return isReplyArticle(article); }
     });
-
-    if (result.score >= effectiveThreshold()) {
-      mask(cell, result);
-      remember(cell, sig, 'masked', result);
-    } else {
-      remember(cell, sig, 'clear', null);
-    }
+    if (decision.state === 'masked') mask(cell, decision.result, decision.forceHide);
+    remember(cell, sig, decision.state, decision.result);
   }
 
   // ---------------------------------------------------------------- scanning
@@ -6348,13 +6312,13 @@ window.JOF.mobile = true;
 (function () {
   'use strict';
   var JOF = globalThis.JOF;
-  if (!JOF || !JOF.config || !JOF.categories || !JOF.i18n || !JOF.scoring) return;
+  if (!JOF || !JOF.config || !JOF.categories || !JOF.i18n || !JOF.filter) return;
 
   var config = JOF.config;
   var cats = JOF.categories;
   var lang = JOF.lang;
   var i18n = JOF.i18n;
-  var scoring = JOF.scoring;
+  var filter = JOF.filter;
   var t = i18n.t;
 
   var settings = config.normalizeSettings({});
@@ -6423,12 +6387,6 @@ window.JOF.mobile = true;
     return cats.CATEGORY_ORDER.filter(function (id) {
       return config.OPTIONAL_CATEGORIES.indexOf(id) < 0;
     });
-  }
-
-  function effectiveCategories() {
-    var p = config.presetCategories(settings.preset, cats.CATEGORY_ORDER, config.OPTIONAL_CATEGORIES);
-    if (p) return p;
-    return Array.isArray(settings.categories) ? settings.categories : coreCats();
   }
 
   function injectCSS() {
@@ -6726,10 +6684,10 @@ window.JOF.mobile = true;
       res.textContent = '—';
       return;
     }
-    var r = scoring.analyze(text, { lang: settings.language, categories: effectiveCategories() });
-    var threshold = config.presetThreshold(settings.preset, settings.threshold);
+    var scored = filter.score(text, settings);
+    var r = scored.result;
     var names = (r.categories || []).map(catLabel).join(' / ');
-    res.textContent = r.score.toFixed(2) + '  ' + (r.score >= threshold ? '→ ' + t('hide') : '→ ' + t('show')) + '  [' + r.lang + ']' + (names ? '\n' + names : '');
+    res.textContent = r.score.toFixed(2) + '  ' + (scored.muted ? '→ ' + t('hide') : '→ ' + t('show')) + '  [' + r.lang + ']' + (names ? '\n' + names : '');
   }
 
   function load() {

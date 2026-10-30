@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "0.26.0",
+  "version": "0.26.1",
   "default_locale": "en",
   "description": "__MSG_extDesc__",
   "permissions": ["storage"],
@@ -60,6 +60,7 @@
         "src/lib/dict-editor.js",
         "src/lib/i18n.js",
         "src/lib/scoring.js",
+        "src/lib/filter.js",
         "src/content.js"
       ],
       "css": ["src/content.css"],
